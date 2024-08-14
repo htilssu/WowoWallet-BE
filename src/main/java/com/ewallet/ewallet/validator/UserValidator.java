@@ -1,8 +1,10 @@
 package com.ewallet.ewallet.validator;
 
 import com.ewallet.ewallet.models.User;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 
 public class UserValidator {
@@ -17,7 +19,9 @@ public class UserValidator {
         if (user.getDob() == null || user.getDob()
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
-                .isAfter(Instant.now())) return false; //dob greater than current date
+                .isAfter(Instant.now())
+                || isUserUnder18(user.getDob())
+        ) return false; //dob greater than current date
 
 
         if (user.getPassword().length() < 6) return false;
@@ -28,9 +32,14 @@ public class UserValidator {
             return true;
 
         }
-        if (user.getCreated()  != null) return false;
+        if (user.getCreated() != null) return false;
 
         return true;
+    }
+
+    private static boolean isUserUnder18(@NotNull LocalDate dob) {
+        LocalDate currentDate = LocalDate.now();
+        return dob.plusYears(18).isAfter(currentDate);
     }
 
 }
