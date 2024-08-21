@@ -38,13 +38,7 @@ public class CardController {
         if (user == null) {
             return ResponseEntity.ok(new ResponseMessage("Người dùng không tồn tại"));
         }
-        //        Optional<Atm> atm = atmRepository.findById(atmCardDto.getAtmId());
-        //
-        //        if (atm.isEmpty()) {
-        //            return ResponseEntity.badRequest().body(new ResponseMessage("ATM không tồn
-        //            tại"));
-        //        }
-
+st
         final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardDto);
         atmCard.setOwner(user);
 

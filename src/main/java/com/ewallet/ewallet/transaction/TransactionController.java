@@ -39,9 +39,6 @@ public class TransactionController {
             return ResponseEntity.notFound().build();
         }
         final TransactionResponse transactionResponse = transactionMapper.toResponse(transaction);
-        ReceiverDto receiverDto = null;
-        //        if (transactionResponse.get)
-
 
         return ResponseEntity.ok(transactionResponse);
 
