@@ -1,4 +1,4 @@
-package com.ewallet.ewallet.transaction.exception;
+package com.ewallet.ewallet.exceptions;
 
 public class TransactionNotFoundException extends RuntimeException {
 

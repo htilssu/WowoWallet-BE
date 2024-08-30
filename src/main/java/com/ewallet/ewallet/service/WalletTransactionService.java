@@ -5,8 +5,8 @@ import com.ewallet.ewallet.models.Transaction;
 import com.ewallet.ewallet.models.Wallet;
 import com.ewallet.ewallet.models.WalletTransaction;
 import com.ewallet.ewallet.repository.WalletTransactionRepository;
-import com.ewallet.ewallet.transaction.exception.TransactionNotFoundException;
-import com.ewallet.ewallet.transfer.exceptions.InsufficientBalanceException;
+import com.ewallet.ewallet.exceptions.TransactionNotFoundException;
+import com.ewallet.ewallet.exceptions.InsufficientBalanceException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
