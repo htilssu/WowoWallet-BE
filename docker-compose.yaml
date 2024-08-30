@@ -1,0 +1,17 @@
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - data:/var/lib/postgresql/data
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+
+volumes:
+  data:
