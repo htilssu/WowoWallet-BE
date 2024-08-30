@@ -36,6 +36,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 
+    //Kafka
+    implementation("org.apache.kafka:kafka-streams")
+    implementation("org.springframework.kafka:spring-kafka")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+
+
     //jwt
     implementation("io.jsonwebtoken:jjwt:0.12.6")
     //one time password
