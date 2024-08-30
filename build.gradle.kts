@@ -46,8 +46,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.12.6")
     //one time password
     implementation("com.github.bastiaanjansen:otp-java:2.0.3") //twilio
-    implementation("com.twilio.sdk:twilio:10.4.0") 
-    
+    implementation("com.twilio.sdk:twilio:10.4.0")
+
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
 
@@ -73,8 +73,12 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    //Map struct
     implementation ("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    
 }
 
 dependencyManagement {
