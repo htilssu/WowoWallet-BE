@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 
 @Data
 public class Service {
-
     @Id
     String id;
     String name;
