@@ -1,10 +1,10 @@
 package com.ewallet.ewallet.service;
 
-import com.ewallet.ewallet.dto.mapper.WalletTransactionMapper;
+import com.ewallet.ewallet.data.mapper.WalletTransactionMapper;
 import com.ewallet.ewallet.models.Transaction;
 import com.ewallet.ewallet.models.Wallet;
 import com.ewallet.ewallet.models.WalletTransaction;
-import com.ewallet.ewallet.repository.WalletTransactionRepository;
+import com.ewallet.ewallet.repositories.WalletTransactionRepository;
 import com.ewallet.ewallet.exceptions.TransactionNotFoundException;
 import com.ewallet.ewallet.exceptions.InsufficientBalanceException;
 import lombok.AllArgsConstructor;

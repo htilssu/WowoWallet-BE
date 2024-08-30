@@ -1,10 +1,8 @@
 package com.ewallet.ewallet.service;
 
-import com.ewallet.ewallet.dto.mapper.WalletMapper;
-import com.ewallet.ewallet.dto.response.WalletResponse;
-import com.ewallet.ewallet.partner.PartnerRepository;
-import com.ewallet.ewallet.user.UserRepository;
-import com.ewallet.ewallet.wallet.WalletRepository;
+import com.ewallet.ewallet.data.mapper.WalletMapper;
+import com.ewallet.ewallet.data.dto.response.WalletResponse;
+import com.ewallet.ewallet.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

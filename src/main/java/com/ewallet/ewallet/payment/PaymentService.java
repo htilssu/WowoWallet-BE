@@ -7,7 +7,7 @@ import com.ewallet.ewallet.service.TransactionService;
 import com.ewallet.ewallet.exceptions.InsufficientBalanceException;
 import com.ewallet.ewallet.exceptions.WalletNotFoundException;
 import com.ewallet.ewallet.util.RequestUtil;
-import com.ewallet.ewallet.wallet.WalletRepository;
+import com.ewallet.ewallet.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,5 @@
 package com.ewallet.ewallet.models;
 
-import com.ewallet.ewallet.dto.response.ReceiverDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

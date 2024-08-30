@@ -1,14 +1,14 @@
 package com.ewallet.ewallet.service;
 
-import com.ewallet.ewallet.dto.mapper.TransactionMapper;
+import com.ewallet.ewallet.data.mapper.TransactionMapper;
 import com.ewallet.ewallet.dto.mapper.WalletTransactionMapperImpl;
-import com.ewallet.ewallet.dto.response.WalletTransactionDto;
+import com.ewallet.ewallet.data.dto.response.WalletTransactionDto;
 import com.ewallet.ewallet.models.PaymentRequest;
 import com.ewallet.ewallet.models.Transaction;
 import com.ewallet.ewallet.models.Wallet;
-import com.ewallet.ewallet.payment.request.PaymentRequestRepository;
-import com.ewallet.ewallet.repository.TransactionRepository;
-import com.ewallet.ewallet.repository.WalletTransactionRepository;
+import com.ewallet.ewallet.repositories.PaymentRequestRepository;
+import com.ewallet.ewallet.repositories.TransactionRepository;
+import com.ewallet.ewallet.repositories.WalletTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

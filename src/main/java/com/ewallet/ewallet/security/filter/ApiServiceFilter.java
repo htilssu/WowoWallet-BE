@@ -1,7 +1,7 @@
 package com.ewallet.ewallet.security.filter;
 
 import com.ewallet.ewallet.models.Partner;
-import com.ewallet.ewallet.partner.PartnerRepository;
+import com.ewallet.ewallet.repositories.PartnerRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
