@@ -1,4 +1,4 @@
-FROM gradle:jdk21-alpine as build
+FROM gradle:jdk22-alpine as build
 
 WORKDIR /build
 COPY build.gradle.kts settings.gradle.kts ./
@@ -6,7 +6,7 @@ COPY src ./src
 RUN gradle clean build --exclude-task test
 
 
-FROM amazoncorretto:21-al2-jdk
+FROM 22-alpine-full
 LABEL authors="htilssu"
 EXPOSE 8080
 

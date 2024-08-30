@@ -6,12 +6,20 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ewalletdb
     volumes:
       - data:/var/lib/postgresql/data
   kafka:
     image: apache/kafka:latest
     ports:
       - "9092:9092"
+
+#  api:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
 
 volumes:
   data:

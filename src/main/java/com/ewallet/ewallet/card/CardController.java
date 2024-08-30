@@ -38,7 +38,7 @@ public class CardController {
         if (user == null) {
             return ResponseEntity.ok(new ResponseMessage("Người dùng không tồn tại"));
         }
-st
+
         final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardDto);
         atmCard.setOwner(user);
 

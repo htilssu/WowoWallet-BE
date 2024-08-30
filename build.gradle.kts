@@ -10,7 +10,7 @@ group = "com.ewallet"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_22
 }
 
 configurations {
@@ -46,7 +46,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.12.6")
     //one time password
     implementation("com.github.bastiaanjansen:otp-java:2.0.3") //twilio
-    implementation("com.twilio.sdk:twilio:10.4.0")
+    implementation("com.twilio.sdk:twilio:10.4.1")
 
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
@@ -77,8 +77,7 @@ dependencies {
     implementation ("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 }
 
 dependencyManagement {
