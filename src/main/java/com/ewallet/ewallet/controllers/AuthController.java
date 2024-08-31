@@ -1,9 +1,9 @@
 package com.ewallet.ewallet.controllers;
 
 import com.ewallet.ewallet.atm.AuthData;
-import com.ewallet.ewallet.dto.mapper.UserMapperImpl;
 import com.ewallet.ewallet.data.dto.request.UserDto;
 import com.ewallet.ewallet.data.dto.response.ResponseMessage;
+import com.ewallet.ewallet.data.mapper.UserMapperImpl;
 import com.ewallet.ewallet.models.User;
 import com.ewallet.ewallet.repositories.UserRepository;
 import com.ewallet.ewallet.util.JwtUtil;

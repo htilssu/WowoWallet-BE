@@ -1,9 +1,9 @@
 package com.ewallet.ewallet.controllers;
 
-import com.ewallet.ewallet.dto.mapper.PartnerMapperImpl;
 import com.ewallet.ewallet.data.dto.response.PartnerDto;
 import com.ewallet.ewallet.data.dto.response.PartnerRequest;
 import com.ewallet.ewallet.data.dto.response.ResponseMessage;
+import com.ewallet.ewallet.data.mapper.PartnerMapperImpl;
 import com.ewallet.ewallet.models.Partner;
 import com.ewallet.ewallet.repositories.PartnerRepository;
 import com.ewallet.ewallet.util.ApiKeyUtil;
