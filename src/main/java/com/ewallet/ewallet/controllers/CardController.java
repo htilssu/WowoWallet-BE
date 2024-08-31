@@ -2,8 +2,8 @@ package com.ewallet.ewallet.controllers;
 
 import com.ewallet.ewallet.data.dto.response.AtmCardDto;
 import com.ewallet.ewallet.data.dto.response.ResponseMessage;
+import com.ewallet.ewallet.data.mapper.AtmCardMapperImpl;
 import com.ewallet.ewallet.models.AtmCard;
-import com.ewallet.ewallet.models.AtmCardMapperImpl;
 import com.ewallet.ewallet.models.User;
 import com.ewallet.ewallet.repositories.AtmCardRepository;
 import com.ewallet.ewallet.repositories.AtmRepository;

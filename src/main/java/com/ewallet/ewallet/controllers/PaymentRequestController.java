@@ -1,7 +1,8 @@
 package com.ewallet.ewallet.controllers;
 
-import com.ewallet.ewallet.dto.mapper.PaymentRequestMapperImpl;
-import com.ewallet.ewallet.dto.mapper.TransactionMapperImpl;
+
+import com.ewallet.ewallet.data.mapper.PaymentRequestMapperImpl;
+import com.ewallet.ewallet.data.mapper.TransactionMapperImpl;
 import com.ewallet.ewallet.models.Partner;
 import com.ewallet.ewallet.models.PaymentRequest;
 import com.ewallet.ewallet.models.Transaction;

@@ -1,6 +1,7 @@
-package com.ewallet.ewallet.models;
+package com.ewallet.ewallet.data.mapper;
 
 import com.ewallet.ewallet.data.dto.response.AtmCardDto;
+import com.ewallet.ewallet.models.AtmCard;
 import org.mapstruct.*;
 
 import java.util.List;

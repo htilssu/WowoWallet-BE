@@ -1,9 +1,9 @@
 package com.ewallet.ewallet.controllers;
 
-import com.ewallet.ewallet.dto.mapper.UserMapperImpl;
-import com.ewallet.ewallet.dto.mapper.WalletMapperImpl;
 import com.ewallet.ewallet.data.dto.response.ResponseMessage;
 import com.ewallet.ewallet.data.dto.response.UserDto;
+import com.ewallet.ewallet.data.mapper.UserMapperImpl;
+import com.ewallet.ewallet.data.mapper.WalletMapperImpl;
 import com.ewallet.ewallet.models.User;
 import com.ewallet.ewallet.models.Wallet;
 import com.ewallet.ewallet.user.ChangePasswordData;

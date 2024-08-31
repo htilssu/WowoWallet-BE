@@ -1,4 +1,4 @@
-package com.ewallet.ewallet.config;
+package com.ewallet.ewallet.configs;
 
 import com.ewallet.ewallet.otp.ClaimOTPModel;
 import lombok.AllArgsConstructor;

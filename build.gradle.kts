@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.5"
+    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 val springCloudVersion by extra("2023.0.2")
 
@@ -78,6 +79,7 @@ dependencies {
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
 }
 
 dependencyManagement {
