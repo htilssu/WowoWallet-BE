@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/v?/otp", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "v1/otp", produces = "application/json; charset=utf-8")
 public class OTPController {
 
     private final OTPManager otpManager;

@@ -2,7 +2,7 @@ package com.ewallet.ewallet.data.mapper;
 
 import com.ewallet.ewallet.data.dto.response.PaymentRequestDto;
 import com.ewallet.ewallet.models.PaymentRequest;
-import com.ewallet.ewallet.payment.request.PaymentRequestData;
+import com.ewallet.ewallet.data.dto.request.PaymentRequestData;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

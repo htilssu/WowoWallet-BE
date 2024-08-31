@@ -1,9 +1,8 @@
-package com.ewallet.ewallet.payment;
+package com.ewallet.ewallet.service;
 
 import com.ewallet.ewallet.models.PaymentRequest;
 import com.ewallet.ewallet.models.Transaction;
 import com.ewallet.ewallet.models.Wallet;
-import com.ewallet.ewallet.service.TransactionService;
 import com.ewallet.ewallet.exceptions.InsufficientBalanceException;
 import com.ewallet.ewallet.exceptions.WalletNotFoundException;
 import com.ewallet.ewallet.util.RequestUtil;

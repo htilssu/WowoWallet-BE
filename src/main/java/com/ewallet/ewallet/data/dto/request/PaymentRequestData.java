@@ -1,4 +1,4 @@
-package com.ewallet.ewallet.payment.request;
+package com.ewallet.ewallet.data.dto.request;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

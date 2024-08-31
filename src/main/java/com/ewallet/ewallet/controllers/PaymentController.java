@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @ApiResponse(responseCode = "200", description = "Ok")
 @ApiResponse(responseCode = "400", description = "Bad request")
-@RequestMapping("api/v1/payment")  // Cập nhật version API nếu cần
+@RequestMapping("v1/payment")  // Cập nhật version API nếu cần
 public class PaymentController {
 
     @GetMapping("/{id}")

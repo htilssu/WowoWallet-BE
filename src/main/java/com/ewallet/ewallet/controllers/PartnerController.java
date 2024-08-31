@@ -22,7 +22,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/partner", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/partner", produces = "application/json; charset=UTF-8")
 public class PartnerController {
 
     private final PartnerRepository partnerRepository;

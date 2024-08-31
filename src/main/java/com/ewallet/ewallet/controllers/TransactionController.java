@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/transaction", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/transaction", produces = "application/json; charset=UTF-8")
 public class TransactionController {
 
     private final TransactionRepository transactionRepository;

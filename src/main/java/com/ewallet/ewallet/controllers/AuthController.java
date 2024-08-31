@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/v1/auth", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/auth", produces = "application/json; charset=UTF-8")
 public class AuthController {
 
     private final UserRepository userRepository;

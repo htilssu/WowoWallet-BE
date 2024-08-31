@@ -5,8 +5,8 @@ import com.ewallet.ewallet.dto.mapper.TransactionMapperImpl;
 import com.ewallet.ewallet.models.Partner;
 import com.ewallet.ewallet.models.PaymentRequest;
 import com.ewallet.ewallet.models.Transaction;
-import com.ewallet.ewallet.payment.PaymentService;
-import com.ewallet.ewallet.payment.request.PaymentRequestData;
+import com.ewallet.ewallet.service.PaymentService;
+import com.ewallet.ewallet.data.dto.request.PaymentRequestData;
 import com.ewallet.ewallet.repositories.PaymentRequestRepository;
 import com.ewallet.ewallet.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v?/prequest", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/prequest", produces = "application/json; charset=UTF-8")
 public class PaymentRequestController {
 
     private final PaymentRequestMapperImpl paymentRequestMapperImpl;

@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/v1/user", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/user", produces = "application/json; charset=UTF-8")
 public class UserController {
 
     private final UserRepository userRepository;

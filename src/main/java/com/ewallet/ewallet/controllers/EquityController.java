@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/v1/equity", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/equity", produces = "application/json; charset=UTF-8")
 public class EquityController {
 
     private final EquityRepository equityRepository;

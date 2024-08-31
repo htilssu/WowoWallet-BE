@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/v?/refund", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "v1/refund", produces = "application/json;charset=UTF-8")
 public class RefundController {
 
     private final TransactionRepository transactionRepository;
