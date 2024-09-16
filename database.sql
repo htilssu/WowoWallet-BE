@@ -1,5 +1,6 @@
--- CREATE
---     DATABASE ewallet;
+
+CREATE
+    DATABASE ewalletdb;
 -- open the database
 drop type if exists payment_system_type cascade;
 CREATE TYPE payment_system_type AS ENUM ('internal', 'paypal', 'stripe', 'other');
@@ -296,24 +297,24 @@ create table wallet_transaction
 );
 
 -- Order table
-drop sequence if exists payment_request_id;
-create sequence payment_request_id start 100000000000000;
+drop sequence if exists order_id;
+create sequence order_id start 100000000000000;
 
-create or replace function generate_payment_request_id() returns varchar(15)
+create or replace function generate_order_id() returns varchar(15)
 as
 $$
 begin
-    return LPAD(NEXTVAL('payment_request_id')::text, 15, '0');
+    return LPAD(NEXTVAL('order_id')::text, 15, '0');
 end;
 $$
     language plpgsql;
 
 
-DROP TABLE IF EXISTS "payment_request" CASCADE;
+DROP TABLE IF EXISTS "order" CASCADE;
 
-CREATE TABLE "payment_request"
+CREATE TABLE "order"
 (
-    id                      varchar(15) PRIMARY KEY default generate_payment_request_id(),
+    id                      varchar(15) PRIMARY KEY default generate_order_id(),
     partner_id              char(10) REFERENCES partner (id),
     money                   decimal(10, 2) NOT NULL,
     status                  varchar(50)    NOT NULL default 'PENDING',
@@ -335,29 +336,27 @@ CREATE TABLE "payment_request"
     unique (id, partner_id)
 );
 
-alter table  payment_request add column service_name varchar(100) NULL;
-
 
 DROP SEQUENCE IF EXISTS order_id_seq;
 
 CREATE SEQUENCE order_id_seq START 100000000000001;
 
-CREATE OR REPLACE FUNCTION generate_order_id()
-    RETURNS trigger
-    LANGUAGE plpgsql
-AS
-$$
-BEGIN
-    NEW.id := LPAD(NEXTVAL('order_id_seq')::text, 15, '0');
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE TRIGGER order_id_trigger
-    BEFORE INSERT
-    ON "payment_request"
-    FOR EACH ROW
-EXECUTE FUNCTION generate_order_id();
+-- CREATE OR REPLACE FUNCTION generate_order_id()
+--     RETURNS trigger
+--     LANGUAGE plpgsql
+-- AS
+-- $$
+-- BEGIN
+--     NEW.id := LPAD(NEXTVAL('order_id_seq')::text, 15, '0');
+--     RETURN NEW;
+-- END;
+-- $$;
+--
+-- CREATE OR REPLACE TRIGGER order_id_trigger
+--     BEFORE INSERT
+--     ON "order"
+--     FOR EACH ROW
+-- EXECUTE FUNCTION generate_order_id();
 
 -- Support Ticket
 DROP TABLE IF EXISTS support_ticket CASCADE;

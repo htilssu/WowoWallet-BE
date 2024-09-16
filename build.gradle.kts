@@ -2,7 +2,6 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.5"
-    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 val springCloudVersion by extra("2023.0.2")
 
@@ -40,23 +39,28 @@ dependencies {
     //Kafka
     implementation("org.apache.kafka:kafka-streams")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
 
     //jwt
-    implementation("io.jsonwebtoken:jjwt:0.12.6")
-    //one time password
+    implementation("io.jsonwebtoken:jjwt:0.12.6") //one time password
     implementation("com.github.bastiaanjansen:otp-java:2.0.3") //twilio
-    implementation("com.twilio.sdk:twilio:10.4.1")
+    implementation("com.twilio.sdk:twilio:10.5.0")
 
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
 
-    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.google.guava:guava:33.2.1-jre")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    implementation ("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.11.0")
 
+
+    //database
+    implementation("org.flywaydb:flyway-core:10.17.3")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
 
     //dynamodb
@@ -75,8 +79,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     //Map struct
-    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
