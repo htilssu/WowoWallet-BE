@@ -58,7 +58,6 @@ public class JwtUtil {
         return JWT.create()
                 .withSubject(user.getId())
                 .withPayload(ObjectUtil.parseJson(user))
-                .withClaim()
                 .withExpiresAt(Date.from(Instant.now()
                         .plus(expire, ChronoUnit.MINUTES)))
                 .sign(algorithm);

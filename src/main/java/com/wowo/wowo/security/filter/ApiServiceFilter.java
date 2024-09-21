@@ -10,14 +10,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
-@Component
 @AllArgsConstructor
+@Service
 public class ApiServiceFilter implements Filter {
 
     PartnerRepository partnerRepository;
@@ -29,7 +29,7 @@ public class ApiServiceFilter implements Filter {
                                IOException,
                                ServletException {
         var req = (HttpServletRequest) request;
-        var apiKey = req.getHeader("X-Api");
+        var apiKey = req.getHeader("X-API-KEY");
 
 
         if (apiKey == null || apiKey.isEmpty()) {

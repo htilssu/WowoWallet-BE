@@ -7,7 +7,6 @@ import com.wowo.wowo.otp.OTPSend;
 import com.wowo.wowo.otp.OTPVerify;
 import com.wowo.wowo.services.EmailService;
 import com.wowo.wowo.util.OTPUtil;
-import com.wowo.wowo.services.otp.SmsService;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.util.ObjectUtil;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,6 @@ public class OTPController {
     private final OTPManager otpManager;
     private final EmailService emailService;
     private final UserRepository userRepository;
-    private final SmsService smsService;
 
     @PostMapping
     public ResponseEntity<?> sendOtp(@RequestBody @Nullable OTPSend otpSend,
@@ -53,9 +51,9 @@ public class OTPController {
                             .body(new ResponseMessage("Không tìm thấy người dùng"));
                 }
 
-            case "phone":
-                otpManager.send(smsService, otpSend, authentication);
-                return ResponseEntity.ok(new ResponseMessage("OTP đã được gửi đến số điện thoại của bạn!"));
+//            case "phone":
+//                otpManager.send(smsService, otpSend, authentication);
+//                return ResponseEntity.ok(new ResponseMessage("OTP đã được gửi đến số điện thoại của bạn!"));
 
             default:
                 return ResponseEntity.badRequest()

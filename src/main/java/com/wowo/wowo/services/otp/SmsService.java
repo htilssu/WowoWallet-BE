@@ -1,3 +1,4 @@
+/*
 package com.wowo.wowo.services.otp;
 
 import com.wowo.wowo.otp.OTPSender;
@@ -55,3 +56,4 @@ public class SmsService implements OTPSender {
 
     }
 }
+*/

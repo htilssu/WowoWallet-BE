@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
+@EnableJpaRepositories
 @EnableAsync(proxyTargetClass = true)
 @EnableCaching(proxyTargetClass = true)
 @SpringBootApplication
