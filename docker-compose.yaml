@@ -6,12 +6,44 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+      POSTGRES_DB: wowodb
     volumes:
       - data:/var/lib/postgresql/data
   kafka:
     image: apache/kafka:latest
     ports:
       - "9092:9092"
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+  dynamodb:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
 
+  #  api:
+  #    build:
+  #      context: .
+  #      dockerfile: Dockerfile
+  #    ports:
+  #      - "8080:8080"
+  #    environment:
+  #      DATABASE_URL: jdbc:postgresql://database:5432/wowodb
+  #      DATABASE_USER: admin
+  #      DATABASE_PASSWORD: admin
+  #      KAFKA_URL: kafka:9092
+  #      MONGODB_URL: mongodb://mongodb:27017/wowodb
+  #      PASSWORD_SALT: 51eb67a7e16c0db7c26cd5016ad94a49c6b64fe04da07ce1343a1831919c005a45bb57fe70acdb41a140e3bbe028b49d0cb740baf903cc2c152e3e2547c93b35
+#    depends_on:
+#      kafka:
+#        condition: service_started
+#      database:
+#        condition: service_started
 volumes:
   data:
