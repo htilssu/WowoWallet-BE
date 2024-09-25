@@ -14,4 +14,5 @@ public interface UserRepository extends CrudRepository<User, String> {
     User findByUserName(String userName);
     @Nullable
     User findByPhoneNumber(String phoneNumber);
+    
 }

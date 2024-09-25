@@ -4,9 +4,9 @@ import com.ewallet.ewallet.otp.OTPSender;
 import jakarta.mail.MessagingException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -76,6 +76,22 @@ public class EmailService implements OTPSender {
         javaMailSender.send(newMail);
 
         return CompletableFuture.completedFuture(null);
+    }
+    public void sendResetPasswordToken(String sendTo, String token) {
+        var newMail = javaMailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(newMail, true);
+            String htmlText = "Vui lòng nhấp vào link dưới đây để đặt lại mật khẩu của bạn: <br/>" +
+                    "<a href=\"http://localhost:8080/api/v1/user/reset-password?token=" + token + "\">Đặt lại mật khẩu</a>";
+
+            helper.setSubject("Yêu cầu đặt lại mật khẩu");
+            helper.setTo(sendTo);
+            helper.setText(htmlText, true); // true để sử dụng HTML
+            javaMailSender.send(newMail);
+        } catch (MessagingException e) {
+            e.printStackTrace(); // In ra lỗi để dễ dàng theo dõi
+        }
     }
 }
 
