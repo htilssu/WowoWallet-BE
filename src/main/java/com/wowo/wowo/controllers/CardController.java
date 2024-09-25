@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/v1/card", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
 public class CardController {
 
     private final AtmCardMapperImpl atmCardMapperImpl;
