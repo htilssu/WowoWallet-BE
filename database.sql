@@ -157,6 +157,7 @@ CREATE TABLE support_ticket
 );
 
 -- Group Fund
+--lưu thông tin về từng quỹ nhóm
 DROP TABLE IF EXISTS group_fund CASCADE;
 
 CREATE TABLE group_fund
@@ -170,7 +171,7 @@ CREATE TABLE group_fund
 );
 
 DROP SEQUENCE IF EXISTS group_fund_id_seq;
-
+--lưu các thông tin thành viên trong quỹ nhóm đó
 DROP TABLE IF EXISTS fund_member CASCADE;
 
 CREATE TABLE fund_member
@@ -180,7 +181,7 @@ CREATE TABLE fund_member
     money     numeric NOT NULL DEFAULT 0,
     PRIMARY KEY (group_id, member_id)
 );
-
+--lưu các giao dịch trong quỹ nhóm đó
 drop table if exists group_fund_transaction cascade;
 CREATE TABLE group_fund_transaction
 (
