@@ -3,7 +3,6 @@ package com.wowo.wowo.otp;
 import com.wowo.wowo.services.EmailService;
 import com.wowo.wowo.services.otp.OTPGenerator;
 import com.wowo.wowo.util.OTPUtil;
-import com.wowo.wowo.services.otp.SmsService;
 import com.wowo.wowo.util.DateTimeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,17 +19,14 @@ public class OTPManager {
     OTPGenerator otpGenerator;
     final
     ClaimOTPRepository claimOTPRepository;
-    //ignore autowired expire time
 
     /**
      * Gửi mã OTP cho người dùng, thông tin người nhận sẽ được lấy từ {@link OTPSend#getSendTo()}
      * hàm này sẽ gửi OTP bất đồng bộ
      * {@link OTPSender} là service gửi OTP (ví dụ: gửi qua email, sms) {@link EmailService},
-     * {@link SmsService}
      *
      * @param otpSender      đối tượng gửi OTP
      * @param otpSend        thông tin người nhận và loại OTP
-     * @param authentication
      */
     public void send(OTPSender otpSender, OTPSend otpSend, Authentication authentication) {
 
@@ -51,9 +47,6 @@ public class OTPManager {
     /**
      * Xác thực mã OTP có đúng của người dùng hiện tại hay không
      *
-     * @param otpSend
-     *
-     * @return
      */
     public boolean verify(String userId, OTPData otpSend) {
         var userClaim = claimOTPRepository.findOtpByUserId(userId).join();

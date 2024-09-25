@@ -1,15 +1,16 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.data.dto.request.ChangePasswordData;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
 import com.wowo.wowo.data.dto.response.UserDto;
 import com.wowo.wowo.data.mapper.UserMapperImpl;
 import com.wowo.wowo.data.mapper.WalletMapperImpl;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
-import com.wowo.wowo.data.dto.request.ChangePasswordData;
 import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.util.ObjectUtil;
 import com.wowo.wowo.repositories.WalletRepository;
+import com.wowo.wowo.services.EmailService;
+import com.wowo.wowo.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,10 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/user", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "/api/v1/user", produces = "application/json; charset=UTF-8")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -28,6 +30,7 @@ public class UserController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapperImpl userMapperImpl;
     private final WalletMapperImpl walletMapperImpl;
+    private final EmailService emailService;
 
     @GetMapping()
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
@@ -39,8 +42,8 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("{userId}/wallet")
-    public ResponseEntity<?> getWallet(Authentication authentication, @PathVariable String userId) {
+    @GetMapping("/wallet")
+    public ResponseEntity<?> getWallet(Authentication authentication) {
         Optional<Wallet> wallet = walletRepository.findByOwnerIdAndOwnerType(
                 (String) authentication.getPrincipal(), "user");
         if (wallet.isPresent()) {
@@ -82,10 +85,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable String id){
-        if (id != null){
-            final Optional<User> byId =   userRepository.findById(id);
-            if (byId.isPresent()){
+    public UserDto getUserById(@PathVariable String id) {
+        if (id != null) {
+            final Optional<User> byId = userRepository.findById(id);
+            if (byId.isPresent()) {
                 return userMapperImpl.toDto(byId.get());
             }
         }
@@ -104,9 +107,33 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseMessage> forgotPassword(@RequestBody String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(
+                    new ResponseMessage("Email không tồn tại trong hệ thống."));
+        }
 
-    /*@GetMapping
-    public ResponseEntity<?> getAllUser(){
+        // Tạo token để reset mật khẩu
+        String token = UUID.randomUUID().toString();
 
-    }*/
+
+        // Gửi email xác nhận sử dụng phương thức sendResetPasswordToken
+        emailService.sendResetPasswordToken(user.getEmail(), token);
+
+        return ResponseEntity.ok(
+                new ResponseMessage("Link đặt lại mật khẩu đã được gửi đến email của bạn."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseMessage> resetPassword(@RequestParam String token,
+            @RequestBody ChangePasswordData passwordData) {
+
+
+
+        return ResponseEntity.badRequest().body(
+                new ResponseMessage("Mật khẩu xác nhận không khớp."));
+    }
+
 }

@@ -3,6 +3,8 @@ package com.wowo.wowo.services;
 import com.wowo.wowo.otp.OTPSender;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -101,6 +103,10 @@ public class EmailService implements OTPSender {
         }
 
         javaMailSender.send(mimeMessage);
+    }
+
+    public void sendResetPasswordToken(@Size(max = 255) @NotNull String email, String token) {
+
     }
 }
 
