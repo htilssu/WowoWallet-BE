@@ -45,7 +45,7 @@ dependencies {
 
     //jwt
     implementation("io.jsonwebtoken:jjwt:0.12.6") //one time password
-    implementation("com.github.bastiaanjansen:otp-java:2.0.3") //twilio
+    implementation("com.github.bastiaanjansen:otp-java:2.0.3")
     implementation("com.twilio.sdk:twilio:10.5.0")
 
     //dynamodb
@@ -79,7 +79,7 @@ dependencies {
 
     //Map struct
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.1")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
