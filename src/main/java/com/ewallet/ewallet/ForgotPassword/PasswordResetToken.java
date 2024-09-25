@@ -1,18 +1,20 @@
 package com.ewallet.ewallet.ForgotPassword;
-
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-@Data
 @DynamoDbBean
-public class PasswordResetToken { private String userId;
+@Getter
+@Setter
+public class PasswordResetToken {
+    private String userId;
     private String token;
-    private Long expirationTime; // TTL để tự động hết hạn token
-
+    private long expirationTime;
     @DynamoDbPartitionKey
-    public String getUserId() {
-        return userId;
+    public String getToken() {
+        return token;
     }
+
 
 }

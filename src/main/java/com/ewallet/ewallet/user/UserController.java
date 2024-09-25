@@ -7,14 +7,12 @@ import com.ewallet.ewallet.dto.response.ResponseMessage;
 import com.ewallet.ewallet.dto.response.UserDto;
 import com.ewallet.ewallet.models.User;
 import com.ewallet.ewallet.models.Wallet;
-import com.ewallet.ewallet.repository.PasswordResetTokenRepository;
+import com.ewallet.ewallet.repository.ResetTokenRepository;
 import com.ewallet.ewallet.service.EmailService;
 import com.ewallet.ewallet.util.ObjectUtil;
 import com.ewallet.ewallet.wallet.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +30,7 @@ public class UserController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapperImpl userMapperImpl;
     private final WalletMapperImpl walletMapperImpl;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+   private final ResetTokenRepository resetTokenRepository;
     private final EmailService emailService;
     @GetMapping()
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
@@ -124,7 +122,8 @@ public class UserController {
         resetToken.setUserId(user.getId().toString());
         resetToken.setToken(token);
         resetToken.setExpirationTime(System.currentTimeMillis() / 1000 + 3600); // Token hết hạn sau 1 giờ
-        passwordResetTokenRepository.saveToken(resetToken);
+
+        resetTokenRepository.save(resetToken); // Thay đổi repository
 
         // Gửi email xác nhận sử dụng phương thức sendResetPasswordToken
         emailService.sendResetPasswordToken(user.getEmail(), token);
@@ -133,13 +132,19 @@ public class UserController {
     }
 
 
+
     @PostMapping("/reset-password")
     public ResponseEntity<ResponseMessage> resetPassword(@RequestParam String token, @RequestBody ChangePasswordData passwordData) {
         // Tìm token trong DynamoDB
-        PasswordResetToken resetToken = passwordResetTokenRepository.findByUserId(token);
+        PasswordResetToken resetToken = resetTokenRepository.findTokenByToken(token).join();
 
         if (resetToken == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage("Token không hợp lệ."));
+        }
+
+        // Kiểm tra xem token đã hết hạn chưa
+        if (System.currentTimeMillis() / 1000 > resetToken.getExpirationTime()) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Token đã hết hạn."));
         }
 
         // Kiểm tra nếu mật khẩu mới và mật khẩu xác nhận khớp
@@ -150,7 +155,7 @@ public class UserController {
                 userRepository.save(user.get());
 
                 // Xóa token khỏi DynamoDB sau khi sử dụng
-                passwordResetTokenRepository.deleteToken(resetToken.getUserId());
+                resetTokenRepository.deleteByUserId(resetToken.getUserId()).join();
 
                 return ResponseEntity.ok(new ResponseMessage("Đổi mật khẩu thành công."));
             }

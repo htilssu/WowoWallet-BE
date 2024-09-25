@@ -482,18 +482,18 @@ create table atm_card
     unique (card_number)
 );
 CREATE TABLE banks(
-                         "id" bigint,
-                         "name" text,
-                         "code" text,
-                         "bin" text,
-                         "shortName" text,
-                         "logo" text,
-                         "transferSupported" bigint,
-                         "lookupSupported" bigint,
-                         "short_name" text,
-                         "support" bigint,
-                         "isTransfer" bigint,
-                         "swift_code" text NULL
+                      id bigint,
+                      name varchar(255),
+                      code varchar(255),
+                      bin varchar(255),
+                      shortName varchar(255),
+                      logo varchar(255),
+                      transferSupported bigint,
+                      lookupSupported bigint,
+                      short_name varchar(255),
+                      support bigint,
+                      isTransfer bigint,
+                      swift_code varchar(255) NULL -- Định nghĩa kiểu varchar với nullable
 );
 
 
@@ -516,7 +516,7 @@ values (1,
        (2, 'Sacombank'),
        (3, 'MBBank');
 
-    INSERT INTO banks ("id","name","code","bin","shortName","logo","transferSupported","lookupSupported","short_name","support","isTransfer","swift_code")
+INSERT INTO banks (id, name, code, bin, shortName, logo, transferSupported, lookupSupported, short_name, support, isTransfer, swift_code)
 VALUES
     (17,'Ngân hàng TMCP Công thương Việt Nam','ICB','970415','VietinBank','https://api.vietqr.io/img/ICB.png',1,1,'VietinBank',3,1,'ICBVVNVX'),
     (43,'Ngân hàng TMCP Ngoại Thương Việt Nam','VCB','970436','Vietcombank','https://api.vietqr.io/img/VCB.png',1,1,'Vietcombank',3,1,'BFTVVNVX'),
