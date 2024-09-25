@@ -19,7 +19,6 @@ public class OTPManager {
     OTPGenerator otpGenerator;
     final
     ClaimOTPRepository claimOTPRepository;
-    //ignore autowired expire time
 
     /**
      * Gửi mã OTP cho người dùng, thông tin người nhận sẽ được lấy từ {@link OTPSend#getSendTo()}
@@ -28,7 +27,6 @@ public class OTPManager {
      *
      * @param otpSender      đối tượng gửi OTP
      * @param otpSend        thông tin người nhận và loại OTP
-     * @param authentication
      */
     public void send(OTPSender otpSender, OTPSend otpSend, Authentication authentication) {
 
@@ -49,9 +47,6 @@ public class OTPManager {
     /**
      * Xác thực mã OTP có đúng của người dùng hiện tại hay không
      *
-     * @param otpSend
-     *
-     * @return
      */
     public boolean verify(String userId, OTPData otpSend) {
         var userClaim = claimOTPRepository.findOtpByUserId(userId).join();
