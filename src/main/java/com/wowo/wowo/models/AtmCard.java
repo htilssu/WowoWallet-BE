@@ -6,23 +6,16 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@DynamicInsert
-@Table(name = "atm_card", uniqueConstraints = {
-        @UniqueConstraint(name = "atm_card_card_number_key", columnNames = {"card_number"})
-})
+@Table(name = "atm_card")
 public class AtmCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "atm_card_id_gen")
-    @SequenceGenerator(name = "atm_card_id_gen", sequenceName = "atm_card_id_seq",
-                       allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -48,10 +41,12 @@ public class AtmCard {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @Size(max = 255)
     @NotNull
     @Column(name = "expired", nullable = false)
     private String expired;
 
+    @NotNull
     @ColumnDefault("CURRENT_DATE")
     @Column(name = "created", nullable = false)
     private LocalDate created;

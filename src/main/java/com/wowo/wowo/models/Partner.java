@@ -1,28 +1,26 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@DynamicInsert
 @Entity
 @Table(name = "partner")
 public class Partner {
 
     @Id
     @Size(max = 10)
-    @Column(name = "id", length = 10)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, length = 10)
     private String id;
 
     @Size(max = 255)
@@ -38,8 +36,8 @@ public class Partner {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @NotEmpty(message = "Không được để trống")
-    @NotBlank(message = "Không được để trống")
+    @Size(max = 100)
+    @NotNull
     @Column(name = "partner_type", nullable = false, length = 100)
     private String partnerType;
 
@@ -64,7 +62,7 @@ public class Partner {
 
     @NotNull
     @Column(name = "balance", nullable = false)
-    private double balance;
+    private Double balance;
 
     @ColumnDefault("CURRENT_DATE")
     @Column(name = "created")

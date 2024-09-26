@@ -3,7 +3,7 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.data.dto.request.ChangePasswordData;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
 import com.wowo.wowo.data.dto.response.UserDto;
-import com.wowo.wowo.data.mapper.UserMapperImpl;
+import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapperImpl;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
@@ -28,7 +28,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserMapperImpl userMapperImpl;
+    private final UserMapper userMapperImpl;
     private final WalletMapperImpl walletMapperImpl;
     private final EmailService emailService;
 

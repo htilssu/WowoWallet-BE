@@ -2,11 +2,10 @@ package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.request.AuthData;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.data.mapper.UserMapperImpl;
+import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.util.JwtUtil;
 import com.wowo.wowo.util.ObjectUtil;
 import com.wowo.wowo.validator.EmailValidator;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserMapperImpl userMapperImpl;
+    private final UserMapper userMapperImpl;
 
     public ResponseEntity<?> login(AuthData user) {
         User loginUser;
@@ -43,7 +42,7 @@ public class AuthService {
                     .body(new ResponseMessage("Mật khẩu không đúng"));
         }
 
-        String token = JwtUtil.generateToken(loginUser);
+        String token = JwtService.generateToken(loginUser);
         var userDto = userMapperImpl.toDto(loginUser);
         return ResponseEntity.ok()
                 .header("Set-Cookie",
