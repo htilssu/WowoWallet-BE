@@ -4,9 +4,11 @@ import com.wowo.wowo.data.dto.response.AtmCardDto;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapperImpl;
 import com.wowo.wowo.models.AtmCard;
+import com.wowo.wowo.models.Bank;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.AtmCardRepository;
 import com.wowo.wowo.repositories.AtmRepository;
+import com.wowo.wowo.repositories.BankRepostitory;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.util.ObjectUtil;
 import lombok.AllArgsConstructor;
@@ -25,7 +27,8 @@ public class CardController {
     private final AtmCardMapperImpl atmCardMapperImpl;
     private final AtmCardRepository atmCardRepository;
     private final UserRepository userRepository;
-    private final AtmRepository atmRepository;
+    private final BankRepostitory bankRepostitory;
+
 
     @PostMapping
     public ResponseEntity<?> createCard(@RequestBody AtmCardDto atmCardDto,
@@ -38,6 +41,12 @@ public class CardController {
         if (user == null) {
             return ResponseEntity.ok(new ResponseMessage("Người dùng không tồn tại"));
         }
+        Bank bank = bankRepostitory.findByShortName(atmCardDto.getBankShortName());
+        if (bank == null) {
+            return ResponseEntity.ok().body(new ResponseMessage("Không tìm thấy ngân hàng với shortName đã cho"));
+        }
+
+
         final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardDto);
         atmCard.setOwner(user);
 

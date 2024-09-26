@@ -1,6 +1,6 @@
-package com.ewallet.ewallet.repository;
+package com.wowo.wowo.repositories;
 
-import com.ewallet.ewallet.ForgotPassword.PasswordResetToken;
+import com.wowo.wowo.ForgotPassword.PasswordResetToken;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable;

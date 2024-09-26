@@ -1,4 +1,4 @@
-package com.ewallet.ewallet.models;
+package com.wowo.wowo.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

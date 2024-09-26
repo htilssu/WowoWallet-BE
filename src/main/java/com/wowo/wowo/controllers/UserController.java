@@ -1,5 +1,6 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.ForgotPassword.PasswordResetToken;
 import com.wowo.wowo.data.dto.request.ChangePasswordData;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
 import com.wowo.wowo.data.dto.response.UserDto;
@@ -7,6 +8,7 @@ import com.wowo.wowo.data.mapper.UserMapperImpl;
 import com.wowo.wowo.data.mapper.WalletMapperImpl;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.repositories.ResetTokenRepository;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.services.EmailService;
@@ -30,6 +32,7 @@ public class UserController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapperImpl userMapperImpl;
     private final WalletMapperImpl walletMapperImpl;
+   private final ResetTokenRepository resetTokenRepository;
     private final EmailService emailService;
 
     @GetMapping()
@@ -54,8 +57,8 @@ public class UserController {
 
     @PostMapping("/password")
     public ResponseEntity<ResponseMessage> changePassword(@RequestBody ChangePasswordData
-            passwordData,
-            Authentication authentication) {
+                                                                  passwordData,
+                                                          Authentication authentication) {
         Optional<User> user = userRepository.findById((String) authentication.getPrincipal());
 
         if (user.isEmpty()) {
@@ -109,44 +112,51 @@ public class UserController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<ResponseMessage> forgotPassword(@RequestBody String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            return ResponseEntity.badRequest().body(
-                    new ResponseMessage("Email không tồn tại trong hệ thống."));
-        }
-
         // Tạo token để reset mật khẩu
         String token = UUID.randomUUID().toString();
 
+        // Lưu token vào DynamoDB với userId là khóa chính
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setExpirationTime(System.currentTimeMillis() / 1000 + 3600); // Token hết hạn sau 1 giờ
+
+        resetTokenRepository.save(resetToken).join(); // Đợi đến khi lưu thành công
 
         // Gửi email xác nhận sử dụng phương thức sendResetPasswordToken
-        emailService.sendResetPasswordToken(user.getEmail(), token);
+        emailService.sendResetPassword("toandong2004@gmail.com", token); // Gửi đến email cố định
 
-        return ResponseEntity.ok(
-                new ResponseMessage("Link đặt lại mật khẩu đã được gửi đến email của bạn."));
+        return ResponseEntity.ok(new ResponseMessage("Link đặt lại mật khẩu đã được gửi đến email của bạn."));
     }
-
-
 
     @PostMapping("/reset-password")
     public ResponseEntity<ResponseMessage> resetPassword(@RequestParam String token,
-            @RequestBody ChangePasswordData passwordData) {
+                                                         @RequestBody ChangePasswordData passwordData) {
+        // Kiểm tra token
+        PasswordResetToken resetToken = resetTokenRepository.findTokenByToken(token).join();
+        if (resetToken == null) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Token không hợp lệ."));
+        }
+
+        // Kiểm tra xem token đã hết hạn chưa
+        if (System.currentTimeMillis() / 1000 > resetToken.getExpirationTime()) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Token đã hết hạn."));
+        }
 
         // Kiểm tra nếu mật khẩu mới và mật khẩu xác nhận khớp
         if (passwordData.getNewPassword().equals(passwordData.getConfirmPassword())) {
-            Optional<User> user = userRepository.findById(resetToken.getUserId());
-            if (user.isPresent()) {
-                user.get().setPassword(bCryptPasswordEncoder.encode(passwordData.getNewPassword()));
-                userRepository.save(user.get());
+            User user = userRepository.findById(resetToken.getUserId()).orElse(null);
+            if (user != null) {
+                user.setPassword(bCryptPasswordEncoder.encode(passwordData.getNewPassword()));
+                userRepository.save(user);
 
                 // Xóa token khỏi DynamoDB sau khi sử dụng
-                passwordResetTokenRepository.deleteToken(resetToken.getUserId());
+                resetTokenRepository.deleteByUserId(resetToken.getUserId()).join();
 
-        return ResponseEntity.badRequest().body(
-                new ResponseMessage("Mật khẩu xác nhận không khớp."));
-    }
+                return ResponseEntity.ok(new ResponseMessage("Đổi mật khẩu thành công."));
+            }
+        }
 
         return ResponseEntity.badRequest().body(new ResponseMessage("Mật khẩu xác nhận không khớp."));
     }
 }
-}
+

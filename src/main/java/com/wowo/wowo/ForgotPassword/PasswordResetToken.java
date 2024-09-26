@@ -1,4 +1,4 @@
-package com.ewallet.ewallet.ForgotPassword;
+package com.wowo.wowo.ForgotPassword;
 import lombok.Getter;
 import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
