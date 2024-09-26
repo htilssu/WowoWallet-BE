@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 
@@ -22,6 +23,10 @@ public class GroupFund {
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Size(max = 500)
+    @Column(name = "image")
+    private String image;
 
     @Size(max = 255)
     @Column(name = "description")

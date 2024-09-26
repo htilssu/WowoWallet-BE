@@ -32,29 +32,12 @@ public class Order {
 
     @Size(max = 50)
     @NotNull
-    @ColumnDefault("'PENDING'")
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Column(name = "status", nullable = false)
+    private PaymentStatus status = PaymentStatus.PENDING;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
-
-    @Size(max = 50)
-    @Column(name = "voucher_id", length = 50)
-    private String voucherId;
-
-    @Size(max = 100)
-    @Column(name = "voucher_name", length = 100)
-    private String voucherName;
-
-    @Size(max = 100)
-    @Column(name = "voucher_code", length = 100)
-    private String voucherCode;
-
-    @Size(max = 50)
-    @Column(name = "order_id", length = 50)
-    private String orderId;
 
     @Size(max = 300)
     @Column(name = "return_url", length = 300)
@@ -63,13 +46,6 @@ public class Order {
     @Size(max = 300)
     @Column(name = "success_url", length = 300)
     private String successUrl;
-
-    @Column(name = "voucher_discount", precision = 10, scale = 2)
-    private BigDecimal voucherDiscount;
-
-    @Size(max = 50)
-    @Column(name = "external_transaction_id", length = 50)
-    private String externalTransactionId;
 
     @NotNull
     @ColumnDefault("now()")

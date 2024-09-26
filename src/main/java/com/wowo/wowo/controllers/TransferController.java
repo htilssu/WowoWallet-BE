@@ -4,10 +4,7 @@ import com.wowo.wowo.constants.Constant;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.dto.request.TransactionRequest;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.models.Transaction;
-import com.wowo.wowo.models.User;
-import com.wowo.wowo.models.Wallet;
-import com.wowo.wowo.models.WalletTransaction;
+import com.wowo.wowo.models.*;
 import com.wowo.wowo.services.EquityService;
 import com.wowo.wowo.repositories.ConstantRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
@@ -134,8 +131,6 @@ public class TransferController {
 
         senderWallet.sendMoneyTo(receiverWallet, data.getMoney());
         Transaction transaction = transactionMapper.toEntity(data);
-        transaction.setSenderId(senderId);
-        transaction.setReceiverId(receiver.getId());
         transactionRepository.save(transaction);
 
         WalletTransaction walletTransaction = WalletTransaction.builder()
@@ -156,7 +151,7 @@ public class TransferController {
 
 
         if (walletTransactionOptional.isEmpty()) {
-            transaction.setStatus("FAILED");
+            transaction.setStatus(PaymentStatus.PENDING);
             transactionRepository.save(transaction);
             return ResponseEntity.ok()
                     .body(new ResponseMessage("Chuyển tiền thất bại"));

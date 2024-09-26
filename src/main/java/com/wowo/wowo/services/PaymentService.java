@@ -3,6 +3,7 @@ package com.wowo.wowo.services;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.WalletNotFoundException;
 import com.wowo.wowo.models.Order;
+import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.util.RequestUtil;
@@ -39,12 +40,9 @@ public class PaymentService {
 
         makePayment(sender, receiver, order.getMoney().doubleValue());
 
-        order.setStatus("SUCCESS");
+        order.setStatus(PaymentStatus.SUCCESS);
 
         RequestUtil.sendRequest(order.getSuccessUrl(), "POST");
-        RequestUtil.sendRequest(
-                "https://voucher-server-alpha.vercel.app/api/vouchers/getVoucherByVoucherID/" + order.getVoucherId(),
-                "POST");
         return transactionService.createTransaction(userId, order,
                 sender, receiver);
     }
