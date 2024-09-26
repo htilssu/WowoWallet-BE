@@ -1,6 +1,5 @@
 package com.wowo.wowo.data.dto.request;
 
-import com.wowo.wowo.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

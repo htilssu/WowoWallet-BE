@@ -7,8 +7,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @Entity
+@Builder
+@Table(name = "wallet_transaction")
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletTransaction {

@@ -4,18 +4,11 @@ create type payment_status as enum ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED');
 CREATE TABLE wallet
 (
     id         serial PRIMARY KEY,
-    owner_type varchar(20) NOT NULL DEFAULT 'user',
-    currency   VARCHAR(3)  NOT NULL DEFAULT 'VND',
+    owner_type varchar(20) NOT NULL DEFAULT 'USER',
     owner_id   char(10),
     balance    numeric     NOT NULL DEFAULT 0,
     CONSTRAINT uk_wallet_owner UNIQUE (owner_id, owner_type)
 );
-
-
-
-CREATE SEQUENCE user_id_seq START 1;
--- drop sequence user_id_seq;
-
 
 DROP TABLE IF EXISTS "user" CASCADE;
 
@@ -43,7 +36,6 @@ CREATE TABLE "user"
 );
 
 CREATE INDEX user_index ON "user" (email, user_name, phone_number);
-
 
 CREATE INDEX user_email_index ON "user" (email);
 
@@ -87,18 +79,15 @@ CREATE TABLE payment_system
     is_active  BOOLEAN DEFAULT true
 );
 DROP TABLE IF EXISTS transaction CASCADE;
+
+
 CREATE TABLE transaction
 (
     id                 varchar(17) PRIMARY KEY DEFAULT nextval('transaction_id_seq') NOT NULL,
     money              decimal(10, 2) NOT NULL,
-    sender_id          char(10)       NOT NULL,
-    sender_type        varchar(20)    NOT NULL default 'user',
-    receiver_type      varchar(20)    NOT NULL default 'user',
-    receiver_id        char(10)       NOT NULL,
-    currency           VARCHAR(3)     NOT NULL default 'VND',
-    transaction_type   varchar(20)    NOT NULL default 'transfer',
-    transaction_target varchar(20)    NOT NULL default 'wallet',
-    status             varchar(50)    NOT NULL DEFAULT 'PENDING',
+    receiver_wallet_id serial         NOT NULL,
+    sender_wallet_id   serial         NOT NULL,
+    status             payment_status NOT NULL DEFAULT 'PENDING',
     created            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3),
     updated            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3)
 );
@@ -110,13 +99,6 @@ create table constant
     value double precision NOT NULL
 );
 
-drop table if exists wallet_transaction;
-create table wallet_transaction
-(
-    id              char(15) PRIMARY KEY references transaction (id),
-    sender_wallet   serial references wallet (id),
-    receiver_wallet serial references wallet (id)
-);
 
 -- Order table
 create sequence order_id_seq start 100000000000000;
@@ -192,7 +174,6 @@ CREATE TABLE group_fund_transaction
     created        date    NOT NULL DEFAULT CURRENT_DATE
 );
 
-
 create table atm_card
 (
     id          serial primary key,
@@ -205,9 +186,24 @@ create table atm_card
     created     date         not null default current_date,
     unique (card_number)
 );
+
+create table group_fund_transaction
+(
+    transaction_id char(15) primary key references transaction (id),
+    group_id       int references group_fund (id),
+    member_id      char(10)
+);
+
+create table wallet_transaction
+(
+    transaction_id  char(15) primary key references transaction (id),
+    sender_wallet   int references wallet (id),
+    receiver_wallet int references wallet (id)
+);
+
 CREATE TABLE banks
 (
-    "id"                bigint,
+    "id"                bigint PRIMARY KEY,
     "name"              text,
     "code"              text,
     "bin"               text,
@@ -223,8 +219,6 @@ CREATE TABLE banks
 
 create index wallet_transaction_sd_idx on wallet_transaction (sender_wallet);
 create index wallet_transaction_rc_idx on wallet_transaction (receiver_wallet);
-
-
 
 insert into constant
 values ('MIN_TRANSFER', 'Số tiền tối thiểu cho mỗi giao dịch', 100),

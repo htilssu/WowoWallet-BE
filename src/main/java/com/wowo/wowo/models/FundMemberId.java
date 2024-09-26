@@ -16,7 +16,7 @@ import java.util.Objects;
 @Embeddable
 public class FundMemberId implements Serializable {
 
-    private static final long serialVersionUID = 3328171555833633913L;
+    private static final long serialVersionUID = -3026394821843277658L;
     @NotNull
     @Column(name = "group_id", nullable = false)
     private Integer groupId;
@@ -27,17 +27,17 @@ public class FundMemberId implements Serializable {
     private String memberId;
 
     @Override
-    public int hashCode() {
-        return Objects.hash(groupId, memberId);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         FundMemberId entity = (FundMemberId) o;
         return Objects.equals(this.groupId, entity.groupId) &&
                 Objects.equals(this.memberId, entity.memberId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(groupId, memberId);
     }
 
 }

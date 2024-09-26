@@ -1,11 +1,9 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.dto.response.WalletTransactionDto;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.mapper.WalletTransactionMapperImpl;
-import com.wowo.wowo.models.Order;
-import com.wowo.wowo.models.Transaction;
-import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletTransactionRepository;
@@ -34,7 +32,7 @@ public class TransactionService {
 
         var transactionResponse = transactionMapper.toResponse(transaction);
 
-        if ("wallet".equals(transaction.getTransactionTarget())) {
+        if (transaction.getVariant() == TransactionVariant.WALLET) {
             var walletTransaction = walletTransactionRepository.findById(transaction.getId()).get();
 
             return walletTransactionMapperImpl.toDto(walletTransaction);
@@ -45,7 +43,7 @@ public class TransactionService {
     }
 
     public void refund(Transaction transaction) {
-        if (transaction.getTransactionTarget().equals("wallet")) {
+        if (transaction.getVariant() == TransactionVariant.WALLET) {
             walletTransactionService.refund(transaction);
         }
         else {
@@ -59,7 +57,7 @@ public class TransactionService {
             Wallet receiver) {
         final Transaction transaction = createTransaction(userId, order);
 
-        if (order.getStatus().equals("SUCCESS")) {
+        if (order.getStatus() == PaymentStatus.SUCCESS) {
             walletTransactionService.createWalletTransaction(transaction, sender, receiver);
         }
 
@@ -70,12 +68,8 @@ public class TransactionService {
 
     public Transaction createTransaction(String userId, Order order) {
         var transaction = new Transaction();
-        transaction.setSenderId(userId);
-        transaction.setSenderType("user");
-        transaction.setReceiverId(order.getPartner().getId());
-        transaction.setReceiverType("partner");
         transaction.setMoney(order.getMoney());
-        transaction.setTransactionTarget("wallet");
+        transaction.setVariant(TransactionVariant.WALLET);
         transaction.setStatus(order.getStatus());
 
         transactionRepository.save(transaction);

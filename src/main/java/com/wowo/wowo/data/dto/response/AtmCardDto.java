@@ -1,7 +1,6 @@
 package com.wowo.wowo.data.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wowo.wowo.models.AtmCard;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

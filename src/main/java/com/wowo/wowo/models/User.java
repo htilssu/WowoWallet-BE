@@ -6,22 +6,17 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@DynamicInsert
-@DynamicUpdate
 @Entity
 @Table(name = "\"user\"")
 public class User {
 
     @Id
     @Size(max = 10)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, length = 10)
     private String id;
 
@@ -57,10 +52,12 @@ public class User {
     @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
+    @NotNull
     @ColumnDefault("true")
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = false;
 
+    @NotNull
     @ColumnDefault("false")
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified = false;
@@ -68,12 +65,13 @@ public class User {
     @Column(name = "gender")
     private Boolean gender;
 
+    @NotNull
     @ColumnDefault("CURRENT_DATE")
     @Column(name = "created", nullable = false)
     private LocalDate created;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @ColumnDefault("NULL::bpchar")
+    @ColumnDefault("NULL")
     @JoinColumn(name = "partner_id")
     private Partner partner;
 

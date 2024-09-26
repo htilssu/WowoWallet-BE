@@ -3,6 +3,7 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.data.dto.request.RefundRequest;
 import com.wowo.wowo.data.dto.response.RefundResponse;
 import com.wowo.wowo.data.mapper.TransactionMapperImpl;
+import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
@@ -54,19 +55,15 @@ public class RefundController {
         }
 
         switch (transaction.getStatus()) {
-            case "REFUNDED":
+            case PaymentStatus.REFUNDED:
                 return ResponseEntity.ok().body(
                         new RefundResponse(transactionMapperImpl.toResponse(transaction),
                                 "Giao dịch đã được hoàn tiền trước đó"));
-            case "PENDING":
+            case PaymentStatus.PENDING:
                 return ResponseEntity.ok().body(
                         new RefundResponse(transactionMapperImpl.toResponse(transaction),
                                 "Giao dịch đang chờ xử lý"));
-            case "FAILED":
-                return ResponseEntity.ok().body(
-                        new RefundResponse(transactionMapperImpl.toResponse(transaction),
-                                "Giao dịch đã thất bại"));
-            case "SUCCESS":
+            case SUCCESS:
                 transactionService.refund(transaction);
 
                 break;
@@ -77,7 +74,7 @@ public class RefundController {
         }
 
 
-        transaction.setStatus("REFUNDED");
+        transaction.setStatus(PaymentStatus.REFUNDED);
         transactionRepository.save(transaction);
 
         return ResponseEntity.ok(new RefundResponse(transactionMapperImpl.toResponse(transaction),

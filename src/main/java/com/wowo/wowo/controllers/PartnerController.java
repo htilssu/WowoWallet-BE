@@ -3,11 +3,11 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.data.dto.response.PartnerDto;
 import com.wowo.wowo.data.dto.response.PartnerRequest;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.data.mapper.PartnerMapperImpl;
+import com.wowo.wowo.data.mapper.PartnerMapper;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
+import com.wowo.wowo.services.JwtService;
 import com.wowo.wowo.util.ApiKeyUtil;
-import com.wowo.wowo.util.JwtUtil;
 import com.wowo.wowo.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +27,7 @@ public class PartnerController {
 
     private final PartnerRepository partnerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PartnerMapperImpl partnerMapperImpl;
+    private final PartnerMapper partnerMapperImpl;
 
     @PostMapping("/register")
     public ResponseEntity<?> createPartner(@RequestBody PartnerRequest newPartner) {
@@ -48,9 +48,10 @@ public class PartnerController {
 
         try {
             Partner savedEntity = partnerRepository.save(partnerEntity);
-            String token = JwtUtil.generateToken(partnerEntity);
+            String token = JwtService.generateToken(partnerEntity);
             return ResponseEntity.ok()
-                    .header("Set-Cookie", "token=" + token + "; Path=/; SameSite=None; Secure; Max-Age=9999999;")
+                    .header("Set-Cookie",
+                            "token=" + token + "; Path=/; SameSite=None; Secure; Max-Age=9999999;")
                     .body(ObjectUtil.mergeObjects(
                             ObjectUtil.wrapObject("partner", partnerMapperImpl.toDto(savedEntity)),
                             new ResponseMessage("Đăng ký thành công"),
@@ -62,7 +63,8 @@ public class PartnerController {
     }
 
     @GetMapping("/{service}")
-    public ResponseEntity<?> getPartner(Authentication authentication, @PathVariable String service) {
+    public ResponseEntity<?> getPartner(Authentication authentication,
+            @PathVariable String service) {
         Partner partner = (Partner) authentication.getPrincipal();
         return ResponseEntity.ok(partnerMapperImpl.toDto(partner));
     }

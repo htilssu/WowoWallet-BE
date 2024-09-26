@@ -1,6 +1,9 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -10,14 +13,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "wallet", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_wallet_owner", columnNames = {"owner_id", "owner_type"})
-})
+@Table(name = "wallet")
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_id_gen")
-    @SequenceGenerator(name = "wallet_id_gen", sequenceName = "wallet_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -40,12 +39,9 @@ public class Wallet {
     @NotNull
     @ColumnDefault("0")
     @Column(name = "balance", nullable = false)
-    private double balance;
+    private Double balance;
 
-    public void sendMoneyTo(Wallet receiverWallet, double money) {
-        if (balance >= money) {
-            balance -= money;
-            receiverWallet.balance += money;
-        }
+    public void sendMoneyTo(Wallet receiver, double amount) {
+
     }
 }
