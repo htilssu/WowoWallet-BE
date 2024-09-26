@@ -4,69 +4,47 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Setter
-@DynamicInsert
 @Entity
-@Table(name = "bank")
+@Table(name = "banks")
 public class Bank {
+
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", length = Integer.MAX_VALUE)
     private String name;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", length = Integer.MAX_VALUE)
     private String code;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "bin", nullable = false)
+    @Column(name = "bin", length = Integer.MAX_VALUE)
     private String bin;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "shortName", nullable = false)
+    @Column(name = "\"shortName\"", length = Integer.MAX_VALUE)
     private String shortName;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "logo", nullable = false)
+    @Column(name = "logo", length = Integer.MAX_VALUE)
     private String logo;
 
-    @NotNull
-    @Column(name = "transferSupported", nullable = false)
-    private Long transferSupported; //
+    @Column(name = "\"transferSupported\"")
+    private Long transferSupported;
 
-    @NotNull
-    @Column(name = "lookupSupported", nullable = false) //
-    private Long lookupSupported; //
+    @Column(name = "\"lookupSupported\"")
+    private Long lookupSupported;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "short_name", nullable = false)
-    private String short_name;
-
-    @NotNull
-    @Column(name = "support", nullable = false)
+    @Column(name = "support")
     private Long support;
 
-    @NotNull
-    @Column(name = "isTransfer", nullable = false)
+    @Column(name = "\"isTransfer\"")
     private Long isTransfer;
 
-    @Size(max = 255)
-    @Column(name = "swift_code") //
-    private String swift_code;
+    @Column(name = "swift_code", length = Integer.MAX_VALUE)
+    private String swiftCode;
+
 }

@@ -2,10 +2,8 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.response.ResponseMessage;
 import com.wowo.wowo.services.UserService;
-import com.wowo.wowo.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -1,6 +1,5 @@
 package com.wowo.wowo.data.dto.response;
 
-import com.wowo.wowo.models.WalletTransaction;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

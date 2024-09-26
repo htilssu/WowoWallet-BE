@@ -6,7 +6,7 @@ import java.net.*;
 public class RequestUtil {
 
     public static void sendRequest(String urlString, String method){
-        URL url = null;
+        URL url;
         try {
             url = new URI(urlString).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

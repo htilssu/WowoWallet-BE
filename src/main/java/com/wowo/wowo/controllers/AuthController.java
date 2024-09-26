@@ -3,7 +3,7 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.data.dto.request.AuthData;
 import com.wowo.wowo.data.dto.request.CreateUserDto;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.data.mapper.UserMapperImpl;
+import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.AuthService;
@@ -25,14 +25,14 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final UserMapperImpl userMapperImpl;
+    private final UserMapper userMapperImpl;
     private final AuthService authService;
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> login(@RequestBody AuthData authData) {
         if (authData.getUsername().isBlank() || authData.getPassword().isBlank()) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Vui lòng kiểm tra lại thông tin"));
+            return ResponseEntity.badRequest().body(
+                    new ResponseMessage("Vui lòng kiểm tra lại thông tin"));
         }
 
         return authService.login(authData);
@@ -46,8 +46,8 @@ public class AuthController {
         User userEntity = userMapperImpl.toEntity(user);
 
         if (!UserValidator.isValidateUser(userEntity)) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Vui lòng kiểm tra lại thông tin"));
+            return ResponseEntity.badRequest().body(
+                    new ResponseMessage("Vui lòng kiểm tra lại thông tin"));
         }
 
         User existingUser = userRepository.findByEmail(user.getEmail());
@@ -81,5 +81,11 @@ public class AuthController {
     @GetMapping("/logout")
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok("Đăng xuất thành công!");
+    }
+
+    @GetMapping
+    public ResponseEntity<Void> callback(@RequestParam String token) {
+        return ResponseEntity.ok().header("Set-Cookie", "Token=" + token + ";Max-Age=84600;Path=/")
+                .build();
     }
 }

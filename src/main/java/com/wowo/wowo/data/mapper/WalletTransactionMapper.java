@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.data.dto.response.WalletTransactionDto;
+import com.wowo.wowo.models.WalletTransaction;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
