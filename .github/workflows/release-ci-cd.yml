@@ -28,7 +28,9 @@ jobs:
           distribution: 'corretto'
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: | 
+          chmod +x gradlew
+          ./gradlew build
 
       - name: run test
         run: |
