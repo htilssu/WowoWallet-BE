@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,5 +45,11 @@ public class GroupFund {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToMany(mappedBy = "group")
+    private Set<FundMember> fundMembers = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "group")
+    private Set<GroupFundTransaction> groupFundTransactions = new LinkedHashSet<>();
 
 }
