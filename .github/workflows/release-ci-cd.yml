@@ -24,11 +24,13 @@ jobs:
         uses: actions/setup-java@v4.3.0
         with:
           cache: "gradle"
-          java-version: '21'
+          java-version: '22'
           distribution: 'corretto'
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: | 
+          chmod +x gradlew
+          ./gradlew build
 
       - name: run test
         run: |
@@ -45,11 +47,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 11
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           cache: "gradle"
-          java-version: '21'
+          java-version: '22'
           distribution: 'corretto'
 
       - name: Build with Gradle Wrapper
