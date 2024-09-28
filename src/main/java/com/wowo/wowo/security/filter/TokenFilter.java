@@ -26,12 +26,12 @@ public class TokenFilter implements Filter {
         var authorizationContent = setResponseHeader((HttpServletRequest) request,
                 (HttpServletResponse) response);
 
-        var cookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(
+       /* var cookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(
                 c -> c.getName().equals("Token")).findFirst().orElse(null);
-
-        if (cookie != null) {
+*/
+        /*if (cookie != null) {
             var token = cookie.getValue();
-        }
+        }*/
 
 
         if (authorizationContent == null || !authorizationContent.startsWith("Bearer ")) {

@@ -153,9 +153,9 @@ CREATE TABLE group_fund
 );
 
 DROP SEQUENCE IF EXISTS group_fund_id_seq;
+
 --lưu các thông tin thành viên trong quỹ nhóm đó
 DROP TABLE IF EXISTS fund_member CASCADE;
-
 CREATE TABLE fund_member
 (
     group_id  int REFERENCES group_fund (id),
