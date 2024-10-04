@@ -19,7 +19,7 @@ import java.time.temporal.ChronoUnit;
 public class ClaimOTPModel {
 
     private String otp;
-    @Getter(onMethod_ = @DynamoDbPartitionKey)
+    @Getter(onMethod_ = {@DynamoDbPartitionKey})
     private String userId;
     private String expiredAt = DateTimeUtil.convertToString(
             Instant.now().plus(1, ChronoUnit.HOURS));

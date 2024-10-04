@@ -36,13 +36,5 @@ public class GroupFundTransaction {
     @JoinColumn(name = "member_id")
     private User member;
 
-    @NotNull
-    @Column(name = "money", nullable = false)
-    private BigDecimal money;
-
-    @NotNull
-    @ColumnDefault("CURRENT_DATE")
-    @Column(name = "created", nullable = false)
-    private LocalDate created;
 
 }

@@ -2,7 +2,7 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.request.RefundRequest;
 import com.wowo.wowo.data.dto.response.RefundResponse;
-import com.wowo.wowo.data.mapper.TransactionMapperImpl;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.OrderRepository;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RefundController {
 
     private final TransactionRepository transactionRepository;
-    private final TransactionMapperImpl transactionMapperImpl;
+    private final TransactionMapper transactionMapperImpl;
     private final TransactionService transactionService;
     private final OrderRepository orderRepository;
 

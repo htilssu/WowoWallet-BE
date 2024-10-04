@@ -19,6 +19,8 @@ public class Transaction {
     @Id
     @Size(max = 15)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_id_seq")
+    @SequenceGenerator(name = "transaction_id_seq", sequenceName = "transaction_id_seq",
+                       allocationSize = 1)
     @Column(name = "id", nullable = false, length = 15)
     private String id;
 

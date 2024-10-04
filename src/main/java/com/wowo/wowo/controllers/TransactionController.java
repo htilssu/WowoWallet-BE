@@ -2,7 +2,6 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.response.TransactionResponse;
 import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.data.mapper.TransactionMapperImpl;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
@@ -22,7 +21,7 @@ public class TransactionController {
 
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
-    private final TransactionMapperImpl transactionMapperImpl;
+    private final TransactionMapper transactionMapperImpl;
     private final UserRepository userRepository;
     private final PartnerRepository partnerRepository;
 

@@ -1,5 +1,6 @@
 package com.wowo.wowo.models;
 
+import com.wowo.wowo.models.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
