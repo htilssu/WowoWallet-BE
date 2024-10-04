@@ -91,7 +91,7 @@ jobs:
         run: sudo docker rm -f ewallet || true
       - name: download env file
         run: |
-          echo "${{secrets.ENV}}" > "~/.env"
+          echo "${{secrets.ENV}}" > .env && mv .env ~/.env
 
       - name: Run container
         run: sudo docker run  --name ewallet -d -p 8080:8080 htilssu/ewallet-springboot:latest
