@@ -6,22 +6,21 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "userr")
+@Table(name = "user")
 public class User {
 
     @Id
     @Size(max = 10)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_id")
-    @SequenceGenerator(name = "user_seq_id", sequenceName = "user_seq_id", allocationSize = 1)
-    @Column(name = "id", nullable = false, length = 10)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
+    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_seq", allocationSize = 1)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @Size(max = 50)
     @NotNull
