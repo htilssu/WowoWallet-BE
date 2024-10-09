@@ -2,7 +2,7 @@ package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.response.WalletTransactionDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.data.mapper.WalletTransactionMapperImpl;
+import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
@@ -19,7 +19,7 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final WalletTransactionService walletTransactionService;
     private final WalletTransactionRepository walletTransactionRepository;
-    private final WalletTransactionMapperImpl walletTransactionMapperImpl;
+    private final WalletTransactionMapper walletTransactionMapperImpl;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)

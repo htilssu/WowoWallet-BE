@@ -1,3 +1,5 @@
+CREATE SEQUENCE IF NOT EXISTS payment_system_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE atm
 (
     id   INTEGER      NOT NULL,
@@ -73,6 +75,14 @@ CREATE TABLE group_fund
     CONSTRAINT pk_group_fund PRIMARY KEY (id)
 );
 
+CREATE TABLE group_fund_transaction
+(
+    transaction_id VARCHAR(15) NOT NULL,
+    group_id       INTEGER,
+    member_id      VARCHAR(10),
+    CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
+);
+
 CREATE TABLE "order"
 (
     id             VARCHAR(15)    NOT NULL,
@@ -112,6 +122,16 @@ CREATE TABLE payment_method
     CONSTRAINT pk_payment_method PRIMARY KEY (id)
 );
 
+CREATE TABLE payment_system
+(
+    id         INTEGER     NOT NULL,
+    name       VARCHAR(50) NOT NULL,
+    api_key    VARCHAR(255),
+    api_secret VARCHAR(255),
+    is_active  BOOLEAN DEFAULT TRUE,
+    CONSTRAINT pk_payment_system PRIMARY KEY (id)
+);
+
 CREATE TABLE role
 (
     id   INTEGER     NOT NULL,
@@ -142,7 +162,7 @@ CREATE TABLE transaction
     CONSTRAINT pk_transaction PRIMARY KEY (id)
 );
 
-CREATE TABLE "user"
+CREATE TABLE userr
 (
     id           VARCHAR(10)                  NOT NULL,
     first_name   VARCHAR(50)                  NOT NULL,
@@ -160,7 +180,7 @@ CREATE TABLE "user"
     address      VARCHAR(255),
     phone_number VARCHAR(10),
     job          VARCHAR(255),
-    CONSTRAINT pk_user PRIMARY KEY (id)
+    CONSTRAINT pk_userr PRIMARY KEY (id)
 );
 
 CREATE TABLE wallet
@@ -185,10 +205,10 @@ ALTER TABLE "order"
     ADD CONSTRAINT uc_order_transaction UNIQUE (transaction_id);
 
 ALTER TABLE atm_card
-    ADD CONSTRAINT FK_ATM_CARD_ON_OWNER FOREIGN KEY (owner_id) REFERENCES "user" (id);
+    ADD CONSTRAINT FK_ATM_CARD_ON_OWNER FOREIGN KEY (owner_id) REFERENCES userr (id);
 
 ALTER TABLE employee
-    ADD CONSTRAINT FK_EMPLOYEE_ON_ID FOREIGN KEY (id) REFERENCES "user" (id);
+    ADD CONSTRAINT FK_EMPLOYEE_ON_ID FOREIGN KEY (id) REFERENCES userr (id);
 
 ALTER TABLE employee
     ADD CONSTRAINT FK_EMPLOYEE_ON_ROLE FOREIGN KEY (role_id) REFERENCES role (id);
@@ -197,10 +217,19 @@ ALTER TABLE fund_member
     ADD CONSTRAINT FK_FUND_MEMBER_ON_GROUP FOREIGN KEY (group_id) REFERENCES group_fund (id);
 
 ALTER TABLE fund_member
-    ADD CONSTRAINT FK_FUND_MEMBER_ON_MEMBER FOREIGN KEY (member_id) REFERENCES "user" (id);
+    ADD CONSTRAINT FK_FUND_MEMBER_ON_MEMBER FOREIGN KEY (member_id) REFERENCES userr (id);
 
 ALTER TABLE group_fund
-    ADD CONSTRAINT FK_GROUP_FUND_ON_OWNER FOREIGN KEY (owner_id) REFERENCES "user" (id);
+    ADD CONSTRAINT FK_GROUP_FUND_ON_OWNER FOREIGN KEY (owner_id) REFERENCES userr (id);
+
+ALTER TABLE group_fund_transaction
+    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_GROUP FOREIGN KEY (group_id) REFERENCES group_fund (id);
+
+ALTER TABLE group_fund_transaction
+    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_MEMBER FOREIGN KEY (member_id) REFERENCES userr (id);
+
+ALTER TABLE group_fund_transaction
+    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES transaction (id);
 
 ALTER TABLE "order"
     ADD CONSTRAINT FK_ORDER_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
@@ -209,10 +238,10 @@ ALTER TABLE "order"
     ADD CONSTRAINT FK_ORDER_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES transaction (id);
 
 ALTER TABLE support_ticket
-    ADD CONSTRAINT FK_SUPPORT_TICKET_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES "user" (id);
+    ADD CONSTRAINT FK_SUPPORT_TICKET_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES userr (id);
 
-ALTER TABLE "user"
-    ADD CONSTRAINT FK_USER_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
+ALTER TABLE userr
+    ADD CONSTRAINT FK_USERR_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
 
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_ID FOREIGN KEY (id) REFERENCES transaction (id);
@@ -222,34 +251,3 @@ ALTER TABLE wallet_transaction
 
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_SENDER_WALLET FOREIGN KEY (sender_wallet) REFERENCES wallet (id);
-
-CREATE SEQUENCE IF NOT EXISTS public.payment_system_id_seq START WITH 1 INCREMENT BY 1;
-
-CREATE TABLE public.group_fund_transaction
-(
-    transaction_id VARCHAR(15)               NOT NULL,
-    group_id       INTEGER,
-    member_id      VARCHAR(10),
-    money          DECIMAL                   NOT NULL,
-    created        date DEFAULT CURRENT_DATE NOT NULL,
-    CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
-);
-
-CREATE TABLE public.payment_system
-(
-    id         INTEGER     NOT NULL,
-    name       VARCHAR(50) NOT NULL,
-    api_key    VARCHAR(255),
-    api_secret VARCHAR(255),
-    is_active  BOOLEAN DEFAULT TRUE,
-    CONSTRAINT pk_payment_system PRIMARY KEY (id)
-);
-
-ALTER TABLE public.group_fund_transaction
-    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_GROUP FOREIGN KEY (group_id) REFERENCES group_fund (id);
-
-ALTER TABLE public.group_fund_transaction
-    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_MEMBER FOREIGN KEY (member_id) REFERENCES "user" (id);
-
-ALTER TABLE public.group_fund_transaction
-    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES transaction (id);

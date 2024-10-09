@@ -2,7 +2,7 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.response.AtmCardDto;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.data.mapper.AtmCardMapperImpl;
+import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.models.AtmCard;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.AtmCardRepository;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
 public class CardController {
 
-    private final AtmCardMapperImpl atmCardMapperImpl;
+    private final AtmCardMapper atmCardMapperImpl;
     private final AtmCardRepository atmCardRepository;
     private final UserRepository userRepository;
     private final AtmRepository atmRepository;

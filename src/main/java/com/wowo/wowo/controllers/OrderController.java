@@ -1,8 +1,8 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.request.CreateOrderDto;
-import com.wowo.wowo.data.mapper.OrderMapperImpl;
-import com.wowo.wowo.data.mapper.TransactionMapperImpl;
+import com.wowo.wowo.data.mapper.OrderMapper;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.Order;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.OrderRepository;
@@ -22,10 +22,10 @@ import java.util.Optional;
 @RequestMapping(value = "v1/order", produces = "application/json; charset=UTF-8")
 public class OrderController {
 
-    private final OrderMapperImpl orderMapper;
+    private final OrderMapper orderMapper;
     private final HttpServletRequest httpServletRequest;
     private final PaymentService paymentService;
-    private final TransactionMapperImpl transactionMapperImpl;
+    private final TransactionMapper transactionMapperImpl;
     private final OrderRepository orderRepository;
 
     @GetMapping("/{id}")

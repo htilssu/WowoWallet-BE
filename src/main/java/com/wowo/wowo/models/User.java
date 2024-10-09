@@ -6,17 +6,20 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "userr")
 public class User {
 
     @Id
     @Size(max = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_id")
+    @SequenceGenerator(name = "user_seq_id", sequenceName = "user_seq_id", allocationSize = 1)
     @Column(name = "id", nullable = false, length = 10)
     private String id;
 
@@ -71,7 +74,6 @@ public class User {
     private LocalDate created;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @ColumnDefault("NULL")
     @JoinColumn(name = "partner_id")
     private Partner partner;
 
