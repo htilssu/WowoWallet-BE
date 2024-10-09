@@ -50,7 +50,7 @@ CREATE TABLE constant
 
 CREATE TABLE employee
 (
-    id      VARCHAR(10)    NOT NULL,
+    id      BIGINT         NOT NULL,
     salary  DECIMAL(10, 2) NOT NULL,
     ssn     VARCHAR(15)    NOT NULL,
     role_id INTEGER,
@@ -61,7 +61,7 @@ CREATE TABLE fund_member
 (
     money     DECIMAL DEFAULT 0 NOT NULL,
     group_id  INTEGER           NOT NULL,
-    member_id VARCHAR(10)       NOT NULL,
+    member_id BIGINT            NOT NULL,
     CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
 );
 

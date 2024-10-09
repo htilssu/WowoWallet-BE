@@ -24,7 +24,7 @@ public class FundMemberId implements Serializable {
     @Size(max = 10)
     @NotNull
     @Column(name = "member_id", nullable = false, length = 10)
-    private String memberId;
+    private Long memberId;
 
     @Override
     public boolean equals(Object o) {
