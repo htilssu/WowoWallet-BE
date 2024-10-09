@@ -29,7 +29,7 @@ public class JwtService {
     public static String generateToken(User user) {
         //convert user to json
         return JWT.create()
-                .withSubject(user.getId())
+                .withSubject(String.valueOf(user.getId()))
                 .withPayload(ObjectUtil.parseJson(user))
                 .withExpiresAt(Date.from(Instant.now()
                         .plus(expire, ChronoUnit.MINUTES)))
@@ -58,7 +58,7 @@ public class JwtService {
     public static String generateToken(User user, int expire) {
         //convert user to json
         return JWT.create()
-                .withSubject(user.getId())
+                .withSubject(String.valueOf(user.getId()))
                 .withPayload(ObjectUtil.parseJson(user))
                 .withExpiresAt(Date.from(Instant.now()
                         .plus(expire, ChronoUnit.MINUTES)))

@@ -1,17 +1,13 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.constants.Constant;
-import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.dto.request.TransactionRequest;
 import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.*;
+import com.wowo.wowo.repositories.*;
 import com.wowo.wowo.services.EquityService;
-import com.wowo.wowo.repositories.ConstantRepository;
-import com.wowo.wowo.repositories.TransactionRepository;
-import com.wowo.wowo.repositories.WalletTransactionRepository;
 import com.wowo.wowo.services.TransactionService;
-import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -84,8 +80,8 @@ public class TransferController {
                             + minimumTransferConstant.getValue()));
         }
 
-        if (data.getMoney() > maximumTransferConstant.getValue()){
-            return  ResponseEntity.badRequest()
+        if (data.getMoney() > maximumTransferConstant.getValue()) {
+            return ResponseEntity.badRequest()
                     .body(new ResponseMessage("Số tiền chuyển phải nhỏ hơn "
                             + minimumTransferConstant.getValue()));
         }
@@ -115,7 +111,7 @@ public class TransferController {
         }
 
         Optional<Wallet> optionalReceiverWallet = walletRepository.findByOwnerIdAndOwnerType(
-                receiver.getId(), "user");
+                String.valueOf(receiver.getId()), "user");
 
         if (optionalReceiverWallet.isEmpty()) {
             return ResponseEntity.ok()
