@@ -17,9 +17,8 @@ import java.time.Instant;
 public class Order {
 
     @Id
-    @Size(max = 15)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_seq")
-    @Column(name = "id", nullable = false, length = 15)
+    @Size(max = 50)
+    @Column(name = "id", nullable = false, length = 50)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,8 +26,8 @@ public class Order {
     private Partner partner;
 
     @NotNull
-    @Column(name = "money", nullable = false, precision = 10, scale = 2)
-    private BigDecimal money;
+    @Column(name = "money", nullable = false)
+    private Long money;
 
     @Size(max = 50)
     @NotNull
@@ -60,5 +59,4 @@ public class Order {
     @Size(max = 100)
     @Column(name = "service_name", length = 100)
     private String serviceName;
-
 }

@@ -11,6 +11,7 @@ import com.wowo.wowo.services.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,35 +36,23 @@ public class TransferController {
     TransactionMapper transactionMapper;
 
     @PostMapping
-    public ResponseEntity<?> transfer(@RequestBody TransactionRequest data,
+    public ResponseEntity<?> transfer(@Validated @RequestBody TransactionRequest data,
             Authentication authentication) {
-        if (data.getMoney() <= 0) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Số tiền phải lớn hơn 0"));
-        }
-
-        if (data.getSendTo().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Người nhận không được để trống"));
-        }
 
         String senderId = authentication.getName();
         return handleTransfer(senderId, data);
     }
 
     private ResponseEntity<?> handleTransfer(String senderId, TransactionRequest data) {
-        switch (data.getTransactionTarget()) {
-            case "wallet":
-                return transferToWallet(senderId, data);
-            case "fund":
-                return ResponseEntity.ok()
-                        .body(new ResponseMessage(
-                                "Chức năng chuyển tiền vào quỹ chưa được hỗ trợ"));
+        return switch (data.getTransactionTarget()) {
+            case "wallet" -> transferToWallet(senderId, data);
+            case "fund" -> ResponseEntity.ok()
+                    .body(new ResponseMessage(
+                            "Chức năng chuyển tiền vào quỹ chưa được hỗ trợ"));
             //                return transferToEmail(senderId, data);
-            default:
-                return ResponseEntity.badRequest()
-                        .body(new ResponseMessage("Loại ví không hợp lệ"));
-        }
+            default -> ResponseEntity.badRequest()
+                    .body(new ResponseMessage("Loại ví không hợp lệ"));
+        };
     }
 
     private ResponseEntity<?> transferToWallet(String senderId, TransactionRequest data) {

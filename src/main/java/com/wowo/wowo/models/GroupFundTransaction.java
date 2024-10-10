@@ -17,11 +17,8 @@ import java.time.LocalDate;
 public class GroupFundTransaction {
 
     @Id
-    @Size(max = 15)
-    @SequenceGenerator(name = "group_fund_transaction_id_gen",
-                       sequenceName = "payment_system_id_seq", allocationSize = 1)
-    @Column(name = "transaction_id", nullable = false, length = 15)
-    private String transactionId;
+    @Column(name = "transaction_id", nullable = false)
+    private Long transaction_id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)

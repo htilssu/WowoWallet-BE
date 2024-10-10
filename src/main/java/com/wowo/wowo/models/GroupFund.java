@@ -1,11 +1,11 @@
 package com.wowo.wowo.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -18,15 +18,18 @@ import java.util.Set;
 public class GroupFund {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_fund_id_seq")
+    @SequenceGenerator(name = "group_fund_id_seq", sequenceName = "group_fund_id_seq",
+                       allocationSize = 1)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Size(max = 500)
+    @Size(max = 256)
     @Column(name = "image")
     private String image;
 
@@ -35,12 +38,13 @@ public class GroupFund {
     private String description;
 
     @NotNull
-    @Column(name = "balance", nullable = false, precision = 10, scale = 2)
-    private BigDecimal balance;
+    @Min(0)
+    @Column(name = "balance", nullable = false, precision = 10)
+    private Long balance;
 
     @NotNull
-    @Column(name = "target", nullable = false, precision = 10, scale = 2)
-    private BigDecimal target;
+    @Column(name = "target", nullable = false, precision = 10)
+    private Long target;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
