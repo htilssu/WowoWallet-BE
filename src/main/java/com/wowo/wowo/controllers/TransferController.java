@@ -8,6 +8,7 @@ import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.*;
 import com.wowo.wowo.services.EquityService;
 import com.wowo.wowo.services.TransactionService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
