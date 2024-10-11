@@ -52,7 +52,7 @@ CREATE TABLE constant
 
 CREATE TABLE employee
 (
-    id      BIGINT         NOT NULL,
+    id      VARCHAR(255)   NOT NULL,
     salary  DECIMAL(10, 2) NOT NULL,
     ssn     VARCHAR(15)    NOT NULL,
     role_id INTEGER,
@@ -63,7 +63,7 @@ CREATE TABLE fund_member
 (
     money     DECIMAL DEFAULT 0 NOT NULL,
     group_id  INTEGER           NOT NULL,
-    member_id BIGINT            NOT NULL,
+    member_id VARCHAR(10)       NOT NULL,
     CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE group_fund
 
 CREATE TABLE group_fund_transaction
 (
-    transaction_id BIGINT NOT NULL,
+    transaction_id VARCHAR(255) NOT NULL,
     group_id       BIGINT,
     member_id      VARCHAR(255),
     CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
@@ -89,10 +89,10 @@ CREATE TABLE group_fund_transaction
 
 CREATE TABLE "order"
 (
-    id             VARCHAR(50)                               NOT NULL,
+    id             VARCHAR(50) NOT NULL,
     partner_id     VARCHAR(32),
-    money          BIGINT                                    NOT NULL,
-    status         SMALLINT                                  NOT NULL,
+    money          BIGINT      NOT NULL,
+    status         SMALLINT    NOT NULL,
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
@@ -147,11 +147,11 @@ CREATE TABLE support_ticket
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(40)                 NOT NULL,
-    money       BIGINT                      NOT NULL,
-    status      SMALLINT                    NOT NULL,
-    type        SMALLINT                    NOT NULL,
-    variant     SMALLINT                    NOT NULL,
+    id          VARCHAR(40) NOT NULL,
+    money       BIGINT      NOT NULL,
+    status      SMALLINT    NOT NULL,
+    type        SMALLINT    NOT NULL,
+    variant     SMALLINT    NOT NULL,
     description VARCHAR(300),
     created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,

@@ -19,7 +19,6 @@ import java.time.Instant;
 public class Transaction {
 
     @Id
-    @Size(max = 40)
     @Column(name = "id", nullable = false, length = 40)
     private String id;
 

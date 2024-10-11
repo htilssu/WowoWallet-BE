@@ -6,8 +6,8 @@ import com.wowo.wowo.models.Order;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.models.Wallet;
-import com.wowo.wowo.util.RequestUtil;
 import com.wowo.wowo.repositories.WalletRepository;
+import com.wowo.wowo.util.RequestUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class PaymentService {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
 
-        sender.sendMoneyTo(receiver, amount);
+        sender.sendMoney(receiver, amount);
         walletRepository.saveAll(List.of(sender, receiver));
     }
 }

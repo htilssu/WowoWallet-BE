@@ -23,11 +23,4 @@ public interface PartnerMapper {
             PartnerDto partnerDto,
             @MappingTarget Partner partner);
 
-    @AfterMapping
-    default void create(@MappingTarget PartnerDto partnerDto, Partner partner) {
-        if (partner.getCreated() != null) {
-            partnerDto.setCreated(DateTimeFormatter.ISO_DATE_TIME.format(partner.getCreated().atStartOfDay()));
-        }
-
-    }
 }

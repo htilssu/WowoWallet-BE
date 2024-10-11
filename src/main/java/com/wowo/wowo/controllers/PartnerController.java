@@ -36,14 +36,10 @@ public class PartnerController {
                     .body(new ResponseMessage("Vui lòng kiểm tra lại thông tin"));
         }
 
-        if (partnerRepository.existsByEmail(newPartner.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Email đã tồn tại"));
-        }
+
 
         final Partner partnerEntity = partnerMapperImpl.toEntity(newPartner);
 
-        partnerEntity.setPassword(bCryptPasswordEncoder.encode(partnerEntity.getPassword()));
         partnerEntity.setApiKey(ApiKeyUtil.generateApiKey());
 
         try {

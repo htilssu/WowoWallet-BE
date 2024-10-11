@@ -35,30 +35,9 @@ public class OTPController {
                     .body(new ResponseMessage("Data is invalid"));
         }
 
-        switch (otpSend.getOtpType()) {
-            case "email":
-                Optional<User> user = userRepository.findById((String) authentication.getPrincipal());
 
-                if (user.isPresent()) {
-                    otpSend.setSendTo(user.get().getEmail());
-                    otpManager.send(emailService, otpSend, authentication);
-                    return ResponseEntity.ok(ObjectUtil.mergeObjects(
-                            new ResponseMessage("OTP đã được gửi đến email của bạn!"),
-                            ObjectUtil.wrapObject("email", user.get().getEmail()),
-                            ObjectUtil.wrapObject("expire", OTPUtil.getExpiryTime())));
-                } else {
-                    return ResponseEntity.badRequest()
-                            .body(new ResponseMessage("Không tìm thấy người dùng"));
-                }
-
-//            case "phone":
-//                otpManager.send(smsService, otpSend, authentication);
-//                return ResponseEntity.ok(new ResponseMessage("OTP đã được gửi đến số điện thoại của bạn!"));
-
-            default:
-                return ResponseEntity.badRequest()
-                        .body(new ResponseMessage("OTP type is invalid"));
-        }
+//        TODO: implement send otp
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/verify")
