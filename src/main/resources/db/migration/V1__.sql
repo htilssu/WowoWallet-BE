@@ -1,6 +1,8 @@
+CREATE SEQUENCE IF NOT EXISTS group_fund_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE SEQUENCE IF NOT EXISTS payment_system_id_seq START WITH 1 INCREMENT BY 1;
 
-CREATE SEQUENCE IF NOT EXISTS user_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS role_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE atm
 (
@@ -17,7 +19,7 @@ CREATE TABLE atm_card
     card_number VARCHAR(16)               NOT NULL,
     ccv         VARCHAR(3),
     holder_name VARCHAR(255)              NOT NULL,
-    owner_id    BIGINT,
+    owner_id    VARCHAR(255),
     expired     VARCHAR(255)              NOT NULL,
     created     date DEFAULT CURRENT_DATE NOT NULL,
     CONSTRAINT pk_atm_card PRIMARY KEY (id)
@@ -67,31 +69,31 @@ CREATE TABLE fund_member
 
 CREATE TABLE group_fund
 (
-    id          INTEGER        NOT NULL,
-    name        VARCHAR(255)   NOT NULL,
-    image       VARCHAR(500),
+    id          BIGINT       NOT NULL,
+    name        VARCHAR(255) NOT NULL,
+    image       VARCHAR(256),
     description VARCHAR(255),
-    balance     DECIMAL(10, 2) NOT NULL,
-    target      DECIMAL(10, 2) NOT NULL,
-    owner_id    BIGINT,
+    balance     BIGINT       NOT NULL,
+    target      BIGINT       NOT NULL,
+    owner_id    VARCHAR(255),
     CONSTRAINT pk_group_fund PRIMARY KEY (id)
 );
 
 CREATE TABLE group_fund_transaction
 (
-    transaction_id VARCHAR(15) NOT NULL,
-    group_id       INTEGER,
-    member_id      BIGINT,
+    transaction_id BIGINT NOT NULL,
+    group_id       BIGINT,
+    member_id      VARCHAR(255),
     CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
 );
 
 CREATE TABLE "order"
 (
-    id             VARCHAR(15)    NOT NULL,
-    partner_id     VARCHAR(10),
-    money          DECIMAL(10, 2) NOT NULL,
-    status         SMALLINT       NOT NULL,
-    transaction_id VARCHAR(15),
+    id             VARCHAR(50)                               NOT NULL,
+    partner_id     VARCHAR(32),
+    money          BIGINT                                    NOT NULL,
+    status         SMALLINT                                  NOT NULL,
+    transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
     created        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
@@ -102,17 +104,9 @@ CREATE TABLE "order"
 
 CREATE TABLE partner
 (
-    id           VARCHAR(10)      NOT NULL,
-    name         VARCHAR(255)     NOT NULL,
-    description  TEXT,
-    email        VARCHAR(255)     NOT NULL,
-    partner_type VARCHAR(100)     NOT NULL,
-    avatar       VARCHAR(255),
-    password     VARCHAR(255)     NOT NULL,
-    api_base_url VARCHAR(255)     NOT NULL,
-    api_key      VARCHAR(255)     NOT NULL,
-    balance      DOUBLE PRECISION NOT NULL,
-    created      date DEFAULT CURRENT_DATE,
+    id          VARCHAR(32)  NOT NULL,
+    description TEXT,
+    api_key     VARCHAR(255) NOT NULL,
     CONSTRAINT pk_partner PRIMARY KEY (id)
 );
 
@@ -144,44 +138,32 @@ CREATE TABLE role
 CREATE TABLE support_ticket
 (
     id          VARCHAR(15)  NOT NULL,
-    customer_id BIGINT,
+    customer_id VARCHAR(255),
     title       VARCHAR(255) NOT NULL,
     content     TEXT         NOT NULL,
-    status      VARCHAR(50)  NOT NULL,
+    status      SMALLINT     NOT NULL,
     CONSTRAINT pk_support_ticket PRIMARY KEY (id)
 );
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(15)    NOT NULL,
-    money       DECIMAL(10, 2) NOT NULL,
-    status      SMALLINT       NOT NULL,
-    type        SMALLINT       NOT NULL,
-    variant     SMALLINT       NOT NULL,
+    id          VARCHAR(40)                 NOT NULL,
+    money       BIGINT                      NOT NULL,
+    status      SMALLINT                    NOT NULL,
+    type        SMALLINT                    NOT NULL,
+    variant     SMALLINT                    NOT NULL,
     description VARCHAR(300),
-    created     TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    updated     TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT pk_transaction PRIMARY KEY (id)
 );
 
 CREATE TABLE "user"
 (
-    id           BIGINT                       NOT NULL,
-    first_name   VARCHAR(50)                  NOT NULL,
-    last_name    VARCHAR(50)                  NOT NULL,
-    email        VARCHAR(255)                 NOT NULL,
-    user_name    VARCHAR(50),
-    avatar       VARCHAR(255),
-    password     VARCHAR(255)                 NOT NULL,
-    dob          date                         NOT NULL,
-    is_active    BOOLEAN DEFAULT TRUE         NOT NULL,
-    is_verified  BOOLEAN DEFAULT FALSE        NOT NULL,
-    gender       BOOLEAN,
-    created      date    DEFAULT CURRENT_DATE NOT NULL,
-    partner_id   VARCHAR(10),
-    address      VARCHAR(255),
-    phone_number VARCHAR(10),
-    job          VARCHAR(255),
+    id          VARCHAR(255)          NOT NULL,
+    is_active   BOOLEAN DEFAULT TRUE  NOT NULL,
+    is_verified BOOLEAN DEFAULT FALSE NOT NULL,
+    job         VARCHAR(255),
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
 
@@ -241,9 +223,6 @@ ALTER TABLE "order"
 
 ALTER TABLE support_ticket
     ADD CONSTRAINT FK_SUPPORT_TICKET_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES "user" (id);
-
-ALTER TABLE "user"
-    ADD CONSTRAINT FK_USER_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
 
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_ID FOREIGN KEY (id) REFERENCES transaction (id);

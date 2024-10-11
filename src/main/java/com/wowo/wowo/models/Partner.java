@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 
@@ -19,53 +20,15 @@ import java.time.LocalDate;
 public class Partner {
 
     @Id
-    @Size(max = 10)
-    @Column(name = "id", nullable = false, length = 10)
+    @Size(max = 32)
+    @Column(name = "id", nullable = false, length = 32)
     private String id;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
 
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
 
     @Size(max = 255)
     @NotNull
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "partner_type", nullable = false, length = 100)
-    private String partnerType;
-
-    @Size(max = 255)
-    @Column(name = "avatar")
-    private String avatar;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "api_base_url", nullable = false)
-    private String apiBaseUrl;
-
-    @Size(max = 255)
-    @NotNull
     @Column(name = "api_key", nullable = false)
     private String apiKey;
-
-    @NotNull
-    @Column(name = "balance", nullable = false)
-    private Double balance;
-
-    @ColumnDefault("CURRENT_DATE")
-    @Column(name = "created")
-    private LocalDate created;
-
 }

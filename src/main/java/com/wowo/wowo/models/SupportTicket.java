@@ -1,6 +1,5 @@
 package com.wowo.wowo.models;
 
-import com.wowo.wowo.models.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,6 +14,9 @@ public class SupportTicket {
 
     @Id
     @Size(max = 15)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "support_ticket_id_seq")
+    @SequenceGenerator(name = "support_ticket_id_seq", sequenceName = "support_ticket_id_seq",
+                       allocationSize = 1)
     @Column(name = "id", nullable = false, length = 15)
     private String id;
 
@@ -31,9 +33,7 @@ public class SupportTicket {
     @Column(name = "content", nullable = false, length = Integer.MAX_VALUE)
     private String content;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
-
+    @Column(name = "status", nullable = false)
+    private SupportTicketStatus status = SupportTicketStatus.OPEN;
 }

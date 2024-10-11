@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -17,16 +19,13 @@ import java.time.Instant;
 public class Transaction {
 
     @Id
-    @Size(max = 15)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_id_seq")
-    @SequenceGenerator(name = "transaction_id_seq", sequenceName = "transaction_id_seq",
-                       allocationSize = 1)
-    @Column(name = "id", nullable = false, length = 15)
+    @Size(max = 40)
+    @Column(name = "id", nullable = false, length = 40)
     private String id;
 
     @NotNull
-    @Column(name = "money", nullable = false, precision = 10, scale = 2)
-    private BigDecimal money;
+    @Column(name = "money", nullable = false)
+    private Long money;
 
     @Size(max = 50)
     @NotNull
@@ -41,16 +40,16 @@ public class Transaction {
     private TransactionVariant variant = TransactionVariant.WALLET;
 
     @Column(name = "description", length = 300)
-    private String Description;
+    private String description;
 
     @NotNull
-    @ColumnDefault("now()")
+    @CreatedDate
     @Column(name = "created", nullable = false)
     private Instant created;
 
     @NotNull
-    @ColumnDefault("now()")
     @Column(name = "updated", nullable = false)
+    @LastModifiedDate
     private Instant updated;
 
 }

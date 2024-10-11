@@ -3,8 +3,8 @@ package com.wowo.wowo.security.filter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.services.JwtService;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -23,52 +23,45 @@ public class TokenFilter implements Filter {
                                                                                               IOException {
 
 
-        var authorizationContent = setResponseHeader((HttpServletRequest) request,
-                (HttpServletResponse) response);
+        var authorization = ((HttpServletRequest) request).getHeader("Authorization");
+        final Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
-       /* var cookie = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(
-                c -> c.getName().equals("Token")).findFirst().orElse(null);
-*/
-        /*if (cookie != null) {
-            var token = cookie.getValue();
-        }*/
-
-
-        if (authorizationContent == null || !authorizationContent.startsWith("Bearer ")) {
+        if (cookies == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        var token = authorizationContent.split(" ")[1];
+        var cookie = Arrays.stream(cookies).filter(
+                c -> c.getName().equals("Token")).findFirst().orElse(null);
 
-        if (token != null && !token.isEmpty()) {
-            final DecodedJWT decodedJWT = JwtService.verifyToken(token);
-            if (decodedJWT == null) {
-
-                chain.doFilter(request, response);
-
-                return;
-            }
-
-            SecurityContextHolderStrategy contextHolder =
-                    SecurityContextHolder.getContextHolderStrategy();
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-
-            var authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), token,
-                            authorities);
-
-            authenticationToken.setDetails(decodedJWT.getSubject());
-
-            context.setAuthentication(authenticationToken);
-            contextHolder.setContext(context);
+        if (cookie == null) {
+            chain.doFilter(request, response);
+            return;
         }
 
-        chain.doFilter(request, response);
-    }
 
-    private String setResponseHeader(HttpServletRequest request, HttpServletResponse response) {
-        return request.getHeader("Authorization");
+        final DecodedJWT decodedJWT = JwtService.verifyToken(cookie.getValue());
+        if (decodedJWT == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        final String role = decodedJWT.getClaim("role").as(String.class);
+
+        SecurityContextHolderStrategy contextHolder =
+                SecurityContextHolder.getContextHolderStrategy();
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        var authorities = Collections.singleton(
+                new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), cookie.getValue(),
+                        authorities);
+
+        authenticationToken.setDetails(decodedJWT.getSubject());
+
+        context.setAuthentication(authenticationToken);
+        contextHolder.setContext(context);
+        chain.doFilter(request, response);
     }
 }
