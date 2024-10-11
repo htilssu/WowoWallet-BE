@@ -8,7 +8,6 @@ import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.*;
 import com.wowo.wowo.services.EquityService;
 import com.wowo.wowo.services.TransactionService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -93,58 +92,11 @@ public class TransferController {
                     .body(new ResponseMessage("Số dư không đủ"));
         }
 
-        User receiver = userRepository.findByEmail(data.getSendTo());
-
-        if (receiver == null) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Không tìm thấy người nhận"));
-        }
-
-        Optional<Wallet> optionalReceiverWallet = walletRepository.findByOwnerIdAndOwnerType(
-                String.valueOf(receiver.getId()), "user");
-
-        if (optionalReceiverWallet.isEmpty()) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Không tìm thấy ví của người nhận"));
-        }
-
-        Wallet receiverWallet = optionalReceiverWallet.get();
-
-        if (Objects.equals(senderWallet.getId(), receiverWallet.getId())) {
-            return ResponseEntity.badRequest().body(
-                    new ResponseMessage("Không thể chuyển tiền cho chính mình"));
-        }
-
-        senderWallet.sendMoneyTo(receiverWallet, data.getMoney());
-        Transaction transaction = transactionMapper.toEntity(data);
-        transactionRepository.save(transaction);
-
-        WalletTransaction walletTransaction = WalletTransaction.builder()
-                .senderWallet(senderWallet)
-                .receiverWallet(receiverWallet)
-                .build();
 
 
-        walletTransaction.setTransaction(transaction);
-        walletTransactionRepository.save(walletTransaction);
-
-        walletRepository.saveAll(List.of(senderWallet, receiverWallet));
 
 
-        final Optional<WalletTransaction> walletTransactionOptional =
-                walletTransactionRepository.findById(
-                        walletTransaction.getId());
 
-
-        if (walletTransactionOptional.isEmpty()) {
-            transaction.setStatus(PaymentStatus.PENDING);
-            transactionRepository.save(transaction);
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Chuyển tiền thất bại"));
-        }
-
-        equityService.updateEquity(transaction);
-
-        return ResponseEntity.ok(walletTransactionOptional.get());
+        return ResponseEntity.ok().build();
     }
 }

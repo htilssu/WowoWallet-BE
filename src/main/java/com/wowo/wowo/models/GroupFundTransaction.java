@@ -1,14 +1,8 @@
 package com.wowo.wowo.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,7 +12,7 @@ public class GroupFundTransaction {
 
     @Id
     @Column(name = "transaction_id", nullable = false)
-    private Long transaction_id;
+    private String transaction_id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)

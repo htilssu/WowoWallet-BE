@@ -1,5 +1,7 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.data.vms.TransferVm;
+import com.wowo.wowo.services.TransferService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v2/transfer")
 public class TransferControllerV2 {
 
+    private final TransferService transferService;
+
+    public TransferControllerV2(TransferService transferService) {
+        this.transferService = transferService;
+    }
+
     @PostMapping
-    public ResponseEntity<?> transfer(@Validated @RequestBody TransferDto data) {
+    public ResponseEntity<?> transfer(@Validated @RequestBody TransferVm data) {
 
-
+        transferService.transfer(data);
         return ResponseEntity.ok().build();
     }
 
-    @Getter
-    @Setter
-    public static class TransferDto {
 
-        private String senderId;
-        private String receiverId;
-        private Long money;
-        private String description;
-    }
 }

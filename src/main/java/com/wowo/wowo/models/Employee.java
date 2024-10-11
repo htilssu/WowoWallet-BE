@@ -15,9 +15,8 @@ import java.math.BigDecimal;
 public class Employee {
 
     @Id
-    @Size(max = 10)
-    @Column(name = "id", nullable = false, length = 10)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private String id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)

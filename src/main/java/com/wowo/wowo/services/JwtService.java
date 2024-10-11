@@ -75,7 +75,6 @@ public class JwtService {
     }
 
     public static String generateToken(Partner newPartner) {
-        newPartner.setPassword(null);
 
         return JWT.create()
                 .withSubject(newPartner.getId())

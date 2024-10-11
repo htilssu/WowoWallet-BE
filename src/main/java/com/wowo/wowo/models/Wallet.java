@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter
@@ -41,7 +42,9 @@ public class Wallet {
     @Column(name = "balance", nullable = false)
     private Double balance;
 
-    public void sendMoneyTo(Wallet receiver, double amount) {
-
+    @Transactional
+    public void sendMoney(Wallet receiveWallet, double amount) {
+        receiveWallet.balance += amount;
+        this.balance -= amount;
     }
 }
