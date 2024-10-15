@@ -39,7 +39,6 @@ public class TokenFilter implements Filter {
             return;
         }
 
-
         final DecodedJWT decodedJWT = JwtService.verifyToken(cookie.getValue());
         if (decodedJWT == null) {
             chain.doFilter(request, response);

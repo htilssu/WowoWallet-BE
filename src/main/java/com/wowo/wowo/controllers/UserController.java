@@ -10,6 +10,8 @@ import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/v1/user", produces = "application/json; charset=UTF-8")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -54,7 +57,6 @@ public class UserController {
                 return userMapperImpl.toDto(byId.get());
             }
         }
-
         return null;
     }
 

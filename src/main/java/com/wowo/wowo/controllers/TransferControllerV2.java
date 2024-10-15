@@ -2,8 +2,6 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.vms.TransferVm;
 import com.wowo.wowo.services.TransferService;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +21,7 @@ public class TransferControllerV2 {
 
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransferVm data) {
-
-        transferService.transfer(data);
-        return ResponseEntity.ok().build();
+        return transferService.transfer(data);
     }
-
 
 }

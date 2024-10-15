@@ -21,8 +21,8 @@ import java.util.Date;
 public class JwtService {
 
     private static final int expire = 60 * 24;
-    private static Algorithm algorithm = Algorithm.RSA256(RSAUtil.getPublicKeyFromString());
-    private static JWTVerifier verifier = JWT.require(algorithm)
+    private static final Algorithm algorithm = Algorithm.RSA256(RSAUtil.getPublicKeyFromString());
+    private static final JWTVerifier verifier = JWT.require(algorithm)
             .build();
     private static String secret;
 
@@ -83,12 +83,4 @@ public class JwtService {
                         .plus(expire, ChronoUnit.MINUTES)))
                 .sign(algorithm);
     }
-
-    @PostConstruct
-    public void init() {
-        algorithm = Algorithm.none();
-        verifier = JWT.require(algorithm)
-                .build();
-    }
-
 }
