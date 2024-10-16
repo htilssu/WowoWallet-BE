@@ -7,6 +7,7 @@ import com.wowo.wowo.models.Order;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.services.PaymentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "v1/order", produces = "application/json; charset=UTF-8")
+@Tag(name = "Order", description = "Đơn hàng")
 public class OrderController {
 
     private final OrderMapper orderMapper;

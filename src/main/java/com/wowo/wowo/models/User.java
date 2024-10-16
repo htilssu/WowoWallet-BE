@@ -1,6 +1,9 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -35,6 +38,10 @@ public class User {
     @ColumnDefault("false")
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified = false;
+
+    @ColumnDefault("0")
+    @Column(name = "total_money", nullable = false)
+    private Long totalMoney;
 
     @Size(max = 255)
     @Column(name = "job")

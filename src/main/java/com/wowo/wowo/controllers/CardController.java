@@ -9,6 +9,7 @@ import com.wowo.wowo.repositories.AtmCardRepository;
 import com.wowo.wowo.repositories.AtmRepository;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.util.ObjectUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
+@Tag(name = "Card", description = "Thẻ ngân hàng")
 public class CardController {
 
     private final AtmCardMapper atmCardMapperImpl;

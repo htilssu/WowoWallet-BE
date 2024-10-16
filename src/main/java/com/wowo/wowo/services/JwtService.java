@@ -8,7 +8,6 @@ import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.util.ObjectUtil;
 import com.wowo.wowo.util.RSAUtil;
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 

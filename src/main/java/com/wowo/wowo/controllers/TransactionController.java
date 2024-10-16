@@ -6,6 +6,7 @@ import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "v1/transaction", produces = "application/json; charset=UTF-8")
+@Tag(name = "Transaction", description = "Giao dịch")
 public class TransactionController {
 
     private final TransactionRepository transactionRepository;

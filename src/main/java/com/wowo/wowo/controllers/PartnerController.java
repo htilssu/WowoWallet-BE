@@ -9,6 +9,7 @@ import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.services.JwtService;
 import com.wowo.wowo.util.ApiKeyUtil;
 import com.wowo.wowo.util.ObjectUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "v1/partner", produces = "application/json; charset=UTF-8")
+@Tag(name = "Partner", description = "Đối tác")
 public class PartnerController {
 
     private final PartnerRepository partnerRepository;
