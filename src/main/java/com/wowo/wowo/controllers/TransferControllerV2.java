@@ -24,7 +24,8 @@ public class TransferControllerV2 {
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransferDto data) {
         transferService.transfer(data);
-        emailService.sendEmail();
+//        emailService.sendEmail();
+        //TODO: send email
         return ResponseEntity.ok().build();
     }
 
