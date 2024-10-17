@@ -6,7 +6,9 @@ import com.wowo.wowo.models.User;
 import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +21,7 @@ public class AuthController {
 
     @RequestMapping("/sso")
     @IsUser
-    public void handleCallback(SSOData ssoData) {
+    public void handleCallback(@RequestParam @RequestBody SSOData ssoData) {
         final User userByIdOrUsernameOrEmail = userService.getUserByIdOrUsernameOrEmail(
                 ssoData.getId(), ssoData.getUsername(),
                 ssoData.getEmail());

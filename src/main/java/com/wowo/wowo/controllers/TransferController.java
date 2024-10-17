@@ -97,6 +97,6 @@ public class TransferController {
 
     @GetMapping("/check/{id}")
     public ResponseEntity<?> checkUser(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id));
+        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id,id,id));
     }
 }
