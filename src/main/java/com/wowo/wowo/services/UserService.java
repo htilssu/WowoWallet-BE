@@ -30,7 +30,7 @@ public class UserService {
 
     public void createUser(SSOData ssoData) {
         var user = User.builder().email(ssoData.getEmail()).id(ssoData.getId())
-                .username(ssoData.getUsername()).totalMoney(0L).build();
+                .username(ssoData.getUsername()).totalMoney(0L).isActive(true).build();
 
         try {
             userRepository.save(user);
