@@ -5,5 +5,6 @@ public enum MailType {
     REQUEST_MONEY,
     PAYMENT,
     REFUND,
-    OTP, FORGOT_PASSWORD
+    OTP,
+    FORGOT_PASSWORD
 }

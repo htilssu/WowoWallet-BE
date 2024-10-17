@@ -31,8 +31,8 @@ public class MailContent {
         }
     }
 
-    static String FORGOT_PASSWORD_BODY;
-    static String OTP_BODY;
+    public static String FORGOT_PASSWORD_BODY;
+    public static String OTP_BODY;
 
     static {
         //Reset mail
@@ -54,5 +54,10 @@ public class MailContent {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getMailContent();
     }
 }

@@ -1,5 +1,6 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.data.dto.SSOData;
 import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
@@ -22,8 +23,19 @@ public class UserService {
         throw new NotImplementedException();
     }
 
-    public User getUserByIdOrUsernameOrEmail(String id) {
-        return userRepository.findFirstByIdOrEmailOrUsername(id, id, id).orElseThrow(
+    public User getUserByIdOrUsernameOrEmail(String id, String username, String email) {
+        return userRepository.findFirstByIdOrEmailOrUsername(id, username, email).orElseThrow(
                 () -> new NotFoundException("Người dùng không tồn tại"));
+    }
+
+    public void createUser(SSOData ssoData) {
+        var user = User.builder().email(ssoData.getEmail()).id(ssoData.getId())
+                .username(ssoData.getUsername()).totalMoney(0L).build();
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo người dùng");
+        }
     }
 }

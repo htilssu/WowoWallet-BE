@@ -49,7 +49,7 @@ public class EmailService implements OTPSender {
         var newMail = javaMailSender.createMimeMessage();
         // set the email recipient
 
-        String htmlText = otpTemplate.replace("{{otp}}", otp);
+        String htmlText = MailContent.OTP_BODY.replace("{{OTP}}", otp);
 
         try {
             newMail.setSubject("Mã xác thực OTP", "utf-8");
@@ -68,8 +68,7 @@ public class EmailService implements OTPSender {
         var newMail = javaMailSender.createMimeMessage();
         // set the email recipient
 
-        String htmlText = otpTemplate.replace("{{otp}}", otp);
-
+        String htmlText = MailContent.OTP_BODY.replace("{{OTP}}", otp);
         try {
             newMail.setSubject("Mã xác thực OTP", "utf-8");
             newMail.addRecipients(TO, sendTo);
@@ -82,8 +81,8 @@ public class EmailService implements OTPSender {
 
         return CompletableFuture.completedFuture(null);
     }
-
-    public void sendResetPassword(String token, String email) {
+//TODO: implement this method
+    /*public void sendResetPassword(String token, String email) {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         var resetPasswordHtml = resetPasswordTemplate.replace("{{RESET_LINK}}",
                 "https://wowo.htilssu.id.vn/password/reset?token=" + token);
@@ -96,7 +95,7 @@ public class EmailService implements OTPSender {
         }
 
         javaMailSender.send(mimeMessage);
-    }
+    }*/
 
     public void sendResetPasswordToken(@Size(max = 255) @NotNull String email, String token) {
 
