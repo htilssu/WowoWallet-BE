@@ -52,9 +52,19 @@ public class TokenFilter implements Filter {
 
         var authorities = Collections.singleton(
                 new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), cookie.getValue(),
-                        authorities);
+        UsernamePasswordAuthenticationToken authenticationToken;
+        if (role.equals("user")) {
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            decodedJWT.getClaim("userId").toString(), cookie.getValue(),
+                            authorities);
+        }
+        else {
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            decodedJWT.getClaim("partnerId"), cookie.getValue(),
+                            authorities);
+        }
 
         authenticationToken.setDetails(decodedJWT);
 
