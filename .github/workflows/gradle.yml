@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -26,8 +25,8 @@ jobs:
           distribution: 'corretto'
           cache: 'gradle'
           cache-dependency-path: | # optional
-            sub-project/*.gradle*
-            sub-project/**/gradle-wrapper.properties
+            *.gradle*
+            **/gradle-wrapper.properties
 
       # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
       # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
