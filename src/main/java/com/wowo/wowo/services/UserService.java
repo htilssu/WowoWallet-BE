@@ -18,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final WalletService walletService;
 
     public ResponseEntity<UserDto> getUserById(String id) {
         throw new NotImplementedException();
@@ -29,11 +30,21 @@ public class UserService {
     }
 
     public void createUser(SSOData ssoData) {
-        var user = User.builder().email(ssoData.getEmail()).id(ssoData.getId())
-                .username(ssoData.getUsername()).totalMoney(0L).isActive(true).build();
+        var user = userRepository.findFirstByIdOrEmailOrUsername(ssoData.getId(),
+                ssoData.getEmail(), ssoData.getUsername());
+        if (user.isPresent()) {
+            return;
+        }
+
+        var newUser = new User();
+        newUser.setId(ssoData.getId());
+        newUser.setEmail(ssoData.getEmail());
+        newUser.setUsername(ssoData.getUsername());
 
         try {
-            userRepository.save(user);
+            userRepository.save(newUser);
+
+            walletService.createWallet(newUser);
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }

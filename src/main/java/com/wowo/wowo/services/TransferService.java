@@ -37,7 +37,7 @@ public class TransferService {
         return ResponseEntity.ok().build();
     }
 
-    protected void transferMoney(Wallet source, Wallet destination, double amount) {
+    protected void transferMoney(Wallet source, Wallet destination, long amount) {
         source.setBalance(source.getBalance() - amount);
         destination.setBalance(destination.getBalance() + amount);
         walletRepository.saveAll(List.of(source, destination));

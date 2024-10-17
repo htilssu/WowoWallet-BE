@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 @Getter
@@ -25,23 +26,22 @@ public class Wallet {
     @Column(name = "owner_type", nullable = false, length = 20)
     private String ownerType;
 
-    @Size(max = 3)
+    @Size(max = 5)
     @NotNull
     @ColumnDefault("'VND'")
-    @Column(name = "currency", nullable = false, length = 3)
-    private String currency;
+    @Column(name = "currency", nullable = false, length = 5)
+    private String currency = "VND";
 
-    @Size(max = 10)
-    @Column(name = "owner_id", length = 10)
+    @Size(max = 32)
+    @Column(name = "owner_id", length = 32)
     private String ownerId;
 
     @NotNull
     @ColumnDefault("0")
     @Column(name = "balance", nullable = false)
-    private Double balance;
+    private Long balance = 0L;
 
-    @Transactional
-    public void sendMoney(Wallet receiveWallet, double amount) {
+    public void sendMoney(Wallet receiveWallet, long amount) {
         receiveWallet.balance += amount;
         this.balance -= amount;
     }
