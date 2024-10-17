@@ -56,13 +56,15 @@ public class TokenFilter implements Filter {
         if (role.equals("user")) {
             authenticationToken =
                     new UsernamePasswordAuthenticationToken(
-                            decodedJWT.getClaim("userId").toString(), cookie.getValue(),
+                            decodedJWT.getClaim("userId").toString().replaceAll("\"", ""),
+                            cookie.getValue(),
                             authorities);
         }
         else {
             authenticationToken =
                     new UsernamePasswordAuthenticationToken(
-                            decodedJWT.getClaim("partnerId"), cookie.getValue(),
+                            decodedJWT.getClaim("partnerId").toString().replaceAll("\"", ""),
+                            cookie.getValue(),
                             authorities);
         }
 
