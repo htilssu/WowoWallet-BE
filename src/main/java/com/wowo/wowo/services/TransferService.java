@@ -1,6 +1,6 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.vms.TransferVm;
+import com.wowo.wowo.data.dto.TransferDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.WalletRepository;
@@ -18,7 +18,7 @@ public class TransferService {
     private final WalletRepository walletRepository;
 
     @Transactional
-    public ResponseEntity<?> transfer(TransferVm data) {
+    public ResponseEntity<?> transfer(TransferDto data) {
 
         Wallet senderWallet = null;
         if (data.getSourceId() == null) {

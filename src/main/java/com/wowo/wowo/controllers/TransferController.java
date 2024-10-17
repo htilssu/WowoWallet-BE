@@ -1,15 +1,14 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.constants.Constant;
-import com.wowo.wowo.data.dto.request.TransactionRequest;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.TransactionRequest;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.*;
 import com.wowo.wowo.services.EquityService;
 import com.wowo.wowo.services.TransactionService;
 import com.wowo.wowo.services.UserService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

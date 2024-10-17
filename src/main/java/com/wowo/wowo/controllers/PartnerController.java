@@ -1,8 +1,8 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.PartnerDto;
-import com.wowo.wowo.data.dto.response.PartnerRequest;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.PartnerDto;
+import com.wowo.wowo.data.dto.PartnerRequest;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.PartnerMapper;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;

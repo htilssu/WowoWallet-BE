@@ -1,6 +1,6 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.response.UserDto;
+import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;

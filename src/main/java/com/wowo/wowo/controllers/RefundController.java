@@ -1,7 +1,7 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.request.RefundRequest;
-import com.wowo.wowo.data.dto.response.RefundResponse;
+import com.wowo.wowo.data.dto.RefundRequest;
+import com.wowo.wowo.data.dto.RefundResponse;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;

@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.otp.OTPSend;
 import com.wowo.wowo.otp.OTPVerify;

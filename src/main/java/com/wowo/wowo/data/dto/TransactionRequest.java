@@ -1,4 +1,4 @@
-package com.wowo.wowo.data.dto.request;
+package com.wowo.wowo.data.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

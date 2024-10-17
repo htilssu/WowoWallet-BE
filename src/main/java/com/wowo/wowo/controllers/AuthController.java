@@ -13,6 +13,5 @@ public class AuthController {
 
     @RequestMapping("/sso")
     public void handleCallback(){
-
     }
 }

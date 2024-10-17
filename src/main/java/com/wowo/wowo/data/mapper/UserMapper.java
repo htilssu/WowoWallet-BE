@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.request.CreateUserDto;
-import com.wowo.wowo.data.dto.response.UserDto;
+import com.wowo.wowo.data.dto.CreateUserDto;
+import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.models.User;
 import org.mapstruct.*;
 

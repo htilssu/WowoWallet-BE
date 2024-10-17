@@ -1,11 +1,11 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.data.MailContent;
 import com.wowo.wowo.otp.OTPSender;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -22,26 +22,10 @@ import static jakarta.mail.Message.RecipientType.TO;
 public class EmailService implements OTPSender {
 
     public final JavaMailSender javaMailSender;
-    private String otpTemplate = null;
-    private String resetPasswordTemplate = null;
 
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
-        try (InputStream ip = EmailService.class.getResourceAsStream("/OTP_MAIL.html")) {
-            if (ip != null) {
-                otpTemplate = new String(ip.readAllBytes());
-            }
-        } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
-        }
 
-        try (InputStream ip = EmailService.class.getResourceAsStream("/RESET_MAIL.html");) {
-            if (ip != null) {
-                resetPasswordTemplate = new String(ip.readAllBytes());
-            }
-        } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
-        }
     }
 
     public void sendEmail(String toEmail, String subject, String body) {
@@ -49,6 +33,14 @@ public class EmailService implements OTPSender {
         msg.setTo(toEmail);
         msg.setSubject(subject);
         msg.setText(body);
+        javaMailSender.send(msg);
+    }
+
+    public void sendEmail(MailContent mailContent) throws MessagingException {
+        var msg = javaMailSender.createMimeMessage();
+        msg.addRecipients(TO, mailContent.getReceiver());
+        msg.setSubject(mailContent.getSubject());
+        msg.setContent(mailContent, "text/html; charset=utf-8");
         javaMailSender.send(msg);
     }
 

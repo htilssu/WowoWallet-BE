@@ -2,7 +2,7 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.annotations.authorized.IsAdmin;
 import com.wowo.wowo.annotations.authorized.IsUser;
-import com.wowo.wowo.data.dto.response.UserDto;
+import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.models.User;

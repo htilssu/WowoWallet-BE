@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.request.CreateOrderData;
+import com.wowo.wowo.data.dto.CreateOrderData;
 import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.Order;

@@ -1,7 +1,7 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.AtmCardDto;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.AtmCardDto;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.models.AtmCard;
 import com.wowo.wowo.models.User;

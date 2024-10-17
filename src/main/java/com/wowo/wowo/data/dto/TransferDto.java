@@ -1,4 +1,4 @@
-package com.wowo.wowo.data.vms;
+package com.wowo.wowo.data.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TransferVm {
+public class TransferDto {
 
     private String sourceId;
     private String senderId;

@@ -1,4 +1,4 @@
-package com.wowo.wowo.services.otp;
+package com.wowo.wowo.otp;
 
 import com.bastiaanjansen.otp.HMACAlgorithm;
 import com.bastiaanjansen.otp.SecretGenerator;

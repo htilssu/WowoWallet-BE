@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.TransactionResponse;
+import com.wowo.wowo.data.dto.TransactionResponse;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.PartnerRepository;
