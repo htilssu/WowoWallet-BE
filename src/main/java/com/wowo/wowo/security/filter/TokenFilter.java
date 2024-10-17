@@ -23,7 +23,6 @@ public class TokenFilter implements Filter {
                                                                                               IOException {
 
 
-        var authorization = ((HttpServletRequest) request).getHeader("Authorization");
         final Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
         if (cookies == null) {
@@ -57,7 +56,7 @@ public class TokenFilter implements Filter {
                 new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), cookie.getValue(),
                         authorities);
 
-        authenticationToken.setDetails(decodedJWT.getSubject());
+        authenticationToken.setDetails(decodedJWT);
 
         context.setAuthentication(authenticationToken);
         contextHolder.setContext(context);

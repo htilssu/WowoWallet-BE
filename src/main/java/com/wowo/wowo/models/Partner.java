@@ -4,14 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -26,6 +23,11 @@ public class Partner {
 
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
+
+    @Email
+    @Column(name = "email", nullable = false)
+    @NotNull
+    private String email;
 
     @Size(max = 255)
     @NotNull

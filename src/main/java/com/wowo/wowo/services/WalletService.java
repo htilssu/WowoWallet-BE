@@ -1,7 +1,9 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.data.dto.WalletResponse;
+import com.wowo.wowo.data.mapper.WalletMapper;
+import com.wowo.wowo.models.User;
+import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,5 +21,18 @@ public class WalletService {
 
 
         return walletMapper.toResponse(wallet);
+    }
+
+    public Wallet createWallet(User user) {
+        Wallet wallet = new Wallet();
+        wallet.setOwnerId(user.getId());
+        wallet.setOwnerType("user");
+
+        try {
+            wallet = walletRepository.save(wallet);
+            return wallet;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
