@@ -38,7 +38,7 @@ jobs:
           ./gradlew build
 
       - name: cache gradle
-        uses: actions/cache@4
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
