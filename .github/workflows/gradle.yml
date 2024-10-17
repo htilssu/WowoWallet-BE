@@ -14,11 +14,8 @@ on:
 jobs:
   build:
     name: Build
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
     environment: development
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 
