@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.request.CreateOrderData;
-import com.wowo.wowo.data.dto.response.OrderDto;
+import com.wowo.wowo.data.dto.CreateOrderData;
+import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.models.Order;
 import org.mapstruct.*;
 

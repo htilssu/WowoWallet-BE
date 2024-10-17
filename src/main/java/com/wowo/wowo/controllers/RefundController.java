@@ -1,13 +1,14 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.request.RefundRequest;
-import com.wowo.wowo.data.dto.response.RefundResponse;
+import com.wowo.wowo.data.dto.RefundRequest;
+import com.wowo.wowo.data.dto.RefundResponse;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.services.TransactionService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/refund", produces = "application/json;charset=UTF-8")
+@Tag(name = "Refund", description = "Hoàn tiền")
 public class RefundController {
 
     private final TransactionRepository transactionRepository;

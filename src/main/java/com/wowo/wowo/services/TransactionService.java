@@ -1,6 +1,6 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.response.WalletTransactionDto;
+import com.wowo.wowo.data.dto.WalletTransactionDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.models.*;

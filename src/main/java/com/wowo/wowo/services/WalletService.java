@@ -1,7 +1,7 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.mapper.WalletMapper;
-import com.wowo.wowo.data.dto.response.WalletResponse;
+import com.wowo.wowo.data.dto.WalletResponse;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

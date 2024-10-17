@@ -4,14 +4,15 @@ import com.wowo.wowo.security.filter.ApiServiceFilter;
 import com.wowo.wowo.security.filter.TokenFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,10 +23,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
+@EnableWebSecurity
+@EnableMethodSecurity
 @EnableJpaRepositories
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
-@EnableCaching(proxyTargetClass = true)
 @SpringBootApplication
 @EnableKafka
 public class EWalletApplication {
@@ -64,8 +66,8 @@ public class EWalletApplication {
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(apiServiceFilter, TokenFilter.class);
 */
-        http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                authorizationManagerRequestMatcherRegistry.anyRequest().permitAll());
+//        http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+//                authorizationManagerRequestMatcherRegistry.anyRequest().permitAll());
         return http.build();
     }
 
