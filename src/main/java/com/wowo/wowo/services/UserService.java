@@ -5,6 +5,7 @@ import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class UserService {
         throw new NotImplementedException();
     }
 
+    @NotNull
     public User getUserByIdOrUsernameOrEmail(String id, String username, String email) {
         return userRepository.findFirstByIdOrEmailOrUsername(id, username, email).orElseThrow(
                 () -> new NotFoundException("Người dùng không tồn tại"));

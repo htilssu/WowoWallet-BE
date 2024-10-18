@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/wallet")
+    @GetMapping("wallet")
     public ResponseEntity<?> getWallet(Authentication authentication) {
         Optional<Wallet> wallet = walletRepository.findByOwnerIdAndOwnerType(
                 (String) authentication.getPrincipal(), "user");
