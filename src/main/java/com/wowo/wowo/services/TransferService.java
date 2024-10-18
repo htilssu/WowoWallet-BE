@@ -50,7 +50,6 @@ public class TransferService {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
-
         source.setBalance(source.getBalance() - amount);
         destination.setBalance(destination.getBalance() + amount);
         walletRepository.saveAll(List.of(source, destination));
