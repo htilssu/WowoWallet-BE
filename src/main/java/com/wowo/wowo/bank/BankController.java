@@ -1,5 +1,6 @@
 package com.wowo.wowo.bank;
 
+import com.wowo.wowo.annotations.authorized.AllowAnonymous;
 import com.wowo.wowo.models.Bank;
 import com.wowo.wowo.repositories.BankRepostitory;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class BankController {
     }
 
     @GetMapping
-    @PreAuthorize("permitAll()")
+    @AllowAnonymous
     public ResponseEntity<List<Bank>> getBanks() {
         List<Bank> banks = bankRepostitory.findAll(); // Lấy danh sách ngân hàng
         if (banks.isEmpty()) {
