@@ -46,7 +46,7 @@ public class WalletTransactionService {
         }
 
         receiverWallet.sendMoney(senderWallet,
-                walletTransaction.getTransaction().getMoney().doubleValue());
+                walletTransaction.getTransaction().getMoney());
 
     }
 

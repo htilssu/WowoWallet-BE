@@ -1,11 +1,9 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.response.PartnerDto;
-import com.wowo.wowo.data.dto.response.PartnerRequest;
+import com.wowo.wowo.data.dto.PartnerDto;
+import com.wowo.wowo.data.dto.PartnerRequest;
 import com.wowo.wowo.models.Partner;
 import org.mapstruct.*;
-
-import java.time.format.DateTimeFormatter;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)

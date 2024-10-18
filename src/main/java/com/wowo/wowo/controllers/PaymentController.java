@@ -1,6 +1,7 @@
 package com.wowo.wowo.controllers;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @ApiResponse(responseCode = "200", description = "Ok")
 @ApiResponse(responseCode = "400", description = "Bad request")
 @RequestMapping("v1/payment")  // Cập nhật version API nếu cần
+@Tag(name = "Payment", description = "Thanh toán")
 public class PaymentController {
 
     @GetMapping("/{id}")

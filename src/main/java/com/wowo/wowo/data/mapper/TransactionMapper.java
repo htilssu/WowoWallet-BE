@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.request.TransactionRequest;
-import com.wowo.wowo.data.dto.response.TransactionResponse;
+import com.wowo.wowo.data.dto.TransactionRequest;
+import com.wowo.wowo.data.dto.TransactionResponse;
 import com.wowo.wowo.models.Transaction;
 import org.mapstruct.*;
 

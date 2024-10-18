@@ -1,6 +1,6 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.response.OrderDto;
+import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

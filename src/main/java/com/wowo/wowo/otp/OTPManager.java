@@ -1,7 +1,6 @@
 package com.wowo.wowo.otp;
 
 import com.wowo.wowo.services.EmailService;
-import com.wowo.wowo.services.otp.OTPGenerator;
 import com.wowo.wowo.util.OTPUtil;
 import com.wowo.wowo.util.DateTimeUtil;
 import lombok.AllArgsConstructor;
