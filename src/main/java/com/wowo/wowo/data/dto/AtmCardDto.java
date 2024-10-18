@@ -33,4 +33,6 @@ public class AtmCardDto implements Serializable {
     @NotNull
     private String expired;
     private String created;
+    private Long bankId;
+    private String bankShortName;
 }
