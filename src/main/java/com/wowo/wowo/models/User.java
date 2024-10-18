@@ -13,7 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 public class User {
 
     @Id

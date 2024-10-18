@@ -59,40 +59,12 @@ CREATE TABLE employee
     CONSTRAINT pk_employee PRIMARY KEY (id)
 );
 
-CREATE TABLE fund_member
-(
-    money     DECIMAL DEFAULT 0 NOT NULL,
-    group_id  INTEGER           NOT NULL,
-    member_id VARCHAR(10)       NOT NULL,
-    CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
-);
-
-CREATE TABLE group_fund
-(
-    id          BIGINT       NOT NULL,
-    name        VARCHAR(255) NOT NULL,
-    image       VARCHAR(256),
-    description VARCHAR(255),
-    balance     BIGINT       NOT NULL,
-    target      BIGINT       NOT NULL,
-    owner_id    VARCHAR(255),
-    CONSTRAINT pk_group_fund PRIMARY KEY (id)
-);
-
-CREATE TABLE group_fund_transaction
-(
-    transaction_id VARCHAR(255) NOT NULL,
-    group_id       BIGINT,
-    member_id      VARCHAR(255),
-    CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
-);
-
 CREATE TABLE "order"
 (
-    id             VARCHAR(50) NOT NULL,
+    id             VARCHAR(50)                               NOT NULL,
     partner_id     VARCHAR(32),
-    money          BIGINT      NOT NULL,
-    status         SMALLINT    NOT NULL,
+    money          BIGINT                                    NOT NULL,
+    status         SMALLINT                                  NOT NULL,
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
@@ -147,11 +119,11 @@ CREATE TABLE support_ticket
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(40) NOT NULL,
-    money       BIGINT      NOT NULL,
-    status      SMALLINT    NOT NULL,
-    type        SMALLINT    NOT NULL,
-    variant     SMALLINT    NOT NULL,
+    id          VARCHAR(40)                 NOT NULL,
+    money       BIGINT                      NOT NULL,
+    status      SMALLINT                    NOT NULL,
+    type        SMALLINT                    NOT NULL,
+    variant     SMALLINT                    NOT NULL,
     description VARCHAR(300),
     created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -166,15 +138,67 @@ CREATE TABLE "user"
     job         VARCHAR(255),
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
-
 CREATE TABLE wallet
 (
-    id         INTEGER                         NOT NULL,
+    id         BIGSERIAL                       NOT NULL,
     owner_type VARCHAR(20)      DEFAULT 'user' NOT NULL,
     currency   VARCHAR(3)       DEFAULT 'VND'  NOT NULL,
     owner_id   VARCHAR(10),
     balance    DOUBLE PRECISION DEFAULT 0      NOT NULL,
     CONSTRAINT pk_wallet PRIMARY KEY (id)
+);
+
+--Quỹ Nhóm
+CREATE TABLE group_fund
+(
+    id           BIGINT       NOT NULL,
+    name         VARCHAR(255) NOT NULL,
+    image        VARCHAR(256),
+    type         VARCHAR(100),
+    description  VARCHAR(255),
+    balance      BIGINT       NOT NULL DEFAULT 0,
+    target       BIGINT       NOT NULL DEFAULT 0,
+    wallet_id    BIGINT       NOT NULL,
+    owner_id     VARCHAR(255) NOT NULL,
+    created_date TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
+    target_date  DATE,
+    CONSTRAINT pk_group_fund PRIMARY KEY (id),
+    CONSTRAINT fk_group_owner FOREIGN KEY (owner_id) REFERENCES "user" (id),
+    CONSTRAINT fk_group_wallet FOREIGN KEY (wallet_id) REFERENCES wallet (id)
+);
+
+CREATE TABLE fund_member
+(
+    money     DECIMAL   DEFAULT 0 NOT NULL,
+    joined_at TIMESTAMP DEFAULT current_timestamp,
+    group_id  BIGINT              NOT NULL,
+    member_id VARCHAR(255)        NOT NULL,
+    CONSTRAINT fk_fund_member_user FOREIGN KEY (member_id) REFERENCES "user" (id),
+    CONSTRAINT fk_fund_member_group FOREIGN KEY (group_id) REFERENCES group_fund (id),
+    CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
+);
+
+CREATE TABLE group_fund_transaction
+(
+    transaction_id VARCHAR(255) NOT NULL,
+    group_id       BIGINT,
+    member_id      VARCHAR(255),
+    CONSTRAINT fk_group_fund_transaction_transaction FOREIGN KEY (transaction_id) REFERENCES transaction (id),
+    CONSTRAINT fk_group_fund_transaction_group FOREIGN KEY (group_id) REFERENCES group_fund (id),
+    CONSTRAINT fk_group_fund_transaction_member FOREIGN KEY (member_id) REFERENCES "user" (id)
+);
+--loi moi tham gia quy
+CREATE TABLE invitation
+(
+    id           BIGSERIAL PRIMARY KEY,
+    group_id     BIGINT       NOT NULL,
+    sender_id    VARCHAR(255) NOT NULL,
+    recipient_id VARCHAR(255) NOT NULL,
+    status       VARCHAR(20) CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED')) DEFAULT 'PENDING',
+    created_at   TIMESTAMP                                                         DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_invitation_group FOREIGN KEY (group_id) REFERENCES group_fund (id),
+    CONSTRAINT fk_invitation_sender FOREIGN KEY (sender_id) REFERENCES "user" (id),
+    CONSTRAINT fk_invitation_recipient FOREIGN KEY (recipient_id) REFERENCES "user" (id)
 );
 
 CREATE TABLE wallet_transaction

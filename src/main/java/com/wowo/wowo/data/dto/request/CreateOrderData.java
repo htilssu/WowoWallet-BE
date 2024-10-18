@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * DTO for {@link Order}
  */
 public record CreateOrderData(@Size(max = 15) String id, @NotNull @PositiveOrZero(
-        message = "Số tiền phải lớn hơn hoặc bằng 0") BigDecimal money,
+        message = "Số tiền phải lớn hơn hoặc bằng 0") Long money,
                               @Size(max = 300) String returnUrl, @Size(max = 300) String successUrl,
                               @Size(max = 100) String serviceName)
         implements Serializable {

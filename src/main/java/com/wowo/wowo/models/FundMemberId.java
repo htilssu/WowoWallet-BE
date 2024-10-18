@@ -17,9 +17,10 @@ import java.util.Objects;
 public class FundMemberId implements Serializable {
 
     private static final long serialVersionUID = -3026394821843277658L;
+
     @NotNull
     @Column(name = "group_id", nullable = false)
-    private Integer groupId;
+    private Long groupId;
 
     @Size(max = 10)
     @NotNull
@@ -39,5 +40,4 @@ public class FundMemberId implements Serializable {
     public int hashCode() {
         return Objects.hash(groupId, memberId);
     }
-
 }

@@ -1,15 +1,11 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter
@@ -18,8 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class Wallet {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 20)
     @NotNull
@@ -31,19 +28,26 @@ public class Wallet {
     @NotNull
     @ColumnDefault("'VND'")
     @Column(name = "currency", nullable = false, length = 3)
-    private String currency;
+    private String currency; // Loại tiền tệ
 
     @Size(max = 10)
     @Column(name = "owner_id", length = 10)
-    private String ownerId;
+    private String ownerId; // ID của chủ sở hữu
 
     @NotNull
     @ColumnDefault("0")
     @Column(name = "balance", nullable = false)
-    private Double balance;
+    private Double balance; // Số dư ví
 
-    @Transactional
     public void sendMoney(Wallet receiveWallet, double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
+        if (this.balance < amount) {
+            throw new IllegalArgumentException("Insufficient balance.");
+        }
+
+        // Chuyển tiền
         receiveWallet.balance += amount;
         this.balance -= amount;
     }

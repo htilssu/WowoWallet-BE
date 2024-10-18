@@ -25,31 +25,8 @@ public class UserDto implements Serializable {
     @Size(max = 10)
     private String id;
     @NotNull
-    @Size(max = 50)
-    private String firstName;
-    @NotNull
-    @Size(max = 50)
-    private String lastName;
-    @NotNull
-    @Size(max = 255)
-    private String email;
-    @Size(max = 50)
-    private String userName;
-    @Size(max = 255)
-    private String avatar;
-    @NotNull
-    private String dob;
-    @NotNull
     private Boolean isActive = false;
     @NotNull
     private Boolean isVerified = false;
-    private Boolean gender;
-    @NotNull
-    private String created;
-    @Size(max = 255)
-    private String address;
-    @Size(max = 10)
-    private String phoneNumber;
-    @Size(max = 255)
     private String job;
 }

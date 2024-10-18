@@ -33,7 +33,7 @@ public class CardController {
         if (atmCardDto == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage("Dữ liệu không hợp lệ"));
         }
-        String userId = (String) authentication.getPrincipal();
+        Long userId = (Long) authentication.getPrincipal();
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseEntity.ok(new ResponseMessage("Người dùng không tồn tại"));
@@ -56,7 +56,7 @@ public class CardController {
 
     @GetMapping
     public List<AtmCardDto> getCard(Authentication authentication) {
-        String userId = (String) authentication.getPrincipal();
+        Long userId = (Long) authentication.getPrincipal();
 
         final User userFound = userRepository.findById(userId).orElse(null);
 

@@ -6,6 +6,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, String> {
+public interface UserRepository extends CrudRepository<User, Long> {
     
 }
