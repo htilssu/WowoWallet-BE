@@ -99,7 +99,6 @@ public class EmailService implements OTPSender {
 
     public void sendResetPasswordToken(@Size(max = 255) @NotNull String email, String token) {
 
-
     }
 }
 
