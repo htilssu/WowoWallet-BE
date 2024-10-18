@@ -8,7 +8,6 @@ import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.util.ObjectUtil;
 import com.wowo.wowo.util.RSAUtil;
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +20,15 @@ import java.util.Date;
 public class JwtService {
 
     private static final int expire = 60 * 24;
-    private static Algorithm algorithm = Algorithm.RSA256(RSAUtil.getPublicKeyFromString());
-    private static JWTVerifier verifier = JWT.require(algorithm)
+    private static final Algorithm algorithm = Algorithm.RSA256(RSAUtil.getPublicKeyFromString());
+    private static final JWTVerifier verifier = JWT.require(algorithm)
             .build();
     private static String secret;
 
     public static String generateToken(User user) {
         //convert user to json
         return JWT.create()
-                .withSubject(user.getId())
+                .withSubject(String.valueOf(user.getId()))
                 .withPayload(ObjectUtil.parseJson(user))
                 .withExpiresAt(Date.from(Instant.now()
                         .plus(expire, ChronoUnit.MINUTES)))
@@ -58,7 +57,7 @@ public class JwtService {
     public static String generateToken(User user, int expire) {
         //convert user to json
         return JWT.create()
-                .withSubject(user.getId())
+                .withSubject(String.valueOf(user.getId()))
                 .withPayload(ObjectUtil.parseJson(user))
                 .withExpiresAt(Date.from(Instant.now()
                         .plus(expire, ChronoUnit.MINUTES)))
@@ -75,7 +74,6 @@ public class JwtService {
     }
 
     public static String generateToken(Partner newPartner) {
-        newPartner.setPassword(null);
 
         return JWT.create()
                 .withSubject(newPartner.getId())
@@ -84,12 +82,4 @@ public class JwtService {
                         .plus(expire, ChronoUnit.MINUTES)))
                 .sign(algorithm);
     }
-
-    @PostConstruct
-    public void init() {
-        algorithm = Algorithm.none();
-        verifier = JWT.require(algorithm)
-                .build();
-    }
-
 }

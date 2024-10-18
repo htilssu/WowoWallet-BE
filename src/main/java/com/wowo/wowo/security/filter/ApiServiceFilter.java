@@ -41,7 +41,6 @@ public class ApiServiceFilter implements Filter {
         Optional<Partner> partner = Optional.empty();
         try {
             partner = partnerRepository.findPartnerByApiKey(apiKey);
-            partner.ifPresent(value -> value.setPassword(null));
         } catch (RuntimeException r) {
             System.out.println("Error: " + r.getMessage());
         }

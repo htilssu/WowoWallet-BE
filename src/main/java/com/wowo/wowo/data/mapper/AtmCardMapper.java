@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.response.AtmCardDto;
+import com.wowo.wowo.data.dto.AtmCardDto;
 import com.wowo.wowo.models.AtmCard;
 import org.mapstruct.*;
 

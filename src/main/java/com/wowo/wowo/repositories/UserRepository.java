@@ -1,16 +1,13 @@
 package com.wowo.wowo.repositories;
 
 import com.wowo.wowo.models.User;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.lang.Nullable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends CrudRepository<User, String> {
+import java.util.Optional;
 
-    User findByEmail(String email);
-    User findByUserName(String userName);
-    @Nullable
-    User findByPhoneNumber(String phoneNumber);
-    
+@Repository
+public interface UserRepository extends JpaRepository<User, String> {
+
+    Optional<User> findFirstByIdOrEmailOrUsername(String id, String id1, String id2);
 }

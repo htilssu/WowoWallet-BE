@@ -1,10 +1,14 @@
 package com.wowo.wowo.services;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.wowo.wowo.data.dto.SSOData;
+import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,25 +19,36 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final WalletService walletService;
 
-    public void resetPassword(String email) {
-        final User user = userRepository.findByEmail(email);
-        if (user == null) throw new NotFoundException("User not exist");
-
-        final String token = JwtService.generateToken(user);
-
-        emailService.sendResetPassword(token, email);
+    public ResponseEntity<UserDto> getUserById(String id) {
+        throw new NotImplementedException();
     }
 
-    public void setNewPassword(String token, String newPassword) {
-        DecodedJWT decodedJWT = JwtService.verifyToken(token);
-        if (decodedJWT == null) throw new NotFoundException("Invalid token");
-
-        String userId = decodedJWT.getSubject();
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-
-        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        userRepository.save(user);
+    @NotNull
+    public User getUserByIdOrUsernameOrEmail(String id, String username, String email) {
+        return userRepository.findFirstByIdOrEmailOrUsername(id, username, email).orElseThrow(
+                () -> new NotFoundException("Người dùng không tồn tại"));
     }
 
+    public void createUser(SSOData ssoData) {
+        var user = userRepository.findFirstByIdOrEmailOrUsername(ssoData.getId(),
+                ssoData.getEmail(), ssoData.getUsername());
+        if (user.isPresent()) {
+            return;
+        }
+
+        var newUser = new User();
+        newUser.setId(ssoData.getId());
+        newUser.setEmail(ssoData.getEmail());
+        newUser.setUsername(ssoData.getUsername());
+
+        try {
+            userRepository.save(newUser);
+
+            walletService.createWallet(newUser);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo người dùng");
+        }
+    }
 }

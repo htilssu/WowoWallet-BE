@@ -4,59 +4,18 @@
 # documentation.
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: build
-
 on:
   push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    environment: development
-    runs-on: ${{matrix.os}}
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'corretto'
-
-      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build with Gradle Wrapper
-        run: |
-          chmod +x gradlew
-          ./gradlew build
-
-      - name: cache gradle
-        uses: actions/cache@4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-
-
   dependency-submission:
-
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -66,10 +25,10 @@ jobs:
           distribution: 'corretto'
           cache: 'gradle'
           cache-dependency-path: | # optional
-            sub-project/*.gradle*
-            sub-project/**/gradle-wrapper.properties
+            *.gradle*
+            **/gradle-wrapper.properties
 
       # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
       # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@ # v3.1.0
+        uses: gradle/actions/dependency-submission@v4 # v3.1.0

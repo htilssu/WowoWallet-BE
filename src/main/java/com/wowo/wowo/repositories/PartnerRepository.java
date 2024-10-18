@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface PartnerRepository extends JpaRepository<Partner, String> {
 
     Optional<Partner> findPartnerByApiKey(String apiKey);
-    boolean existsByEmail(String email);
-    Partner findByEmail(String email);
 }

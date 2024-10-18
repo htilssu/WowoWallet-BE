@@ -15,8 +15,7 @@ import java.math.BigDecimal;
 public class Employee {
 
     @Id
-    @Size(max = 10)
-    @Column(name = "id", nullable = false, length = 10)
+    @Column(name = "id", nullable = false)
     private String id;
 
     @MapsId

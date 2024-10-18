@@ -12,6 +12,9 @@ LABEL authors="htilssu"
 ENV DOCKER_COMPOSE_ENABLED=false
 EXPOSE 8080
 
+
+
 COPY --from=build /build/build/libs/*SNAPSHOT.jar app.jar
+ENV SPRING_PROFILES_ACTIVE=prod
 
 CMD ["java", "-jar", "app.jar"]

@@ -1,15 +1,18 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.response.WalletTransactionDto;
+import com.wowo.wowo.data.dto.WalletTransactionDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.data.mapper.WalletTransactionMapperImpl;
+import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletTransactionRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,7 +22,7 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final WalletTransactionService walletTransactionService;
     private final WalletTransactionRepository walletTransactionRepository;
-    private final WalletTransactionMapperImpl walletTransactionMapperImpl;
+    private final WalletTransactionMapper walletTransactionMapperImpl;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
@@ -76,5 +79,10 @@ public class TransactionService {
 
 
         return transaction;
+    }
+
+    public List<?> getRecentTransactions(String ownerId, int offset, int page) {
+        return transactionRepository.findByIdOrderByUpdatedAsc(ownerId,
+                PageRequest.of(page, offset));
     }
 }

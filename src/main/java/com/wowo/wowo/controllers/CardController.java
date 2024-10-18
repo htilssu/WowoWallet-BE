@@ -1,8 +1,8 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.AtmCardDto;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.data.mapper.AtmCardMapperImpl;
+import com.wowo.wowo.data.dto.AtmCardDto;
+import com.wowo.wowo.data.dto.ResponseMessage;
+import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.models.AtmCard;
 import com.wowo.wowo.models.Bank;
 import com.wowo.wowo.models.User;
@@ -11,6 +11,7 @@ import com.wowo.wowo.repositories.AtmRepository;
 import com.wowo.wowo.repositories.BankRepostitory;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.util.ObjectUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,10 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
+@Tag(name = "Card", description = "Thẻ ngân hàng")
 public class CardController {
 
-    private final AtmCardMapperImpl atmCardMapperImpl;
+    private final AtmCardMapper atmCardMapperImpl;
     private final AtmCardRepository atmCardRepository;
     private final UserRepository userRepository;
     private final BankRepostitory bankRepostitory;
