@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.CreateOrderData;
+import com.wowo.wowo.data.dto.CreateOrderDto;
 import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.models.Order;
@@ -77,7 +77,7 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize("hasRole('PARTNER')")
-    public ResponseEntity<?> createOrder(@RequestBody @NotNull CreateOrderData paymentRequest,
+    public ResponseEntity<?> createOrder(@RequestBody @NotNull CreateOrderDto paymentRequest,
             HttpServletRequest request) {
 
         Order newOrder = orderMapper.toEntity(paymentRequest);

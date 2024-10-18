@@ -26,7 +26,6 @@ public class TransactionRequest {
      */
     String transactionType;
     @NotNull
-    @Size(max = 10)
     private String senderId;
     @NotNull(message = "Người nhận không được để trống")
     @Size(max = 10)
