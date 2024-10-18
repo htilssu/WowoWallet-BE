@@ -47,8 +47,6 @@ public class CardController {
         if (bank == null) {
             return ResponseEntity.ok().body(new ResponseMessage("Không tìm thấy ngân hàng với shortName đã cho"));
         }
-
-
         final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardDto);
         atmCard.setOwner(user);
 

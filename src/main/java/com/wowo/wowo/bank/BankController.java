@@ -3,6 +3,7 @@ package com.wowo.wowo.bank;
 import com.wowo.wowo.models.Bank;
 import com.wowo.wowo.repositories.BankRepostitory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/banks", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "v1/banks", produces = "application/json; charset=utf-8")
 public class BankController {
     private final BankRepostitory bankRepostitory;
 
@@ -19,6 +20,7 @@ public class BankController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<Bank>> getBanks() {
         List<Bank> banks = bankRepostitory.findAll(); // Lấy danh sách ngân hàng
         if (banks.isEmpty()) {

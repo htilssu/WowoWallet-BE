@@ -226,8 +226,8 @@ values ('MIN_TRANSFER', 'Số tiền tối thiểu cho mỗi giao dịch', 100),
        ('MAX_WITHDRAW', 'Số tiền tối đa cho mỗi giao dịch', 1000000000);
 
 
-INSERT INTO banks ("id", "name", "code", "bin", "shortName", "logo", "transferSupported", "lookupSupported",
-                   "short_name", "support", "isTransfer", "swift_code")
+INSERT INTO banks ("id", "name", "code", "bin", shortName, "logo", transferSupported, lookupSupported,
+                   "short_name", "support", isTransfer, "swift_code")
 VALUES (17, 'Ngân hàng TMCP Công thương Việt Nam', 'ICB', '970415', 'VietinBank', 'https://api.vietqr.io/img/ICB.png',
         1, 1, 'VietinBank', 3, 1, 'ICBVVNVX'),
        (43, 'Ngân hàng TMCP Ngoại Thương Việt Nam', 'VCB', '970436', 'Vietcombank',
