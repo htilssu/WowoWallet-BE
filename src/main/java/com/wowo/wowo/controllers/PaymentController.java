@@ -1,26 +1,37 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsUser;
+import com.wowo.wowo.services.PaymentService;
+import com.wowo.wowo.services.WalletService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @ApiResponse(responseCode = "200", description = "Ok")
 @ApiResponse(responseCode = "400", description = "Bad request")
-@RequestMapping("v1/payment")  // Cập nhật version API nếu cần
+@RequestMapping("v1/payment")
 @Tag(name = "Payment", description = "Thanh toán")
+@AllArgsConstructor
 public class PaymentController {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<String> getPayment(@PathVariable String id) {
-        String result = "Payment made for id: " + id;
-        return ResponseEntity.ok(result);
-    }
+    private final PaymentService paymentService;
+    private final WalletService walletService;
 
-//    @PostMapping()
-//    public ResponseEntity<String> createOrder(@RequestBody PaymentModel paymentModel) {
-//        String result = "Payment made for id: " + paymentModel.getId() + " with amount: " + paymentModel.getAmount();
-//        return ResponseEntity.ok(result);
-//    }
+    @PostMapping("/{id}")
+    @IsUser
+    public ResponseEntity<?> makePay(@PathVariable String id,
+            @RequestBody String sourceId,
+            Authentication authentication) {
+
+        if (!walletService.isWalletOwner((String) authentication.getPrincipal(), sourceId)) {
+            throw new RuntimeException("Không tìm thấy ví");
+        }
+
+        paymentService.makePayment(id, sourceId);
+        return ResponseEntity.ok().build();
+    }
 }

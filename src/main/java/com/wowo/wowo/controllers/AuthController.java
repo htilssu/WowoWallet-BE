@@ -3,6 +3,7 @@ package com.wowo.wowo.controllers;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.SSOData;
+import com.wowo.wowo.services.PartnerService;
 import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final PartnerService partnerService;
 
     @RequestMapping("/sso")
     @IsUser
@@ -37,8 +39,10 @@ public class AuthController {
             }
             case "partner" -> {
                 SSOData ssoData = new SSOData(email, partnerId, username);
+                partnerService.createPartner(ssoData);
             }
 
+            default -> throw new IllegalStateException("Unexpected value: " + role);
         }
 
         return ResponseEntity.ok().build();

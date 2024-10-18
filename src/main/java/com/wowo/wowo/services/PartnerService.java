@@ -15,9 +15,13 @@ public class PartnerService {
     }
 
     public void createPartner(SSOData ssoData) {
-        Partner partner = new Partner();
-        partner.setId(ssoData.getId());
-        partner.setEmail(ssoData.getEmail());
-        partnerRepository.save(partner);
+        var partner = partnerRepository.findById(ssoData.getId());
+        if (partner.isPresent()) return;
+
+        Partner newPartner = new Partner();
+        newPartner.setId(ssoData.getId());
+        newPartner.setEmail(ssoData.getEmail());
+        newPartner.setApiKey(ssoData.getId());
+        partnerRepository.save(newPartner);
     }
 }
