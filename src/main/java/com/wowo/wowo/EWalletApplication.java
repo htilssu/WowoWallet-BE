@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -47,8 +48,8 @@ public class EWalletApplication {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
-       /* http.authorizeHttpRequests(auth -> auth.requestMatchers("/v?/auth/**",
-                        "/api/v?/partner/register","swagger-ui/**","docs/**", "v3/api-docs/**"
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/v?/auth/**", "swagger-ui/**",
+                        "docs/**", "v3/api-docs/**"
                 )
                 .permitAll()
                 .requestMatchers("/v?/user/**")
@@ -65,9 +66,7 @@ public class EWalletApplication {
         //add token filter to security filter chain
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(apiServiceFilter, TokenFilter.class);
-*/
-//        http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-//                authorizationManagerRequestMatcherRegistry.anyRequest().permitAll());
+
         return http.build();
     }
 

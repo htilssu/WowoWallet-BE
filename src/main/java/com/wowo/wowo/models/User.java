@@ -16,7 +16,7 @@ import org.hibernate.annotations.ColumnDefault;
 public class User {
 
     @Id
-    @Size(max = 10)
+    @Size(max = 32)
     @Column(name = "id", nullable = false)
     private String id;
 
@@ -40,7 +40,7 @@ public class User {
 
     @ColumnDefault("0")
     @Column(name = "total_money", nullable = false)
-    private Long totalMoney;
+    private Long totalMoney = 0L;
 
     @Size(max = 255)
     @Column(name = "job")

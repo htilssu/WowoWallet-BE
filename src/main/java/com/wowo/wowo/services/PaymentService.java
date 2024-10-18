@@ -38,7 +38,7 @@ public class PaymentService {
                         order.getPartner().getId(), "partner")
                 .orElseThrow(() -> new WalletNotFoundException("Không tìm thấy ví của đối tác"));
 
-        makePayment(sender, receiver, order.getMoney().doubleValue());
+        makePayment(sender, receiver, order.getMoney());
 
         order.setStatus(PaymentStatus.SUCCESS);
 
@@ -47,7 +47,7 @@ public class PaymentService {
                 sender, receiver);
     }
 
-    public void makePayment(Wallet sender, Wallet receiver, double amount) throws
+    public void makePayment(Wallet sender, Wallet receiver, long amount) throws
                                                                            InsufficientBalanceException {
         if (sender.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
