@@ -54,35 +54,9 @@ public class TransactionService {
         }
     }
 
-    public Transaction createTransaction(String userId,
-            Order order,
-            Wallet sender,
-            Wallet receiver) {
-        final Transaction transaction = createTransaction(userId, order);
-
-        if (order.getStatus() == PaymentStatus.SUCCESS) {
-            walletTransactionService.createWalletTransaction(transaction, sender, receiver);
-        }
-
-        order.setTransaction(transaction);
-        orderRepository.save(order);
-        return transaction;
+    @Transactional
+    public Transaction createTransaction(Transaction transaction) {
+        return transactionRepository.save(transaction);
     }
 
-    public Transaction createTransaction(String userId, Order order) {
-        var transaction = new Transaction();
-        transaction.setMoney(order.getMoney());
-        transaction.setVariant(TransactionVariant.WALLET);
-        transaction.setStatus(order.getStatus());
-
-        transactionRepository.save(transaction);
-
-
-        return transaction;
-    }
-
-    public List<?> getRecentTransactions(String ownerId, int offset, int page) {
-        return transactionRepository.findByIdOrderByUpdatedAsc(ownerId,
-                PageRequest.of(page, offset));
-    }
 }

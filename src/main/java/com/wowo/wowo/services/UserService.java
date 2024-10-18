@@ -43,8 +43,8 @@ public class UserService {
 
         try {
             userRepository.save(newUser);
-
             walletService.createWallet(newUser);
+            
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }
