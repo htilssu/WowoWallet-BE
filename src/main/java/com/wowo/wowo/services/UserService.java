@@ -32,11 +32,9 @@ public class UserService {
     }
 
     public void createUser(SSOData ssoData) {
-        var user = userRepository.findFirstByIdOrEmailOrUsername(ssoData.getId(),
-                ssoData.getEmail(), ssoData.getUsername());
-        if (user.isPresent()) {
-            return;
-        }
+
+        var user = userRepository.findById(ssoData.getId());
+        if (user.isPresent()) return;
 
         var newUser = new User();
         newUser.setId(ssoData.getId());
