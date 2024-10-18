@@ -1,34 +1,33 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.constants.Constant;
-import com.wowo.wowo.data.dto.request.TransactionRequest;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.TransactionRequest;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.models.*;
+import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.*;
 import com.wowo.wowo.services.EquityService;
 import com.wowo.wowo.services.TransactionService;
+import com.wowo.wowo.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/transfer", produces = "application/json; charset=UTF-8")
+@Tag(name = "Transfer", description = "Chuyển tiền")
 public class TransferController {
 
     private final TransactionService transactionService;
     private final ConstantRepository constantRepository;
     private final EquityService equityService;
+    private final UserService userService;
     TransactionRepository transactionRepository;
     UserRepository userRepository;
     WalletRepository walletRepository;
@@ -93,10 +92,11 @@ public class TransferController {
         }
 
 
-
-
-
-
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/check/{id}")
+    public ResponseEntity<?> checkUser(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id,id,id));
     }
 }

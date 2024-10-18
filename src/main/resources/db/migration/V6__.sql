@@ -1,0 +1,7 @@
+ALTER TABLE wallet
+ALTER
+COLUMN currency TYPE VARCHAR(5) USING (currency::VARCHAR(5));
+
+ALTER TABLE wallet
+ALTER
+COLUMN owner_id TYPE VARCHAR(32) USING (owner_id::VARCHAR(32));

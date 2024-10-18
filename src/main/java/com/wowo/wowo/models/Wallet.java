@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter
@@ -16,6 +18,7 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Size(max = 20)
@@ -24,22 +27,22 @@ public class Wallet {
     @Column(name = "owner_type", nullable = false, length = 20)
     private String ownerType;
 
-    @Size(max = 3)
+    @Size(max = 5)
     @NotNull
     @ColumnDefault("'VND'")
-    @Column(name = "currency", nullable = false, length = 3)
-    private String currency; // Loại tiền tệ
+    @Column(name = "currency", nullable = false, length = 5)
+    private String currency = "VND"; // Loại tiền tệ
 
-    @Size(max = 10)
-    @Column(name = "owner_id", length = 10)
+    @Size(max = 32)
+    @Column(name = "owner_id", length = 32)
     private String ownerId; // ID của chủ sở hữu
 
     @NotNull
     @ColumnDefault("0")
     @Column(name = "balance", nullable = false)
-    private Double balance; // Số dư ví
+    private Long balance = 0L; // Số dư ví
 
-    public void sendMoney(Wallet receiveWallet, double amount) {
+    public void sendMoney(Wallet receiveWallet, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0.");
         }

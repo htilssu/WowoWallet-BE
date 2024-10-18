@@ -23,7 +23,6 @@ public class TokenFilter implements Filter {
                                                                                               IOException {
 
 
-        var authorization = ((HttpServletRequest) request).getHeader("Authorization");
         final Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
         if (cookies == null) {
@@ -39,7 +38,6 @@ public class TokenFilter implements Filter {
             return;
         }
 
-
         final DecodedJWT decodedJWT = JwtService.verifyToken(cookie.getValue());
         if (decodedJWT == null) {
             chain.doFilter(request, response);
@@ -54,11 +52,23 @@ public class TokenFilter implements Filter {
 
         var authorities = Collections.singleton(
                 new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), cookie.getValue(),
-                        authorities);
+        UsernamePasswordAuthenticationToken authenticationToken;
+        if (role.equals("user")) {
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            decodedJWT.getClaim("userId").toString().replaceAll("\"", ""),
+                            cookie.getValue(),
+                            authorities);
+        }
+        else {
+            authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            decodedJWT.getClaim("partnerId").toString().replaceAll("\"", ""),
+                            cookie.getValue(),
+                            authorities);
+        }
 
-        authenticationToken.setDetails(decodedJWT.getSubject());
+        authenticationToken.setDetails(decodedJWT);
 
         context.setAuthentication(authenticationToken);
         contextHolder.setContext(context);

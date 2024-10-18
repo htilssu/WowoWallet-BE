@@ -1,14 +1,15 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.PartnerDto;
-import com.wowo.wowo.data.dto.response.PartnerRequest;
-import com.wowo.wowo.data.dto.response.ResponseMessage;
+import com.wowo.wowo.data.dto.PartnerDto;
+import com.wowo.wowo.data.dto.PartnerRequest;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.PartnerMapper;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.services.JwtService;
 import com.wowo.wowo.util.ApiKeyUtil;
 import com.wowo.wowo.util.ObjectUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "v1/partner", produces = "application/json; charset=UTF-8")
+@Tag(name = "Partner", description = "Đối tác")
 public class PartnerController {
 
     private final PartnerRepository partnerRepository;

@@ -1,25 +1,25 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.ResponseMessage;
-import com.wowo.wowo.models.User;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.otp.OTPSend;
 import com.wowo.wowo.otp.OTPVerify;
-import com.wowo.wowo.services.EmailService;
-import com.wowo.wowo.util.OTPUtil;
 import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.util.ObjectUtil;
+import com.wowo.wowo.services.EmailService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/otp", produces = "application/json; charset=utf-8")
+@Tag(name = "OTP", description = "One Time Password")
 public class OTPController {
 
     private final OTPManager otpManager;
@@ -36,7 +36,7 @@ public class OTPController {
         }
 
 
-//        TODO: implement send otp
+        //        TODO: implement send otp
         return ResponseEntity.ok().build();
     }
 
@@ -49,7 +49,8 @@ public class OTPController {
 
             if (verifyStatus) {
                 return ResponseEntity.ok(new ResponseMessage("Mã OTP hợp lệ"));
-            } else {
+            }
+            else {
                 return ResponseEntity.status(401)
                         .body(new ResponseMessage("Mã OTP không hợp lệ"));
             }

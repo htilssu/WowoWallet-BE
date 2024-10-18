@@ -2,7 +2,7 @@ package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.request.CreateWalletDto;
 import com.wowo.wowo.data.dto.response.WalletDto;
-import com.wowo.wowo.data.dto.response.WalletResponse;
+import com.wowo.wowo.data.dto.WalletResponse;
 import com.wowo.wowo.models.Wallet;
 import org.mapstruct.*;
 
