@@ -59,11 +59,11 @@ public class RefundController {
         switch (transaction.getStatus()) {
             case PaymentStatus.REFUNDED:
                 return ResponseEntity.ok().body(
-                        new RefundResponse(transactionMapperImpl.toResponse(transaction),
+                        new RefundResponse(transactionMapperImpl.toDto(transaction),
                                 "Giao dịch đã được hoàn tiền trước đó"));
             case PaymentStatus.PENDING:
                 return ResponseEntity.ok().body(
-                        new RefundResponse(transactionMapperImpl.toResponse(transaction),
+                        new RefundResponse(transactionMapperImpl.toDto(transaction),
                                 "Giao dịch đang chờ xử lý"));
             case SUCCESS:
                 transactionService.refund(transaction);
@@ -71,7 +71,7 @@ public class RefundController {
                 break;
             default:
                 return ResponseEntity.ok().body(
-                        new RefundResponse(transactionMapperImpl.toResponse(transaction),
+                        new RefundResponse(transactionMapperImpl.toDto(transaction),
                                 "Giao dịch không hợp lệ"));
         }
 
@@ -79,7 +79,7 @@ public class RefundController {
         transaction.setStatus(PaymentStatus.REFUNDED);
         transactionRepository.save(transaction);
 
-        return ResponseEntity.ok(new RefundResponse(transactionMapperImpl.toResponse(transaction),
+        return ResponseEntity.ok(new RefundResponse(transactionMapperImpl.toDto(transaction),
                 "Hoàn tiền thành công"));
     }
 

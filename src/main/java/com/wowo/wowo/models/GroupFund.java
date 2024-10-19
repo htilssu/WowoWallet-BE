@@ -1,5 +1,6 @@
 package com.wowo.wowo.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,8 +21,7 @@ public class GroupFund {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_fund_id_seq")
-    @SequenceGenerator(name = "group_fund_id_seq", sequenceName = "group_fund_id_seq",
-                       allocationSize = 1)
+    @SequenceGenerator(name = "group_fund_id_seq", sequenceName = "group_fund_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -33,22 +34,34 @@ public class GroupFund {
     @Column(name = "image")
     private String image;
 
+    @Size(max = 100)
+    @Column(name = "type")
+    private String type;
+
     @Size(max = 255)
     @Column(name = "description")
     private String description;
 
     @NotNull
     @Min(0)
-    @Column(name = "balance", nullable = false, precision = 10)
+    @Column(name = "balance", nullable = false)
     private Long balance;
 
     @NotNull
-    @Column(name = "target", nullable = false, precision = 10)
+    @Column(name = "target", nullable = false)
     private Long target;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
+
+    public double getBalance() {
+        return wallet != null ? wallet.getBalance() : 0L;
+    }
 
     @OneToMany(mappedBy = "group")
     private Set<FundMember> fundMembers = new LinkedHashSet<>();
@@ -56,4 +69,11 @@ public class GroupFund {
     @OneToMany(mappedBy = "group")
     private Set<GroupFundTransaction> groupFundTransactions = new LinkedHashSet<>();
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "target_date", nullable = false)
+    private LocalDate targetDate;
 }

@@ -81,16 +81,7 @@ CREATE TABLE payment_system
 DROP TABLE IF EXISTS transaction CASCADE;
 
 
-CREATE TABLE transaction
-(
-    id                 varchar(17) PRIMARY KEY DEFAULT nextval('transaction_id_seq') NOT NULL,
-    money              decimal(10, 2) NOT NULL,
-    receiver_wallet_id serial         NOT NULL,
-    sender_wallet_id   serial         NOT NULL,
-    status             payment_status NOT NULL DEFAULT 'PENDING',
-    created            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3),
-    updated            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3)
-);
+
 
 create table constant
 (
@@ -138,59 +129,56 @@ CREATE TABLE support_ticket
     status      varchar(50)  NOT NULL
 );
 
+CREATE TABLE transaction
+(
+    id                 varchar(17) PRIMARY KEY DEFAULT nextval('transaction_id_seq') NOT NULL,
+    money              decimal(10, 2) NOT NULL,
+    receiver_wallet_id serial         NOT NULL,
+    sender_wallet_id   serial         NOT NULL,
+    status             payment_status NOT NULL DEFAULT 'PENDING',
+    created            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3),
+    updated            TIMESTAMP(3)   NOT NULL DEFAULT current_timestamp(3)
+);
 -- Group Fund
+--lưu thông tin về từng quỹ nhóm
 DROP TABLE IF EXISTS group_fund CASCADE;
 
 CREATE TABLE group_fund
 (
-    id          int PRIMARY KEY,
+    id          bigserial PRIMARY KEY,
     name        varchar(255)   NOT NULL,
     description varchar(255),
-    balance     decimal(10, 2) NOT NULL,
+    balance    numeric     NOT NULL DEFAULT 0,
     target      decimal(10, 2) NOT NULL,
     owner_id    char(10) REFERENCES "user" (id)
 );
 
 DROP SEQUENCE IF EXISTS group_fund_id_seq;
 
+--lưu các thông tin thành viên trong quỹ nhóm đó
 DROP TABLE IF EXISTS fund_member CASCADE;
-
 CREATE TABLE fund_member
 (
-    group_id  int REFERENCES group_fund (id),
-    member_id char(10) REFERENCES "user" (id),
+    group_id  int REFERENCES group_fund (id) ON DELETE CASCADE, -- Xoá các thành viên khi quỹ bị xóa
+    member_id varchar(36) REFERENCES "user" (id),
     money     numeric NOT NULL DEFAULT 0,
+    joined_at TIMESTAMP DEFAULT current_timestamp,
     PRIMARY KEY (group_id, member_id)
 );
 
+--lưu các giao dịch trong quỹ nhóm đó
 drop table if exists group_fund_transaction cascade;
+-- Tạo kiểu ENUM cho transaction_type
+CREATE TYPE transaction_type AS ENUM ('WITHDRAW', 'CONTRIBUTE');
+
 CREATE TABLE group_fund_transaction
 (
-    transaction_id char(15) PRIMARY KEY REFERENCES transaction (id),
-    group_id       int REFERENCES group_fund (id),
-    member_id      char(10) REFERENCES "user" (id),
-    money          numeric NOT NULL,
-    created        date    NOT NULL DEFAULT CURRENT_DATE
-);
-
-create table atm_card
-(
-    id          serial primary key,
-    atm_id      int /*references atm (id)*/,
-    card_number varchar(16)  not null,
-    ccv         varchar(3),
-    holder_name varchar(255) not null,
-    owner_id    char(10) references "user" (id),
-    expired     varchar(200) not null,
-    created     date         not null default current_date,
-    unique (card_number)
-);
-
-create table group_fund_transaction
-(
-    transaction_id char(15) primary key references transaction (id),
-    group_id       int references group_fund (id),
-    member_id      char(10)
+    transaction_id varchar(17) PRIMARY KEY REFERENCES transaction (id),
+    group_id       int REFERENCES group_fund (id) ON DELETE CASCADE,
+    member_id      varchar(36) REFERENCES "user" (id),
+    transaction_type transaction_type NOT NULL, -- Chỉ có hai loại: 'WITHDRAW' và 'CONTRIBUTE'
+    amount         decimal(10, 2) NOT NULL, -- Số tiền của giao dịch
+    created_at     TIMESTAMP DEFAULT current_timestamp
 );
 
 create table wallet_transaction
@@ -214,6 +202,18 @@ CREATE TABLE banks
     "support"           bigint,
     "isTransfer"        bigint,
     "swift_code"        text NULL
+);
+create table atm_card
+(
+    id          serial primary key,
+    atm_id      int /*references atm (id)*/,
+    card_number varchar(16)  not null,
+    ccv         varchar(3),
+    holder_name varchar(255) not null,
+    owner_id    char(10) references "user" (id),
+    expired     varchar(200) not null,
+    created     date         not null default current_date,
+    unique (card_number)
 );
 
 create index wallet_transaction_sd_idx on wallet_transaction (sender_wallet);

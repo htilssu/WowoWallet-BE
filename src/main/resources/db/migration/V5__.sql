@@ -1,6 +1,0 @@
-ALTER TABLE wallet
-DROP
-COLUMN balance;
-
-ALTER TABLE wallet
-    ADD balance BIGINT DEFAULT 0 NOT NULL;
