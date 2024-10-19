@@ -16,7 +16,7 @@ Technologies used:
 - Spring Data JPA
 - Spring Security
 - Docker
-- SQL Server (Azure)
+- Postgres SQL (AWS)
 - Swagger
 - Version Control
     - Git

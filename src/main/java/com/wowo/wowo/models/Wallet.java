@@ -1,0 +1,54 @@
+package com.wowo.wowo.models;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "wallet")
+public class Wallet {
+
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Size(max = 20)
+    @NotNull
+    @ColumnDefault("'user'")
+    @Column(name = "owner_type", nullable = false, length = 20)
+    private String ownerType;
+
+    @Size(max = 5)
+    @NotNull
+    @ColumnDefault("'VND'")
+    @Column(name = "currency", nullable = false, length = 5)
+    private String currency = "VND";
+
+    @Size(max = 32)
+    @Column(name = "owner_id", length = 32)
+    private String ownerId;
+
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "balance", nullable = false)
+    private Long balance = 0L;
+
+    public void sendMoney(Wallet receiveWallet, long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
+        if (this.balance < amount) {
+            throw new IllegalArgumentException("Insufficient balance.");
+        }
+
+        // Chuyển tiền
+        receiveWallet.balance += amount;
+        this.balance -= amount;
+    }
+}
