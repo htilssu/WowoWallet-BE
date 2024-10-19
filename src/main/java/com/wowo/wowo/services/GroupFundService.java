@@ -210,7 +210,7 @@ public class GroupFundService {
 
         // Lưu giao dịch vào bảng `transaction`
         Transaction tx = new Transaction();
-        tx.setMoney(amount);
+        tx.setAmount(amount);
         tx.setDescription("Giao dịch đóng góp vào quỹ nhóm");
         tx.setCreated(Instant.from(java.time.LocalDateTime.now()));
         tx.setUpdated(Instant.from(java.time.LocalDateTime.now()));
