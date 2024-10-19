@@ -25,7 +25,7 @@ public class Employee {
 
     @NotNull
     @Column(name = "salary", nullable = false, precision = 10, scale = 2)
-    private BigDecimal salary;
+    private Long salary;
 
     @Size(max = 15)
     @NotNull

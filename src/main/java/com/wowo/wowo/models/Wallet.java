@@ -18,7 +18,7 @@ public class Wallet {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Size(max = 20)
     @NotNull
@@ -42,6 +42,14 @@ public class Wallet {
     private Long balance = 0L;
 
     public void sendMoney(Wallet receiveWallet, long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
+        if (this.balance < amount) {
+            throw new IllegalArgumentException("Insufficient balance.");
+        }
+
+        // Chuyển tiền
         receiveWallet.balance += amount;
         this.balance -= amount;
     }
