@@ -7,7 +7,6 @@ import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +19,11 @@ public class TransferService {
     private final WalletRepository walletRepository;
     private final UserService userService;
     private final TransactionService transactionService;
+    private final WalletTransactionService walletTransactionService;
 
     @IsUser
     @Transactional
-    public ResponseEntity<?> transfer(TransferDto data) {
+    public WalletTransaction transfer(TransferDto data) {
 
         Wallet senderWallet = null;
         if (data.getSourceId() == null) {
@@ -40,12 +40,16 @@ public class TransferService {
 
         assert senderWallet != null;
 
-        transferMoney(senderWallet, receiverWallet, data.getMoney());
+        WalletTransaction walletTransaction = transferMoney(senderWallet, receiverWallet,
+                data.getMoney());
 
-        return ResponseEntity.ok().build();
+        walletTransaction =
+                walletTransactionService.createWalletTransaction(walletTransaction);
+
+        return walletTransaction;
     }
 
-    protected void transferMoney(Wallet source, Wallet destination, long amount) {
+    protected WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
@@ -67,5 +71,7 @@ public class TransferService {
         transaction.setDescription("Chuyển tiền");
 
         walletTransaction.setTransaction(transaction);
+
+        return walletTransaction;
     }
 }

@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -45,10 +44,9 @@ dependencies {
 
     //jwt
     implementation("com.github.bastiaanjansen:otp-java:2.0.3")
-    implementation("com.twilio.sdk:twilio:10.5.0")
+    implementation("com.auth0:auth0:2.14.0")
 
-    //dynamodb
-    implementation("software.amazon.awssdk:dynamodb-enhanced")
+
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.google.guava:guava:33.2.1-jre")

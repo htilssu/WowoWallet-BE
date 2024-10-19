@@ -1,6 +1,5 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.TransactionNotFoundException;
 import com.wowo.wowo.models.Transaction;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class WalletTransactionService {
 
-    private final WalletTransactionMapper walletTransactionMapper;
     private final WalletService walletService;
     private final WalletTransactionRepository walletTransactionRepository;
     private final TransactionRepository transactionRepository;
@@ -55,18 +53,13 @@ public class WalletTransactionService {
     }
 
     @Transactional
-    public void createWalletTransaction(WalletTransaction walletTransaction) {
+    public WalletTransaction createWalletTransaction(WalletTransaction walletTransaction) {
         if (walletTransaction.getTransaction() == null) {
             throw new RuntimeException("Không thể tạo giao dịch mà không có thông tin giao dịch");
         }
 
-        var transaction = walletTransaction.getTransaction();
         try {
-            final Transaction newTransaction = transactionService.createTransaction(transaction);
-            walletTransaction.setTransaction(newTransaction);
-            walletTransaction.setId(newTransaction.getId());
-            walletTransactionRepository.save(walletTransaction);
-
+            return walletTransactionRepository.save(walletTransaction);
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo giao dịch");
         }
