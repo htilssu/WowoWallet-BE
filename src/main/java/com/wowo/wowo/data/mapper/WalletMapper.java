@@ -5,6 +5,7 @@ import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.data.dto.WalletResponse;
 import com.wowo.wowo.models.Wallet;
 import org.mapstruct.*;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface WalletMapper {

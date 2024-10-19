@@ -59,12 +59,40 @@ CREATE TABLE employee
     CONSTRAINT pk_employee PRIMARY KEY (id)
 );
 
+CREATE TABLE fund_member
+(
+    money     DECIMAL DEFAULT 0 NOT NULL,
+    group_id  INTEGER           NOT NULL,
+    member_id VARCHAR(10)       NOT NULL,
+    CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
+);
+
+CREATE TABLE group_fund
+(
+    id          BIGINT       NOT NULL,
+    name        VARCHAR(255) NOT NULL,
+    image       VARCHAR(256),
+    description VARCHAR(255),
+    balance     BIGINT       NOT NULL,
+    target      BIGINT       NOT NULL,
+    owner_id    VARCHAR(255),
+    CONSTRAINT pk_group_fund PRIMARY KEY (id)
+);
+
+CREATE TABLE group_fund_transaction
+(
+    transaction_id VARCHAR(255) NOT NULL,
+    group_id       BIGINT,
+    member_id      VARCHAR(255),
+    CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
+);
+
 CREATE TABLE "order"
 (
-    id             VARCHAR(50)                               NOT NULL,
+    id             VARCHAR(50) NOT NULL,
     partner_id     VARCHAR(32),
-    money          BIGINT                                    NOT NULL,
-    status         SMALLINT                                  NOT NULL,
+    money          BIGINT      NOT NULL,
+    status         SMALLINT    NOT NULL,
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
@@ -119,11 +147,11 @@ CREATE TABLE support_ticket
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(40)                 NOT NULL,
-    money       BIGINT                      NOT NULL,
-    status      SMALLINT                    NOT NULL,
-    type        SMALLINT                    NOT NULL,
-    variant     SMALLINT                    NOT NULL,
+    id          VARCHAR(40) NOT NULL,
+    money       BIGINT      NOT NULL,
+    status      SMALLINT    NOT NULL,
+    type        SMALLINT    NOT NULL,
+    variant     SMALLINT    NOT NULL,
     description VARCHAR(300),
     created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -138,6 +166,7 @@ CREATE TABLE "user"
     job         VARCHAR(255),
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
+
 CREATE TABLE wallet
 (
     id         BIGSERIAL                       NOT NULL,
