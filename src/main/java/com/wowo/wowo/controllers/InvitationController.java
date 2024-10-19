@@ -2,7 +2,7 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.InvitationDto;
 import com.wowo.wowo.exceptions.NotFoundException;
-import com.wowo.wowo.models.Invitation;
+import com.wowo.wowo.models.GroupFundInvitation;
 import com.wowo.wowo.services.InvitationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -69,8 +69,8 @@ public class InvitationController {
     @GetMapping("/sent/{senderId}")
     public ResponseEntity<?> getSentInvitations(@PathVariable String senderId) {
         try {
-            List<Invitation> invitations = invitationService.getSentInvitations(senderId);
-            return ResponseEntity.ok(invitations);
+            List<GroupFundInvitation> groupFundInvitations = invitationService.getSentInvitations(senderId);
+            return ResponseEntity.ok(groupFundInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
@@ -82,8 +82,8 @@ public class InvitationController {
     @GetMapping("/received/{recipientId}")
     public ResponseEntity<?> getReceivedInvitations(@PathVariable String recipientId) {
         try {
-            List<Invitation> invitations = invitationService.getReceivedInvitations(recipientId);
-            return ResponseEntity.ok(invitations);
+            List<GroupFundInvitation> groupFundInvitations = invitationService.getReceivedInvitations(recipientId);
+            return ResponseEntity.ok(groupFundInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {

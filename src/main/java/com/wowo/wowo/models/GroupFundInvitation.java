@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "invitation")
-public class Invitation {
+@Table(name = "group_fund_invitation")
+public class GroupFundInvitation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ID tự động tăng

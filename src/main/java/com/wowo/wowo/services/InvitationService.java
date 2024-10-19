@@ -48,70 +48,71 @@ public class InvitationService {
         }
 
         // Tạo lời mời mới
-        Invitation invitation = new Invitation();
-        invitation.setGroupId(groupId);
-        invitation.setSenderId(senderId);
-        invitation.setRecipientId(recipientId);
-        invitation.setStatus(InvitationStatus.PENDING);
-        Invitation savedInvitation = invitationRepository.save(invitation);
+        GroupFundInvitation groupFundInvitation = new GroupFundInvitation();
+        groupFundInvitation.setGroupId(groupId);
+        groupFundInvitation.setSenderId(senderId);
+        groupFundInvitation.setRecipientId(recipientId);
+        groupFundInvitation.setStatus(InvitationStatus.PENDING);
+        GroupFundInvitation savedGroupFundInvitation = invitationRepository.save(
+                groupFundInvitation);
 
         String successMessage = String.format("Lời mời tham gia quỹ nhóm đã được gửi thành công tới %s.", recipient.getId());
         Map<String, Object> response = new HashMap<>();
-        response.put("invitation", savedInvitation);
+        response.put("invitation", savedGroupFundInvitation);
         response.put("message", successMessage);
 
         return response;
     }
 
     // Lấy tất cả lời mời đã gửi đi
-    public List<Invitation> getSentInvitations(String senderId) {
+    public List<GroupFundInvitation> getSentInvitations(String senderId) {
         Optional<User> sender = userRepository.findById(senderId);
         if (sender.isEmpty()) {
             throw new UserNotFoundException("Người gửi không tồn tại");
         }
 
-        List<Invitation> invitations = invitationRepository.findBySenderId(senderId);
-        if (invitations.isEmpty()) {
+        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findBySenderId(senderId);
+        if (groupFundInvitations.isEmpty()) {
             throw new NotFoundException("Không có lời mời nào được gửi.");
         }
 
-        return invitations;
+        return groupFundInvitations;
     }
 
     // Lấy tất cả lời mời được nhận
-    public List<Invitation> getReceivedInvitations(String recipientId) {
+    public List<GroupFundInvitation> getReceivedInvitations(String recipientId) {
         Optional<User> recipient = userRepository.findById(recipientId);
         if (recipient.isEmpty()) {
             throw new UserNotFoundException("Người nhận không tồn tại");
         }
 
-        List<Invitation> invitations = invitationRepository.findByRecipientId(recipientId);
-        if (invitations.isEmpty()) {
+        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipientId(recipientId);
+        if (groupFundInvitations.isEmpty()) {
             throw new NotFoundException("Không có lời mời nào được nhận.");
         }
 
-        return invitations;
+        return groupFundInvitations;
     }
 
     // Xác nhận lời mời
     public void acceptInvitation(Long invitationId) {
-        Invitation invitation = invitationRepository.findById(invitationId)
+        GroupFundInvitation groupFundInvitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new NotFoundException("Lời mời không tồn tại"));
 
-        GroupFund groupFund = groupFundRepository.findById(invitation.getGroupId())
+        GroupFund groupFund = groupFundRepository.findById(groupFundInvitation.getGroupId())
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
-        Optional<User> userOptional = userRepository.findById(invitation.getRecipientId());
+        Optional<User> userOptional = userRepository.findById(groupFundInvitation.getRecipientId());
         User user = userOptional.orElseThrow(
                 () -> new UserNotFoundException("Người dùng không tồn tại"));
 
-        if (fundMemberRepository.existsByGroupIdAndMemberId(invitation.getGroupId(), invitation.getRecipientId())) {
+        if (fundMemberRepository.existsByGroupIdAndMemberId(groupFundInvitation.getGroupId(), groupFundInvitation.getRecipientId())) {
             throw new IllegalArgumentException("Thành viên đã tham gia quỹ này");
         }
 
         var fundMemberId = new FundMemberId();
-        fundMemberId.setGroupId(invitation.getGroupId());
-        fundMemberId.setMemberId(invitation.getRecipientId());
+        fundMemberId.setGroupId(groupFundInvitation.getGroupId());
+        fundMemberId.setMemberId(groupFundInvitation.getRecipientId());
 
         FundMember fundMember = new FundMember();
         fundMember.setId(fundMemberId);
@@ -125,12 +126,12 @@ public class InvitationService {
 //        invitationRepository.save(invitation);
 
         // Xóa lời mời sau khi đã chấp nhận
-        invitationRepository.delete(invitation);
+        invitationRepository.delete(groupFundInvitation);
     }
 
     // Từ chối lời mời
     public void rejectInvitation(Long invitationId) {
-        Invitation invitation = invitationRepository.findById(invitationId)
+        GroupFundInvitation groupFundInvitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new NotFoundException("Lời mời không tồn tại"));
 
         // Cập nhật trạng thái lời mời
@@ -138,6 +139,6 @@ public class InvitationService {
 //        invitationRepository.save(invitation);
 
         // Xóa lời mời khỏi cơ sở dữ liệu
-        invitationRepository.delete(invitation);
+        invitationRepository.delete(groupFundInvitation);
     }
 }

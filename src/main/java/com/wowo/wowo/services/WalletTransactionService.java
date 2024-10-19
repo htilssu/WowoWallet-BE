@@ -1,6 +1,5 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.TransactionNotFoundException;
 import com.wowo.wowo.models.Transaction;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class WalletTransactionService {
 
-    private final WalletTransactionMapper walletTransactionMapper;
     private final WalletService walletService;
     private final WalletTransactionRepository walletTransactionRepository;
     private final TransactionRepository transactionRepository;
