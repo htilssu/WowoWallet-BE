@@ -11,4 +11,6 @@ public interface WalletRepository extends CrudRepository<Wallet, String> {
 
     Optional<Wallet> findByOwnerIdAndOwnerType(String ownerId, String ownerType);
     Optional<Wallet> findByOwnerId(String senderId);
+    boolean existsByOwnerId(String ownerId);
+    boolean existsByOwnerIdAndId(String ownerId, Integer id);
 }

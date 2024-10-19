@@ -4,8 +4,7 @@ import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransferDto;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.NotFoundException;
-import com.wowo.wowo.models.User;
-import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +39,9 @@ public class TransferService {
                         () -> new NotFoundException("Không tìm thấy ví người nhận"));
 
         assert senderWallet != null;
+
         transferMoney(senderWallet, receiverWallet, data.getMoney());
 
-//        transactionService.createTransaction()
         return ResponseEntity.ok().build();
     }
 
@@ -53,5 +52,20 @@ public class TransferService {
         source.setBalance(source.getBalance() - amount);
         destination.setBalance(destination.getBalance() + amount);
         walletRepository.saveAll(List.of(source, destination));
+
+
+        final var walletTransaction = new WalletTransaction();
+        walletTransaction.setSenderWallet(source);
+        walletTransaction.setReceiverWallet(destination);
+
+        Transaction transaction = new Transaction();
+
+        transaction.setVariant(TransactionVariant.WALLET);
+        transaction.setAmount(amount);
+        transaction.setStatus(PaymentStatus.SUCCESS);
+        transaction.setType(TransactionType.TRANSFER);
+        transaction.setDescription("Chuyển tiền");
+
+        walletTransaction.setTransaction(transaction);
     }
 }

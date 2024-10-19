@@ -14,9 +14,7 @@ public class SupportTicket {
 
     @Id
     @Size(max = 15)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "support_ticket_id_seq")
-    @SequenceGenerator(name = "support_ticket_id_seq", sequenceName = "support_ticket_id_seq",
-                       allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, length = 15)
     private String id;
 

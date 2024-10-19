@@ -1,21 +1,26 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "transaction")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
     @Id
@@ -23,8 +28,8 @@ public class Transaction {
     private String id;
 
     @NotNull
-    @Column(name = "money", nullable = false)
-    private Long money;
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
     @Size(max = 50)
     @NotNull

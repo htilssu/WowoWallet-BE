@@ -35,4 +35,8 @@ public class WalletService {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean isWalletOwner(String userId, String walletId) {
+        return walletRepository.existsByOwnerIdAndId(userId, walletId);
+    }
 }
