@@ -1,4 +1,4 @@
-package com.wowo.wowo.data.dto.response;
+package com.wowo.wowo.data.dto;
 
 import lombok.Data;
 

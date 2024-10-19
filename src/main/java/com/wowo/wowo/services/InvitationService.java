@@ -33,10 +33,10 @@ public class InvitationService {
         GroupFund groupFund = groupFundRepository.findById(groupId)
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
-        User sender = userRepository.findById(Long.valueOf(senderId))
+        User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new UserNotFoundException("Người gửi không tồn tại"));
 
-        User recipient = userRepository.findById(Long.valueOf(recipientId))
+        User recipient = userRepository.findById(String.valueOf(Long.valueOf(recipientId)))
                 .orElseThrow(() -> new UserNotFoundException("Người nhận không tồn tại"));
 
         if (invitationRepository.existsByGroupIdAndRecipientIdAndStatus(groupId, recipientId, InvitationStatus.PENDING)) {
@@ -65,7 +65,7 @@ public class InvitationService {
 
     // Lấy tất cả lời mời đã gửi đi
     public List<Invitation> getSentInvitations(String senderId) {
-        Optional<User> sender = userRepository.findById(Long.valueOf(senderId));
+        Optional<User> sender = userRepository.findById(senderId);
         if (sender.isEmpty()) {
             throw new UserNotFoundException("Người gửi không tồn tại");
         }
@@ -80,7 +80,7 @@ public class InvitationService {
 
     // Lấy tất cả lời mời được nhận
     public List<Invitation> getReceivedInvitations(String recipientId) {
-        Optional<User> recipient = userRepository.findById(Long.valueOf(recipientId));
+        Optional<User> recipient = userRepository.findById(recipientId);
         if (recipient.isEmpty()) {
             throw new UserNotFoundException("Người nhận không tồn tại");
         }
@@ -101,7 +101,7 @@ public class InvitationService {
         GroupFund groupFund = groupFundRepository.findById(invitation.getGroupId())
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
-        Optional<User> userOptional = userRepository.findById(Long.valueOf(invitation.getRecipientId()));
+        Optional<User> userOptional = userRepository.findById(invitation.getRecipientId());
         User user = userOptional.orElseThrow(
                 () -> new UserNotFoundException("Người dùng không tồn tại"));
 

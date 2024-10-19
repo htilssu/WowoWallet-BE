@@ -1,8 +1,6 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.response.GroupFundDto;
-import com.wowo.wowo.data.dto.response.GroupFundTransactionDto;
-import com.wowo.wowo.data.dto.response.UserDto;
+import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.data.mapper.GroupFundMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
@@ -41,7 +39,7 @@ public class GroupFundService {
         // Lấy thông tin người gửi request từ Authentication
 //        String ownerId = (String) authentication.getPrincipal();
         //chưa có người dùng nên lấy dữ liệu ảo là 1
-        Long ownerId = 1L;
+        String ownerId = "1";
         Optional<User> userOptional = userRepository.findById(ownerId);
 
         // Kiểm tra người dùng có tồn tại không
@@ -54,7 +52,7 @@ public class GroupFundService {
         try {
             Wallet wallet = new Wallet();
             wallet.setOwnerType("group_fund");
-            wallet.setBalance(0.0);
+            wallet.setBalance(0L);
             wallet.setCurrency("VND");
             wallet.setOwnerId(owner.getId());
             // Lưu ví vào cơ sở dữ liệu
@@ -98,7 +96,7 @@ public class GroupFundService {
         GroupFund groupFund = groupFundRepository.findById(groupId)
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
-        Optional<User> userOptional = userRepository.findById(Long.valueOf(memberId));
+        Optional<User> userOptional = userRepository.findById(memberId);
         User member = userOptional.orElseThrow(
                 () -> new UserNotFoundException("Thành viên không tồn tại"));
 
@@ -197,7 +195,7 @@ public class GroupFundService {
     }
 
     // Ghi nhận giao dịch cho quỹ nhóm
-    public GroupFundTransaction createTransaction(Long groupId, Long memberId, Long amount) {
+    public GroupFundTransaction createTransaction(Long groupId, String memberId, Long amount) {
         GroupFund groupFund = groupFundRepository.findById(groupId)
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 

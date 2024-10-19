@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.GroupFundDto;
-import com.wowo.wowo.data.dto.response.GroupFundTransactionDto;
+import com.wowo.wowo.data.dto.GroupFundTransactionDto;
 import com.wowo.wowo.models.GroupFund;
 import com.wowo.wowo.models.GroupFundTransaction;
 import org.mapstruct.*;

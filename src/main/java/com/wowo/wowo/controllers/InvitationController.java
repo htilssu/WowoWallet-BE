@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.InvitationDto;
+import com.wowo.wowo.data.dto.InvitationDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Invitation;
 import com.wowo.wowo.services.InvitationService;

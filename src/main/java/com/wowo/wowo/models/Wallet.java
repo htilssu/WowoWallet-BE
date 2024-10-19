@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -31,16 +28,16 @@ public class Wallet {
     @NotNull
     @ColumnDefault("'VND'")
     @Column(name = "currency", nullable = false, length = 5)
-    private String currency = "VND"; // Loại tiền tệ
+    private String currency = "VND";
 
     @Size(max = 32)
     @Column(name = "owner_id", length = 32)
-    private String ownerId; // ID của chủ sở hữu
+    private String ownerId;
 
     @NotNull
     @ColumnDefault("0")
     @Column(name = "balance", nullable = false)
-    private Long balance = 0L; // Số dư ví
+    private Long balance = 0L;
 
     public void sendMoney(Wallet receiveWallet, long amount) {
         if (amount <= 0) {

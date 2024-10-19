@@ -1,6 +1,6 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.data.dto.response.*;
+import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.models.FundMember;
 import com.wowo.wowo.models.GroupFund;
 import com.wowo.wowo.models.GroupFundTransaction;

@@ -1,4 +1,4 @@
-package com.wowo.wowo.data.dto.response;
+package com.wowo.wowo.data.dto;
 
 import com.wowo.wowo.models.TransactionType;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class GroupFundTransactionDto {
 
     @NotNull(message = "Member ID cannot be null")
-    private Long memberId;
+    private String memberId;
 
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be positive")
