@@ -1,6 +1,7 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.services.EmailService;
 import com.wowo.wowo.services.TransferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,10 +24,10 @@ public class TransferControllerV2 {
 
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransferDto data) {
-        transferService.transfer(data);
-//        emailService.sendEmail();
+        final WalletTransaction walletTransaction = transferService.transfer(data);
+        //        emailService.sendEmail();
         //TODO: send email
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(walletTransaction.getTransaction());
     }
 
 }

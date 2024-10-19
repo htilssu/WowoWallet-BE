@@ -35,11 +35,4 @@ public class PaymentSystem {
     @ColumnDefault("true")
     @Column(name = "is_active")
     private Boolean isActive;
-
-/*
- TODO [Reverse Engineering] create field to map the 'type' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "type", columnDefinition = "payment_system_type not null")
-    private Object type;
-*/
 }

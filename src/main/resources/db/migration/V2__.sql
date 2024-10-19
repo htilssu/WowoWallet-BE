@@ -1,0 +1,3 @@
+ALTER TABLE wallet_transaction
+ALTER
+COLUMN id TYPE VARCHAR(40) USING (id::VARCHAR(40));
