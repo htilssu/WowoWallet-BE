@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorVm> handleException(Exception ex) {
+        return ResponseEntity.status(500).body(ErrorVm.builder().message(ex.getMessage())
+                .errorCode(500).build());
+    }
+
     /**
      * Handle {@link TransactionNotFoundException} to response with 404 status code
      *

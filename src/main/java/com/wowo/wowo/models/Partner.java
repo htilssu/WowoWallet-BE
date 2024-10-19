@@ -30,7 +30,6 @@ public class Partner {
     private String email;
 
     @Size(max = 255)
-    @NotNull
     @Column(name = "api_key", nullable = false)
     private String apiKey;
 }

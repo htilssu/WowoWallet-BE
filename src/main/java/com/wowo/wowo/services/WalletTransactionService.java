@@ -1,22 +1,24 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.WalletTransactionMapper;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.TransactionNotFoundException;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletTransaction;
+import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 public class WalletTransactionService {
 
-    private final WalletTransactionMapper walletTransactionMapper;
     private final WalletService walletService;
     private final WalletTransactionRepository walletTransactionRepository;
+    private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
 
     /**
      * Hoàn tiền cho giao dịch qua ví
@@ -40,26 +42,26 @@ public class WalletTransactionService {
         final Wallet senderWallet = walletTransaction.getSenderWallet();
         final Wallet receiverWallet = walletTransaction.getReceiverWallet();
 
-        if (receiverWallet.getBalance() <= walletTransaction.getTransaction().getMoney()
+        if (receiverWallet.getBalance() <= walletTransaction.getTransaction().getAmount()
                 .doubleValue()) {
             throw new InsufficientBalanceException("Không đủ tiền để hoàn tiền");
         }
 
         receiverWallet.sendMoney(senderWallet,
-                walletTransaction.getTransaction().getMoney());
+                walletTransaction.getTransaction().getAmount());
 
     }
 
-    public void createWalletTransaction(Transaction transaction) {
+    @Transactional
+    public WalletTransaction createWalletTransaction(WalletTransaction walletTransaction) {
+        if (walletTransaction.getTransaction() == null) {
+            throw new RuntimeException("Không thể tạo giao dịch mà không có thông tin giao dịch");
+        }
 
-    }
-
-    public void createWalletTransaction(Transaction transaction, Wallet sender, Wallet receiver) {
-        WalletTransaction walletTransaction = new WalletTransaction();
-        walletTransaction.setTransaction(transaction);
-        walletTransaction.setSenderWallet(sender);
-        walletTransaction.setReceiverWallet(receiver);
-
-        walletTransactionRepository.save(walletTransaction);
+        try {
+            return walletTransactionRepository.save(walletTransaction);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo giao dịch");
+        }
     }
 }

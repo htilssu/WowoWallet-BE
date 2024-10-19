@@ -1,34 +1,43 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
+import com.wowo.wowo.annotations.id_generator.TransactionIdSequence;
+import com.wowo.wowo.models.transaction.TransactionIdGenerator;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "transaction")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
     @Id
+    @TransactionIdSequence
     @Column(name = "id", nullable = false, length = 40)
     private String id;
 
     @NotNull
-    @Column(name = "money", nullable = false)
-    private Long money;
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "type", nullable = false)
@@ -41,14 +50,11 @@ public class Transaction {
     @Column(name = "description", length = 300)
     private String description;
 
-    @NotNull
     @CreatedDate
     @Column(name = "created", nullable = false)
     private Instant created;
 
-    @NotNull
     @Column(name = "updated", nullable = false)
     @LastModifiedDate
     private Instant updated;
-
 }

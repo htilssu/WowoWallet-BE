@@ -12,5 +12,4 @@ public class WalletResponse {
     private String ownerType;
     private double balance;
     private String currency;
-
 }

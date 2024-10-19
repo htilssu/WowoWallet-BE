@@ -5,6 +5,7 @@ import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,16 @@ public class UserService {
         throw new NotImplementedException();
     }
 
+    @NotNull
     public User getUserByIdOrUsernameOrEmail(String id, String username, String email) {
         return userRepository.findFirstByIdOrEmailOrUsername(id, username, email).orElseThrow(
                 () -> new NotFoundException("Người dùng không tồn tại"));
     }
 
     public void createUser(SSOData ssoData) {
-        var user = userRepository.findFirstByIdOrEmailOrUsername(ssoData.getId(),
-                ssoData.getEmail(), ssoData.getUsername());
-        if (user.isPresent()) {
-            return;
-        }
+
+        var user = userRepository.findById(ssoData.getId());
+        if (user.isPresent()) return;
 
         var newUser = new User();
         newUser.setId(ssoData.getId());
@@ -43,8 +43,8 @@ public class UserService {
 
         try {
             userRepository.save(newUser);
-
             walletService.createWallet(newUser);
+            
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }
