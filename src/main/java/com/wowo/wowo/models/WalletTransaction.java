@@ -20,7 +20,7 @@ public class WalletTransaction {
     private String id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id", nullable = false)
     private Transaction transaction;
 

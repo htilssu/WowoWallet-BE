@@ -29,7 +29,6 @@ public class Order {
     @Column(name = "money", nullable = false)
     private Long money;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;

@@ -36,7 +36,12 @@ public class WalletService {
         }
     }
 
-    public boolean isWalletOwner(String userId, String walletId) {
+    public boolean isWalletOwner(String userId, int walletId) {
         return walletRepository.existsByOwnerIdAndId(userId, walletId);
+    }
+
+    public boolean isWalletOwner(String userId, String walletId) {
+        final int walletIdInt = Integer.parseInt(walletId);
+        return walletRepository.existsByOwnerIdAndId(userId, walletIdInt);
     }
 }

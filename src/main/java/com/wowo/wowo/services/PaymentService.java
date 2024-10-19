@@ -26,7 +26,7 @@ public class PaymentService {
             Authentication authentication) throws
                                            InsufficientBalanceException,
                                            WalletNotFoundException {
-
+        return null;
     }
 
     public void makePayment(Wallet sender, Wallet receiver, long amount) throws
@@ -39,6 +39,12 @@ public class PaymentService {
         walletRepository.saveAll(List.of(sender, receiver));
     }
 
+    /**
+     * Thực hiện thanh toán cho đơn hàng,
+     *
+     * @param id       id của đơn hàng {@link  Order}
+     * @param sourceId id của nguồn thanh toán {@link Wallet}
+     */
     public void makePayment(String id, String sourceId) {
         var order = orderService.getById(id);
         if (order.getStatus() != PaymentStatus.PENDING) {
@@ -49,11 +55,12 @@ public class PaymentService {
         if (senderWallet == null) {
             throw new WalletNotFoundException("Không tìm thấy ví nguồn");
         }
-        var receiverWallet = walletRepository.findByOwnerId(order.getOwnerId()).orElse(null);
+        var receiverWallet = walletRepository.findByOwnerId(order.getPartner().getId()).orElse(
+                null);
         if (receiverWallet == null) {
             throw new WalletNotFoundException("Không tìm thấy ví người nhận");
         }
 
-        transferService.transferMoney();
+        transferService.transferMoney(senderWallet, receiverWallet, order.getMoney());
     }
 }
