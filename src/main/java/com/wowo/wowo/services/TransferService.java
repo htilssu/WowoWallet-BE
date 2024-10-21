@@ -2,10 +2,12 @@ package com.wowo.wowo.services;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.WalletRepository;
+import com.wowo.wowo.util.AuthUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +22,29 @@ public class TransferService {
     private final UserService userService;
     private final TransactionService transactionService;
     private final WalletTransactionService walletTransactionService;
+    private final WalletService walletService;
 
     @IsUser
     @Transactional
     public WalletTransaction transfer(TransferDto data) {
 
         Wallet senderWallet = null;
+        var authid = AuthUtil.getId();
         if (data.getSourceId() == null) {
+            if (!authid.equals(data.getSenderId())) {
+                throw new BadRequest("Không thể chuyển tiền từ ví không phải của bạn");
+            }
             senderWallet = walletRepository.findByOwnerId(data.getSenderId())
                     .orElseThrow(
                             () -> new NotFoundException("Không tìm thấy ví"));
+        } else {
+            senderWallet = walletRepository.findById(Long.valueOf(data.getSourceId()))
+                    .orElseThrow(
+                            () -> new NotFoundException("Không tìm thấy ví"));
+            var isOwner = authid.equals(senderWallet.getOwnerId());
+            if (!isOwner) {
+                throw new BadRequest("Không thể chuyển tiền từ ví không phải của bạn");
+            }
         }
         final User receiver = userService.getUserByIdOrUsernameOrEmail(
                 data.getReceiverId(), data.getReceiverId(),

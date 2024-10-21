@@ -85,4 +85,10 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(404).body(ErrorVm.builder().message(ex.getMessage())
                 .errorCode(404).build());
     }
+
+    @ExceptionHandler(BadRequest.class)
+    public ResponseEntity<ErrorVm> handleBadRequest(BadRequest ex) {
+        return ResponseEntity.status(400).body(ErrorVm.builder().message(ex.getMessage())
+                .errorCode(400).build());
+    }
 }
