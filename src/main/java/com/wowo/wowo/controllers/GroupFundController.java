@@ -1,5 +1,6 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.models.FundMember;
 import com.wowo.wowo.models.GroupFund;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@IsUser
 @AllArgsConstructor
 @RequestMapping(value = "v1/group-fund", produces = "application/json; charset=utf-8")
 public class GroupFundController {

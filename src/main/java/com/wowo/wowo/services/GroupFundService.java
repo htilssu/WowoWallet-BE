@@ -1,6 +1,8 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.*;
+import com.wowo.wowo.data.dto.GroupFundDto;
+import com.wowo.wowo.data.dto.GroupFundTransactionDto;
+import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.GroupFundMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.*;
 
 @Slf4j
@@ -27,10 +28,7 @@ public class GroupFundService {
     private final GroupFundMapper groupFundMapper;
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
-    @Autowired
     private UserMapper userMapper;
-
-    @Autowired
     private WalletMapper walletMapper;
 
     // Tạo quỹ nhóm
@@ -212,8 +210,6 @@ public class GroupFundService {
         Transaction tx = new Transaction();
         tx.setAmount(amount);
         tx.setDescription("Giao dịch đóng góp vào quỹ nhóm");
-        tx.setCreated(Instant.from(java.time.LocalDateTime.now()));
-        tx.setUpdated(Instant.from(java.time.LocalDateTime.now()));
 
         groupFundTransactionRepository.save(transaction);
 

@@ -19,11 +19,6 @@ public interface TransactionMapper {
     })
     Transaction toEntity(TransactionRequest transactionRequest);
 
-    @Mappings({
-            @Mapping(target = "created", source = "created"),
-            @Mapping(target = "updated", source = "updated")
-    })
-
     Transaction toEntity(TransactionDto transactionDto);
     TransactionDto toDto(Transaction transaction);
     @BeanMapping(

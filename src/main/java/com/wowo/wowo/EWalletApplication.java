@@ -54,10 +54,11 @@ public class EWalletApplication {
                         "docs/**", "v3/api-docs/**"
                 )
                 .permitAll()
-                .requestMatchers("/v?/user/**")
-                .hasRole("USER")
-                .requestMatchers("/v?/partner/**",
+                .requestMatchers("/v?/user/**", "/v?/wallet/**", "/v?/transaction/**",
                         "/v?/payment/**")
+                .hasRole("USER")
+                .requestMatchers(
+                        "/v?/partner/**")
                 .hasRole("PARTNER")
                 .requestMatchers("/v?/admin/**")
                 .hasRole("ADMIN")

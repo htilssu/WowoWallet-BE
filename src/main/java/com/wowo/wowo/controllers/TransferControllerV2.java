@@ -1,5 +1,6 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransferDto;
 import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.services.EmailService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RestController
 @RequestMapping("v2/transfer")
+@IsUser
 @Tag(name = "Transfer", description = "Chuyển tiền")
 public class TransferControllerV2 {
 
