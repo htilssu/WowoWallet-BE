@@ -1,4 +1,4 @@
-package com.wowo.wowo.models.transaction;
+package com.wowo.wowo.generators;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
