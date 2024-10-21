@@ -58,6 +58,10 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.17.3")
     implementation("org.flywaydb:flyway-database-postgresql")
 
+    //Paypal
+    implementation("com.paypal.sdk:paypal-server-sdk:0.5.2")
+
+
 
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
