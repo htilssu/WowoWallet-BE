@@ -38,7 +38,7 @@ public class TransactionController {
         if (transaction == null) {
             throw new NotFoundException("Giao dịch không tồn tại");
         }
-        final TransactionDto  transactionResponse = transactionMapper.toDto(transaction);
+        final TransactionDto transactionResponse = transactionMapper.toDto(transaction);
 
         return ResponseEntity.ok(transactionResponse);
 
@@ -52,9 +52,12 @@ public class TransactionController {
         offset = Math.min(30, Math.max(offset, 0));
         page = Math.max(page, 0);
 
-        return transactionService.getRecentTransactions(((String) authentication.getPrincipal()),
+        final List<Transaction> recentTransactions = transactionService.getRecentTransactions(
+                ((String) authentication.getPrincipal()),
                 offset,
                 page);
+
+        return recentTransactions.stream().map(transactionMapper::toDto).toList();
 
     }
 

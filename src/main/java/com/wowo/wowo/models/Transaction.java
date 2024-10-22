@@ -1,10 +1,7 @@
 package com.wowo.wowo.models;
 
 import com.wowo.wowo.annotations.id_generator.TransactionIdSequence;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -48,9 +46,12 @@ public class Transaction {
 
     @CreatedDate
     @Column(name = "created", nullable = false)
-    private Instant created = Instant.now();
+    private ZonedDateTime created = ZonedDateTime.now();
 
     @Column(name = "updated", nullable = false)
     @LastModifiedDate
-    private Instant updated = Instant.now();
+    private ZonedDateTime updated = ZonedDateTime.now();
+
+    @OneToOne(mappedBy = "transaction")
+    private WalletTransaction walletTransaction;
 }

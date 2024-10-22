@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
@@ -17,9 +17,10 @@ import java.time.Instant;
 public class Order {
 
     @Id
-    @Size(max = 50)
     @Column(name = "id", nullable = false, length = 50)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_seq")
+    @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq", allocationSize = 1)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partner_id")
@@ -45,13 +46,11 @@ public class Order {
     @Column(name = "success_url", length = 300)
     private String successUrl;
 
-    @NotNull
-    @ColumnDefault("now()")
+    @CreationTimestamp
     @Column(name = "created", nullable = false)
     private Instant created;
 
-    @NotNull
-    @ColumnDefault("now()")
+    @UpdateTimestamp
     @Column(name = "updated", nullable = false)
     private Instant updated;
 

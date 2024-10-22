@@ -28,4 +28,9 @@ public class PartnerService {
             throw new RuntimeException("Không thể tạo đối tác");
         }
     }
+
+    public Partner getPartnerById(String partnerId) {
+       return partnerRepository.findById(partnerId).orElseThrow(
+                () -> new RuntimeException("Không tìm thấy đối tác"));
+    }
 }
