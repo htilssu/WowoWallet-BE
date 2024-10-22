@@ -5,13 +5,14 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.Collection;
 
 /**
- * DTO for {@link Order}
+ * DTO for {@link com.wowo.wowo.models.Order}
  */
-public record CreateOrderDto(@Size(max = 15) String id, @NotNull @PositiveOrZero(
+public record OrderCreateDto(@NotNull @PositiveOrZero(
         message = "Số tiền phải lớn hơn hoặc bằng 0") Long money,
+                             @NotNull Collection<OrderItemCreateDto> items,
                              @Size(max = 300) String returnUrl, @Size(max = 300) String successUrl,
                              @Size(max = 100) String serviceName)
         implements Serializable {
