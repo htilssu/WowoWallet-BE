@@ -1,12 +1,13 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.dto.WalletResponse;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -15,12 +16,11 @@ public class WalletService {
     private final WalletMapper walletMapper;
     private final WalletRepository walletRepository;
 
-    public WalletResponse getWallet(int id) {
-        var wallet = walletRepository.findById((long) id)
+    public Wallet getWallet(int id) {
+        return walletRepository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
 
 
-        return walletMapper.toResponse(wallet);
     }
 
     public Wallet createWallet(User user) {
@@ -43,5 +43,9 @@ public class WalletService {
     public boolean isWalletOwner(String userId, String walletId) {
         final int walletIdInt = Integer.parseInt(walletId);
         return walletRepository.existsByOwnerIdAndId(userId, (long) walletIdInt);
+    }
+
+    public Optional<Wallet> getPartnerWallet(String partnerId) {
+        return walletRepository.findByOwnerIdAndOwnerType(partnerId,"partner");
     }
 }

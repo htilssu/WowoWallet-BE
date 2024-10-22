@@ -20,15 +20,13 @@ public class TransferService {
 
     private final WalletRepository walletRepository;
     private final UserService userService;
-    private final TransactionService transactionService;
     private final WalletTransactionService walletTransactionService;
-    private final WalletService walletService;
 
     @IsUser
     @Transactional
     public WalletTransaction transfer(TransferDto data) {
 
-        Wallet senderWallet = null;
+        Wallet senderWallet;
         var authid = AuthUtil.getId();
         if (data.getSourceId() == null) {
             if (!authid.equals(data.getSenderId())) {
@@ -37,7 +35,8 @@ public class TransferService {
             senderWallet = walletRepository.findByOwnerId(data.getSenderId())
                     .orElseThrow(
                             () -> new NotFoundException("Không tìm thấy ví"));
-        } else {
+        }
+        else {
             senderWallet = walletRepository.findById(Long.valueOf(data.getSourceId()))
                     .orElseThrow(
                             () -> new NotFoundException("Không tìm thấy ví"));
@@ -64,7 +63,7 @@ public class TransferService {
         return walletTransaction;
     }
 
-    protected WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) {
+    public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }

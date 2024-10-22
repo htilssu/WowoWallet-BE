@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class OrderService {
 
     public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos) {
         var partnerId = AuthUtil.getId();
-        var partner = partnerService.getPartnerById("123");
+        var partner = partnerService.getPartnerById(partnerId);
         order.setPartner(partner);
         final Order newOrder = orderRepository.save(order);
         var orderItems = orderItemCreateDtos.stream().map(orderItemMapper::toEntity).toList();
@@ -47,8 +48,8 @@ public class OrderService {
         return orderDto;
     }
 
-    public Order getById(String id) {
-        return orderRepository.findById(id).orElse(null);
+    public Optional<Order> getById(String id) {
+        return orderRepository.findById(id);
     }
 
     public OrderDto getOrderDetail(String id) {
