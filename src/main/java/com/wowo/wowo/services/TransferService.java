@@ -63,7 +63,21 @@ public class TransferService {
         return walletTransaction;
     }
 
-    public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) {
+    /**
+     * Chuyển tiền từ ví nguồn tới ví đích
+     * số tiền chuyển phải nhỏ hơn hoặc bằng số dư của ví nguồn, nếu không sẽ ném ra ngoại lệ
+     * {@code InsufficientBalanceException}
+     *
+     * @param source      ví nguồn
+     * @param destination ví đích
+     * @param amount      số tiền chuyển
+     * @exception InsufficientBalanceException nếu số dư của ví nguồn nhỏ hơn số tiền chuyển
+     * @see InsufficientBalanceException
+     *
+     * @return {@link WalletTransaction} chứa thông tin giao dịch
+     */
+    public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
+                                                                                           InsufficientBalanceException {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
