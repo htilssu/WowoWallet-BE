@@ -33,20 +33,15 @@ public class PaypalService {
                                         new AmountWithBreakdown.Builder(
                                                 "USD",
                                                 "100000"
-                                        )
-                                                .build()
-                                )
-                                        .build()
+                                        ).build()
+                                ).build()
                         )
-                )
-                        .build()
-        )
-                .prefer("return=representation")
+                ).build()
+        ).prefer("return=representation")
                 .build();
 
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
                 ordersCreateInput);
-        final Order result = orderApiResponse.getResult();
-       return result;
+        return orderApiResponse.getResult();
     }
 }

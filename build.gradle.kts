@@ -38,6 +38,8 @@ dependencies {
     implementation("org.apache.kafka:kafka-streams")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     testImplementation("org.springframework.kafka:spring-kafka-test")
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
@@ -61,20 +63,24 @@ dependencies {
     //Paypal
     implementation("com.paypal.sdk:paypal-server-sdk:0.5.2")
 
-
+    //Pusher
+    implementation("com.pusher:pusher-http-java:1.3.3")
 
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
 
 
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     "developmentOnly"("org.springframework.boot:spring-boot-devtools")
 
+    //Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    //Test
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
@@ -82,6 +88,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.1")
 
+    //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
 }

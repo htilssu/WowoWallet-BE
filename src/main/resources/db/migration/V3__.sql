@@ -1,0 +1,6 @@
+ALTER TABLE atm_card
+DROP
+COLUMN created;
+
+ALTER TABLE atm_card
+    ADD created TIMESTAMP WITHOUT TIME ZONE NOT NULL;

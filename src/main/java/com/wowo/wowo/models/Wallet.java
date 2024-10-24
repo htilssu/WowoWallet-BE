@@ -52,4 +52,7 @@ public class Wallet {
         receiveWallet.balance += amount;
         this.balance -= amount;
     }
+
+    @Version
+    private Long version;
 }
