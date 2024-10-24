@@ -28,7 +28,7 @@ public class Constant {
     private String name;
 
     @NotNull
-    @Column(name = "value", nullable = false)
+    @Column(name = "col_value", nullable = false)
     private Double value;
 
     @Column(name = "created")

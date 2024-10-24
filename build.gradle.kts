@@ -38,6 +38,8 @@ dependencies {
     implementation("org.apache.kafka:kafka-streams")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     testImplementation("org.springframework.kafka:spring-kafka-test")
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 
@@ -61,11 +63,13 @@ dependencies {
     //Paypal
     implementation("com.paypal.sdk:paypal-server-sdk:0.5.2")
 
-
+    //Pusher
+    implementation("com.pusher:pusher-http-java:1.3.3")
 
     //dynamodb
     implementation("software.amazon.awssdk:dynamodb-enhanced")
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
 
 
 
