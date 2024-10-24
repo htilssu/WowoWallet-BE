@@ -2,6 +2,7 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransactionDto;
+import com.wowo.wowo.data.dto.TransactionHistoryParams;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Transaction;
@@ -45,12 +46,11 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    public List<?> getAllTransaction(@RequestParam Map<String, String> allParams,
+    public List<?> getAllTransaction(@RequestParam TransactionHistoryParams allParams,
             Authentication authentication) {
-        int offset = Integer.parseInt(allParams.get("offset"));
-        int page = Integer.parseInt(allParams.get("page"));
+        int offset = allParams.getOffset();
+        int page = allParams.getPage();
         offset = Math.min(30, Math.max(offset, 0));
-        page = Math.max(page, 0);
 
         final List<Transaction> recentTransactions = transactionService.getRecentTransactions(
                 ((String) authentication.getPrincipal()),
@@ -58,7 +58,6 @@ public class TransactionController {
                 page);
 
         return recentTransactions.stream().map(transactionMapper::toDto).toList();
-
     }
 
 }
