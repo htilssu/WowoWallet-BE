@@ -4,6 +4,7 @@ import com.wowo.wowo.security.filter.ApiServiceFilter;
 import com.wowo.wowo.security.filter.TokenFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableCaching
 @EnableJpaRepositories
 @EnableMongoRepositories("com.wowo.wowo.mongo.repositories")
 @EnableJpaAuditing
