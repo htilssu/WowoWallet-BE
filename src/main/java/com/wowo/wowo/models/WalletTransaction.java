@@ -2,7 +2,6 @@ package com.wowo.wowo.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -15,12 +14,11 @@ import lombok.*;
 public class WalletTransaction {
 
     @Id
-    @Size(max = 15)
-    @Column(name = "id", nullable = false, length = 15)
+    @Column(name = "id", nullable = false, length = 40)
     private String id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id", nullable = false)
     private Transaction transaction;
 

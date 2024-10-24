@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
+import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.dto.TransactionRequest;
-import com.wowo.wowo.data.dto.TransactionResponse;
 import com.wowo.wowo.models.Transaction;
 import org.mapstruct.*;
 
@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TransactionMapper {
-
 
     @Mappings({
             @Mapping(target =
@@ -20,13 +19,11 @@ public interface TransactionMapper {
     })
     Transaction toEntity(TransactionRequest transactionRequest);
 
-    @Mappings({
-            @Mapping(target = "created", source = "created"),
-            @Mapping(target = "updated", source = "updated")
-    })
-    TransactionResponse toResponse(Transaction transaction);
-
-    List<TransactionResponse> toListDto(List<Transaction> transactionList);
-
-
+    Transaction toEntity(TransactionDto transactionDto);
+    TransactionDto toDto(Transaction transaction);
+    @BeanMapping(
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Transaction partialUpdate(
+            TransactionDto transactionDto,
+            @MappingTarget Transaction transaction);
 }

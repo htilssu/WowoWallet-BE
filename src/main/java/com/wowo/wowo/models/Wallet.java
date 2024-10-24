@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.transaction.annotation.Transactional;
 
 @Getter
 @Setter
@@ -17,8 +15,9 @@ public class Wallet {
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @SequenceGenerator(name = "wallet_id_seq", sequenceName = "wallet_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_id_seq")
+    private Long id;
 
     @Size(max = 20)
     @NotNull
@@ -42,6 +41,14 @@ public class Wallet {
     private Long balance = 0L;
 
     public void sendMoney(Wallet receiveWallet, long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0.");
+        }
+        if (this.balance < amount) {
+            throw new IllegalArgumentException("Insufficient balance.");
+        }
+
+        // Chuyển tiền
         receiveWallet.balance += amount;
         this.balance -= amount;
     }

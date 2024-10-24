@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @Entity
@@ -15,14 +13,14 @@ import java.math.BigDecimal;
 public class FundMember {
 
     @EmbeddedId
-    private FundMemberId id;
+    private FundMemberId id; // ID được nhúng từ FundMemberId
 
-    @MapsId("groupId")
+    @MapsId("groupId") // Ánh xạ tới groupId trong FundMemberId
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "group_id", nullable = false)
-    private GroupFund group;
+    private GroupFund group; // Quỹ nhóm mà thành viên này thuộc về
 
-    @MapsId("memberId")
+    @MapsId("memberId") // Ánh xạ tới trường memberId trong FundMemberId
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
@@ -30,6 +28,5 @@ public class FundMember {
     @NotNull
     @ColumnDefault("0")
     @Column(name = "money", nullable = false)
-    private BigDecimal money;
-
+    private Long money;
 }

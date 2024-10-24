@@ -1,34 +1,37 @@
 package com.wowo.wowo.models;
 
+import com.wowo.wowo.annotations.id_generator.TransactionIdSequence;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "transaction")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
     @Id
+    @TransactionIdSequence
     @Column(name = "id", nullable = false, length = 40)
     private String id;
 
     @NotNull
-    @Column(name = "money", nullable = false)
-    private Long money;
+    @Column(name = "amount", nullable = false)
+    private Long amount;
 
-    @Size(max = 50)
     @NotNull
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "type", nullable = false)
@@ -41,14 +44,14 @@ public class Transaction {
     @Column(name = "description", length = 300)
     private String description;
 
-    @NotNull
     @CreatedDate
     @Column(name = "created", nullable = false)
-    private Instant created;
+    private ZonedDateTime created = ZonedDateTime.now();
 
-    @NotNull
     @Column(name = "updated", nullable = false)
     @LastModifiedDate
-    private Instant updated;
+    private ZonedDateTime updated = ZonedDateTime.now();
 
+    @OneToOne(mappedBy = "transaction")
+    private WalletTransaction walletTransaction;
 }

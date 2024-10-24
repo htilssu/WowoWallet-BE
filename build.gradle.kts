@@ -3,7 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.5"
 }
-val springCloudVersion by extra("2023.0.2")
+val springCloudVersion by extra("2023.0.3")
 
 
 group = "com.ewallet"
@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -45,10 +44,9 @@ dependencies {
 
     //jwt
     implementation("com.github.bastiaanjansen:otp-java:2.0.3")
-    implementation("com.twilio.sdk:twilio:10.5.0")
+    implementation("com.auth0:auth0:2.14.0")
 
-    //dynamodb
-    implementation("software.amazon.awssdk:dynamodb-enhanced")
+
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.google.guava:guava:33.2.1-jre")
@@ -59,6 +57,10 @@ dependencies {
     //database
     implementation("org.flywaydb:flyway-core:10.17.3")
     implementation("org.flywaydb:flyway-database-postgresql")
+
+    //Paypal
+    implementation("com.paypal.sdk:paypal-server-sdk:0.5.2")
+
 
 
     //dynamodb

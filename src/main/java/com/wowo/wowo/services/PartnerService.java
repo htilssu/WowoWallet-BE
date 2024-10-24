@@ -15,9 +15,22 @@ public class PartnerService {
     }
 
     public void createPartner(SSOData ssoData) {
-        Partner partner = new Partner();
-        partner.setId(ssoData.getId());
-        partner.setEmail(ssoData.getEmail());
-        partnerRepository.save(partner);
+        var partner = partnerRepository.findById(ssoData.getId());
+        if (partner.isPresent()) return;
+
+        Partner newPartner = new Partner();
+        newPartner.setId(ssoData.getId());
+        newPartner.setEmail(ssoData.getEmail());
+        newPartner.setApiKey(ssoData.getId());
+        try {
+            partnerRepository.save(newPartner);
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể tạo đối tác");
+        }
+    }
+
+    public Partner getPartnerById(String partnerId) {
+       return partnerRepository.findById(partnerId).orElseThrow(
+                () -> new RuntimeException("Không tìm thấy đối tác"));
     }
 }
