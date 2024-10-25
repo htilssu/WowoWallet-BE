@@ -15,14 +15,17 @@ public class GroupFundInvitation {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "group_id", nullable = false)
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private GroupFund groupFund;
 
-    @Column(name = "sender_id", nullable = false)
-    private String senderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
 
-    @Column(name = "recipient_id", nullable = false)
-    private String recipientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

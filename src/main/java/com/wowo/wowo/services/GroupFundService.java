@@ -37,9 +37,9 @@ public class GroupFundService {
     public GroupFund createGroupFund(GroupFundDto groupFundDto, Authentication authentication) {
         //kiem tra nguoi dung
         // Lấy thông tin người gửi request từ Authentication
-//        String ownerId = (String) authentication.getPrincipal();
-        //chưa có người dùng nên lấy dữ liệu ảo là 1
-        String ownerId = "1";
+        String ownerId = (String) authentication.getPrincipal();
+//        chưa có người dùng nên lấy dữ liệu ảo là 1
+//        String ownerId = "1";
         Optional<User> userOptional = userRepository.findById(ownerId);
 
         // Kiểm tra người dùng có tồn tại không
@@ -151,6 +151,9 @@ public class GroupFundService {
 
     // Lấy danh sách các thành viên của một quỹ
     public List<UserDto> getGroupMembers(Long groupId) {
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
+
         // Tìm tất cả các thành viên tham gia quỹ nhóm có groupId
         List<FundMember> members = fundMemberRepository.findByGroupId(groupId);
 
@@ -162,15 +165,24 @@ public class GroupFundService {
                             member.getId(),
                             member.getIsActive(),
                             member.getIsVerified(),
-                            member.getJob()
+                            member.getJob(),
+                            member.getEmail()
                     );
                 })
                 .toList();
     }
 
     // Lấy danh sách các quỹ nhóm mà một user đang tham gia
-    public Map<String, List<GroupFundDto>> getUserGroupFunds(String memberId) {
-        List<FundMember> fundMembers = fundMemberRepository.findByMemberId(memberId);
+    public Map<String, List<GroupFundDto>> getUserGroupFunds(Authentication authentication) {
+
+        String userId = (String) authentication.getPrincipal();
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        // Kiểm tra người dùng có tồn tại không
+        User owner = userOptional.orElseThrow(
+                () -> new UserNotFoundException("Người dùng không tồn tại"));
+
+        List<FundMember> fundMembers = fundMemberRepository.findByMemberId(userId);
 
         List<GroupFundDto> createdFunds = new ArrayList<>();
         List<GroupFundDto> joinedFunds = new ArrayList<>();
@@ -179,7 +191,7 @@ public class GroupFundService {
         fundMembers.forEach(fundMember -> {
             GroupFund groupFund = fundMember.getGroup();
             var owner_id = groupFund.getOwner().getId();
-            if (owner_id.equals(memberId)) {
+            if (owner_id.equals(userId)) {
                 createdFunds.add(groupFundMapper.toDto(groupFund));
             } else {
                 joinedFunds.add(groupFundMapper.toDto(groupFund));

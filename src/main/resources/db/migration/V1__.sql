@@ -65,7 +65,7 @@ CREATE TABLE fund_member
 (
     money     BIGINT DEFAULT 0 NOT NULL,
     group_id  BIGINT           NOT NULL,
-    member_id VARCHAR(10)      NOT NULL,
+    member_id VARCHAR(255)      NOT NULL,
     CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
 );
 
@@ -264,3 +264,15 @@ ALTER TABLE wallet_transaction
 
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_SENDER_WALLET FOREIGN KEY (sender_wallet) REFERENCES wallet (id);
+
+ALTER TABLE group_fund_invitation
+    ADD CONSTRAINT fk_group_fund_invitation_group
+        FOREIGN KEY (group_id) REFERENCES group_fund (id);
+
+ALTER TABLE group_fund_invitation
+    ADD CONSTRAINT fk_group_fund_invitation_sender
+        FOREIGN KEY (sender_id) REFERENCES "user" (id);
+
+ALTER TABLE group_fund_invitation
+    ADD CONSTRAINT fk_group_fund_invitation_recipient
+        FOREIGN KEY (recipient_id) REFERENCES "user" (id);

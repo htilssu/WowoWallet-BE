@@ -16,7 +16,7 @@ public class WalletService {
     private final WalletRepository walletRepository;
 
     public WalletResponse getWallet(int id) {
-        var wallet = walletRepository.findById(String.valueOf(id))
+        var wallet = walletRepository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
 
 
@@ -36,12 +36,8 @@ public class WalletService {
         }
     }
 
-    public boolean isWalletOwner(String userId, int walletId) {
-        return walletRepository.existsByOwnerIdAndId(userId, walletId);
-    }
-
     public boolean isWalletOwner(String userId, String walletId) {
-        final int walletIdInt = Integer.parseInt(walletId);
+        final Long walletIdInt = Long.valueOf(walletId);
         return walletRepository.existsByOwnerIdAndId(userId, walletIdInt);
     }
 }
