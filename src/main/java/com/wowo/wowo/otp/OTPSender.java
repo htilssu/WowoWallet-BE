@@ -4,6 +4,12 @@ import java.util.concurrent.CompletableFuture;
 
 public interface OTPSender {
 
+    /**
+     * Gửi mã OTP cho người dùng
+     *
+     * @param sendTo người nhận mã OTP
+     * @param otp    mã OTP
+     */
     void sendOTP(String sendTo, String otp);
 
     /**

@@ -59,5 +59,26 @@
       "name": "password.salt",
       "type": "java.lang.String",
       "description": "Description for password.salt."
+    },
+    {
+      "name": "pusher.app_id",
+      "type": "java.lang.String",
+      "description": "Description for pusher.app_id."
+    },
+    {
+      "name": "pusher.key",
+      "type": "java.lang.String",
+      "description": "Description for pusher.key."
+    },
+    {
+      "name": "pusher.secret",
+      "type": "java.lang.String",
+      "description": "Description for pusher.secret."
+    },
+    {
+      "name": "pusher.cluster",
+      "type": "java.lang.String",
+      "description": "Description for pusher.cluster."
     }
-  ] }
+  ]
+}

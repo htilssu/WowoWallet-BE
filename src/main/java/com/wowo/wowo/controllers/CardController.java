@@ -5,7 +5,6 @@ import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.AtmCard;
-import com.wowo.wowo.models.Bank;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.AtmCardRepository;
 import com.wowo.wowo.repositories.BankRepostitory;
@@ -83,11 +82,9 @@ public class CardController {
             return ResponseEntity.badRequest().body(new ResponseMessage("Dữ liệu không hợp lệ"));
         }
 
-        final AtmCard atmCard = atmCardRepository.findByCardNumber(cardNumber);
+        final AtmCard atmCard = atmCardRepository.findById(Integer.valueOf(cardNumber))
+                .orElseThrow(() -> new NotFoundException("Thẻ không tồn tại"));
 
-        if (atmCard == null) {
-            return ResponseEntity.ok(new ResponseMessage("Thẻ không tồn tại"));
-        }
         String userId = (String) authentication.getPrincipal();
         if (!atmCard.getOwner().getId().equals(userId)) return ResponseEntity.ok(
                 new ResponseMessage("Không thể xóa thẻ của người khác"));
