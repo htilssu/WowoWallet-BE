@@ -7,25 +7,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "group_fund_invitation")
-public class GroupFundInvitation {
+@Table(name = "invitation")
+public class Invitation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ID tự động tăng
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private GroupFund groupFund;
+    @Column(name = "group_id", nullable = false)
+    private Long groupId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    @Column(name = "sender_id", nullable = false)
+    private String senderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id", nullable = false)
-    private User recipient;
+    @Column(name = "recipient_id", nullable = false)
+    private String recipientId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

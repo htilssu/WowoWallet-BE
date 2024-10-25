@@ -41,7 +41,7 @@ public class WalletService {
     }
 
     public boolean isWalletOwner(String userId, String walletId) {
-        final int walletIdInt = Integer.parseInt(walletId);
+        final Long walletIdInt = Long.valueOf(walletId);
         return walletRepository.existsByOwnerIdAndId(userId, (long) walletIdInt);
     }
 

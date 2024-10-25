@@ -22,11 +22,12 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto implements Serializable {
 
-    @Size(max = 10)
+    @Size(max = 32)
     private String id;
     @NotNull
     private Boolean isActive = false;
     @NotNull
     private Boolean isVerified = false;
     private String job;
+    private String email;
 }
