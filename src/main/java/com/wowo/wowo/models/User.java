@@ -1,6 +1,9 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -27,6 +30,12 @@ public class User {
     @Column(name = "email", unique = true)
     @Size(max = 255)
     private String email;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @NotNull
     @ColumnDefault("true")
