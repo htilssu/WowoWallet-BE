@@ -22,9 +22,9 @@ public class FundMemberId implements Serializable {
     @Column(name = "group_id", nullable = false)
     private Long groupId;
 
-    @Size(max = 10)
+    @Size(max = 32)
     @NotNull
-    @Column(name = "member_id", nullable = false, length = 10)
+    @Column(name = "member_id", nullable = false, length = 32)
     private String memberId;
 
     @Override

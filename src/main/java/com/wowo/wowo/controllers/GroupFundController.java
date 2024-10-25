@@ -38,7 +38,7 @@ public class GroupFundController {
     }
 
     // Thêm thành viên vào quỹ
-    @PostMapping("/{groupId}/members")
+    @PostMapping("/members")
     public ResponseEntity<?> addMemberToGroup(@RequestBody FundMemberDto memberDto) {
         try {
             FundMember addedMember = groupFundService.addMemberToGroup(memberDto.getGroupId(), memberDto.getMemberId());
@@ -70,25 +70,22 @@ public class GroupFundController {
         try {
             List<UserDto> members = groupFundService.getGroupMembers(id);
             return ResponseEntity.ok(members);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
         } catch (Exception e) {
-            // Nếu xảy ra lỗi, trả về mã trạng thái 404 hoặc 500 tùy loại lỗi
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy danh sách thành viên quỹ: " + e.getMessage()));
         }
     }
 
     // Lấy danh sách quỹ nhóm đang tham gia của một user
-    @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUserGroupFunds(@PathVariable String id) {
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserGroupFunds(Authentication authentication) {
         try {
-            Map<String, List<GroupFundDto>> userFunds = groupFundService.getUserGroupFunds(id);
-
-            // Kiểm tra nếu cả hai danh sách đều trống
+            Map<String, List<GroupFundDto>> userFunds = groupFundService.getUserGroupFunds(authentication);
             if (userFunds.get("createdFunds").isEmpty() && userFunds.get("joinedFunds").isEmpty()) {
-                // Nếu không có quỹ nào tham gia hoặc tạo ra
                 return ResponseEntity.ok(Map.of("message", "Người dùng không có quỹ nào tham gia hoặc tạo ra."));
             }
 
-            // Trả về danh sách quỹ nhóm được phân loại
             return ResponseEntity.ok(userFunds);
 
         } catch (Exception e) {

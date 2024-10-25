@@ -1,13 +1,17 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.constants.Constant;
-import com.wowo.wowo.data.dto.TransactionRequest;
 import com.wowo.wowo.data.dto.ResponseMessage;
-import com.wowo.wowo.data.mapper.TransactionMapper;
+import com.wowo.wowo.data.dto.TransactionRequest;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Wallet;
-import com.wowo.wowo.repositories.*;
-import com.wowo.wowo.services.EquityService;
-import com.wowo.wowo.services.TransactionService;
+import com.wowo.wowo.otp.OTPManager;
+import com.wowo.wowo.otp.OTPVerifyDto;
+import com.wowo.wowo.otp.OtpSendDto;
+import com.wowo.wowo.repositories.ConstantRepository;
+import com.wowo.wowo.repositories.WalletRepository;
+import com.wowo.wowo.services.EmailService;
 import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -24,15 +28,11 @@ import java.util.Optional;
 @Tag(name = "Transfer", description = "Chuyển tiền")
 public class TransferController {
 
-    private final TransactionService transactionService;
     private final ConstantRepository constantRepository;
-    private final EquityService equityService;
+    private final OTPManager otpManager;
     private final UserService userService;
-    TransactionRepository transactionRepository;
-    UserRepository userRepository;
+    private final EmailService emailService;
     WalletRepository walletRepository;
-    WalletTransactionRepository walletTransactionRepository;
-    TransactionMapper transactionMapper;
 
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransactionRequest data,
@@ -97,6 +97,25 @@ public class TransferController {
 
     @GetMapping("/check/{id}")
     public ResponseEntity<?> checkUser(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id,id,id));
+        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id, id, id));
+    }
+
+    @PostMapping("/send-otp")
+    @IsUser
+    public ResponseEntity<?> sendOtp(@RequestBody OtpSendDto data,
+            Authentication authentication) {
+        otpManager.send(emailService, data, authentication);
+        return ResponseEntity.ok(new ResponseMessage("Gửi mã otp thành công"));
+    }
+
+    @PostMapping("/verify-otp")
+    @IsUser
+    public ResponseEntity<?> verifyOtp(@RequestBody @Validated OTPVerifyDto data,
+            Authentication authentication) {
+        final boolean verified = otpManager.verify(((String) authentication.getPrincipal()), data);
+        if (!verified) {
+            throw new BadRequest("OTP không hợp lệ");
+        }
+        return ResponseEntity.ok(new ResponseMessage("Xác thực thành công"));
     }
 }
