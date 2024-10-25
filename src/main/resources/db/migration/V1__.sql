@@ -1,10 +1,12 @@
 CREATE SEQUENCE IF NOT EXISTS group_fund_id_seq START WITH 1 INCREMENT BY 1;
 
+CREATE SEQUENCE IF NOT EXISTS order_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE SEQUENCE IF NOT EXISTS payment_system_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE IF NOT EXISTS role_id_seq START WITH 1 INCREMENT BY 1;
 
-CREATE SEQUENCE IF NOT EXISTS wallet_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS wallet_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE atm
 (
@@ -45,10 +47,10 @@ CREATE TABLE banks
 
 CREATE TABLE constant
 (
-    id      VARCHAR(50)      NOT NULL,
-    name    VARCHAR(100)     NOT NULL,
-    value   DOUBLE PRECISION NOT NULL,
-    created TIMESTAMP WITHOUT TIME ZONE,
+    id        VARCHAR(50)      NOT NULL,
+    name      VARCHAR(100)     NOT NULL,
+    col_value DOUBLE PRECISION NOT NULL,
+    created   TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_constant PRIMARY KEY (id)
 );
 
@@ -71,17 +73,17 @@ CREATE TABLE fund_member
 
 CREATE TABLE group_fund
 (
-    id           BIGINT                      NOT NULL,
-    name         VARCHAR(255)                NOT NULL,
+    id           BIGINT       NOT NULL,
+    name         VARCHAR(255) NOT NULL,
     image        VARCHAR(256),
     type         VARCHAR(100),
     description  VARCHAR(255),
-    balance      BIGINT                      NOT NULL,
-    target       BIGINT                      NOT NULL,
+    balance      BIGINT       NOT NULL,
+    target       BIGINT       NOT NULL,
     owner_id     VARCHAR(255),
     wallet_id    BIGINT,
     created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    target_date  date                        NOT NULL,
+    target_date  date         NOT NULL,
     CONSTRAINT pk_group_fund PRIMARY KEY (id)
 );
 
@@ -108,15 +110,15 @@ CREATE TABLE group_fund_transaction
 
 CREATE TABLE "order"
 (
-    id             VARCHAR(50) NOT NULL,
+    id             BIGINT   NOT NULL,
     partner_id     VARCHAR(32),
-    money          BIGINT      NOT NULL,
-    status         SMALLINT    NOT NULL,
+    money          BIGINT   NOT NULL,
+    status         SMALLINT NOT NULL,
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
-    created        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    updated        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    created        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     service_name   VARCHAR(100),
     CONSTRAINT pk_order PRIMARY KEY (id)
 );
@@ -167,11 +169,11 @@ CREATE TABLE support_ticket
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(40)                 NOT NULL,
-    amount      BIGINT                      NOT NULL,
-    status      SMALLINT                    NOT NULL,
-    type        SMALLINT                    NOT NULL,
-    variant     SMALLINT                    NOT NULL,
+    id          VARCHAR(40) NOT NULL,
+    amount      BIGINT      NOT NULL,
+    status      SMALLINT    NOT NULL,
+    type        SMALLINT    NOT NULL,
+    variant     SMALLINT    NOT NULL,
     description VARCHAR(300),
     created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -197,12 +199,13 @@ CREATE TABLE wallet
     currency   VARCHAR(5)  DEFAULT 'VND'  NOT NULL,
     owner_id   VARCHAR(32),
     balance    BIGINT      DEFAULT 0      NOT NULL,
+    version    BIGINT,
     CONSTRAINT pk_wallet PRIMARY KEY (id)
 );
 
 CREATE TABLE wallet_transaction
 (
-    id              VARCHAR(15) NOT NULL,
+    id              VARCHAR(40) NOT NULL,
     sender_wallet   BIGINT      NOT NULL,
     receiver_wallet BIGINT      NOT NULL,
     CONSTRAINT pk_wallet_transaction PRIMARY KEY (id)

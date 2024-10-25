@@ -15,7 +15,8 @@ public class Wallet {
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "wallet_id_seq", sequenceName = "wallet_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_id_seq")
     private Long id;
 
     @Size(max = 20)
@@ -51,4 +52,7 @@ public class Wallet {
         receiveWallet.balance += amount;
         this.balance -= amount;
     }
+
+    @Version
+    private Long version;
 }

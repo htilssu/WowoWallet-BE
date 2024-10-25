@@ -1,4 +1,4 @@
-package com.wowo.wowo;
+package com.wowo.wowo.validators;
 
 import com.wowo.wowo.validator.EmailValidator;
 import org.junit.jupiter.api.DisplayName;

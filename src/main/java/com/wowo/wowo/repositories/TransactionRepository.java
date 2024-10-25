@@ -9,4 +9,6 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, String> {
 
     List<Transaction> findByIdOrderByUpdatedAsc(String id, Pageable pageable);
+    List<Transaction> findByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
+            String ownerId, String ownerId1, Pageable pageable);
 }

@@ -1,35 +1,47 @@
 package com.wowo.wowo.services;
 
-import jakarta.annotation.PostConstruct;
+import com.paypal.sdk.PaypalServerSDKClient;
+import com.paypal.sdk.controllers.OrdersController;
+import com.paypal.sdk.exceptions.ApiException;
+import com.paypal.sdk.http.response.ApiResponse;
+import com.paypal.sdk.models.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 
-@ConfigurationProperties(prefix = "paypal")
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class PaypalService {
 
-    String url;
-    HttpURLConnection clientConnection;
+    private final PaypalServerSDKClient paypalServerSDKClient;
 
-    @PostConstruct
-    public void init() {
-        try {
-            URI uri = new URI(url);
-            clientConnection = (HttpURLConnection) uri.toURL().openConnection();
+    public Order createOrder() throws IOException, ApiException {
+        final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(
+                null,
+                new OrderRequest.Builder(
+                        CheckoutPaymentIntent.CAPTURE,
+                        Collections.singletonList(
+                                new PurchaseUnitRequest.Builder(
+                                        new AmountWithBreakdown.Builder(
+                                                "USD",
+                                                "100000"
+                                        ).build()
+                                ).build()
+                        )
+                ).build()
+        ).prefer("return=representation")
+                .build();
+
+        final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
+                ordersCreateInput);
+        return orderApiResponse.getResult();
     }
 }

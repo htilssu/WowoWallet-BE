@@ -13,7 +13,6 @@ import java.time.Instant;
  */
 public record TransactionDto(String id, @NotNull Long amount, @NotNull PaymentStatus status,
                              @NotNull TransactionType type, TransactionVariant variant,
-                             String description, @NotNull Instant created, @NotNull Instant updated)
+                             String description, @NotNull String created, @NotNull String updated)
         implements Serializable {
-
 }

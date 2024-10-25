@@ -58,7 +58,6 @@ public class WalletTransactionService {
             throw new RuntimeException("Không thể tạo giao dịch mà không có thông tin giao dịch");
         }
 
-        var transaction = walletTransaction.getTransaction();
         try {
             return walletTransactionRepository.save(walletTransaction);
         } catch (Exception e) {
