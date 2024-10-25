@@ -6,7 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
@@ -17,15 +19,16 @@ public class AtmCard {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
-    @Column(name = "atm_id", nullable = false)
+    @Column(name = "bank_id", nullable = false)
     private Integer atmId;
 
     @Size(max = 16)
     @NotNull
-    @Column(name = "card_number", nullable = false, length = 16)
+    @Column(name = "card_number", nullable = false, length = 16, unique = true)
     private String cardNumber;
 
     @Size(max = 3)
@@ -46,9 +49,11 @@ public class AtmCard {
     @Column(name = "expired", nullable = false)
     private String expired;
 
-    @NotNull
-    @ColumnDefault("CURRENT_DATE")
-    @Column(name = "created", nullable = false)
-    private LocalDate created;
+    @JoinColumn(name = "bank_id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Bank atm;
 
+    @Column(name = "created", nullable = false)
+    @CreationTimestamp
+    private Instant created;
 }

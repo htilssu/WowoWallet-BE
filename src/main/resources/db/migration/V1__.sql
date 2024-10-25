@@ -47,10 +47,10 @@ CREATE TABLE banks
 
 CREATE TABLE constant
 (
-    id      VARCHAR(50)      NOT NULL,
-    name    VARCHAR(100)     NOT NULL,
-    value   DOUBLE PRECISION NOT NULL,
-    created TIMESTAMP WITHOUT TIME ZONE,
+    id        VARCHAR(50)      NOT NULL,
+    name      VARCHAR(100)     NOT NULL,
+    col_value DOUBLE PRECISION NOT NULL,
+    created   TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_constant PRIMARY KEY (id)
 );
 
@@ -117,8 +117,8 @@ CREATE TABLE "order"
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
     success_url    VARCHAR(300),
-    created        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    updated        TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    created        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     service_name   VARCHAR(100),
     CONSTRAINT pk_order PRIMARY KEY (id)
 );
@@ -199,6 +199,7 @@ CREATE TABLE wallet
     currency   VARCHAR(5)  DEFAULT 'VND'  NOT NULL,
     owner_id   VARCHAR(32),
     balance    BIGINT      DEFAULT 0      NOT NULL,
+    version    BIGINT,
     CONSTRAINT pk_wallet PRIMARY KEY (id)
 );
 

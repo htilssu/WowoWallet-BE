@@ -10,11 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Collection;
 
 /**
- * DTO for {@link Order}
+ * DTO for {@link com.wowo.wowo.models.Order}
  */
 @Data
 @AllArgsConstructor
@@ -23,18 +22,18 @@ import java.util.Collection;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto implements Serializable {
 
-    Long id;
+    private Long id;
     @NotNull
-    Long money;
+    private Long money;
     @NotNull
-    PaymentStatus status;
+    private PaymentStatus status;
     @Size(max = 300)
-    String returnUrl;
+    private String returnUrl;
     @Size(max = 300)
-    String successUrl;
-    String created;
-    String updated;
+    private String successUrl;
+    private String created;
+    private String updated;
     @Size(max = 100)
-    String serviceName;
+    private String serviceName;
     Collection<OrderItemCreateDto> items;
 }

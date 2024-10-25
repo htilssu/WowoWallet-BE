@@ -2,11 +2,10 @@ package com.wowo.wowo.data.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class TransferDto {
 
     private String sourceId;
