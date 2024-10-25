@@ -2,8 +2,8 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.otp.OTPSend;
-import com.wowo.wowo.otp.OTPVerify;
+import com.wowo.wowo.otp.OtpSendDto;
+import com.wowo.wowo.otp.OTPVerifyDto;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.EmailService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,10 +27,10 @@ public class OTPController {
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<?> sendOtp(@RequestBody @Nullable OTPSend otpSend,
+    public ResponseEntity<?> sendOtp(@RequestBody @Nullable OtpSendDto otpSendDto,
             Authentication authentication) {
 
-        if (otpSend == null) {
+        if (otpSendDto == null) {
             return ResponseEntity.badRequest()
                     .body(new ResponseMessage("Data is invalid"));
         }
@@ -41,7 +41,7 @@ public class OTPController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<ResponseMessage> verifyOtp(@RequestBody OTPVerify otpData,
+    public ResponseEntity<ResponseMessage> verifyOtp(@RequestBody OTPVerifyDto otpData,
             Authentication authentication) {
         if (authentication != null) {
             String userId = (String) authentication.getPrincipal();
