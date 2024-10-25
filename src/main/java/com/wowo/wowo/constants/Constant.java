@@ -22,4 +22,10 @@ public class Constant {
         VNPAY,
         WALLET
     }
+
+
+    public enum OTPService {
+        SMS,
+        EMAIL
+    }
 }

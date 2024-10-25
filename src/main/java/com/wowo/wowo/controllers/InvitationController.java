@@ -7,6 +7,7 @@ import com.wowo.wowo.services.InvitationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,10 +67,10 @@ public class InvitationController {
     }
 
     // Lấy tất cả lời mời đã gửi đi
-    @GetMapping("/sent/{senderId}")
-    public ResponseEntity<?> getSentInvitations(@PathVariable String senderId) {
+    @GetMapping("/sent")
+    public ResponseEntity<?> getSentInvitations(Authentication authentication) {
         try {
-            List<GroupFundInvitation> groupFundInvitations = invitationService.getSentInvitations(senderId);
+            List<GroupFundInvitation> groupFundInvitations = invitationService.getSentInvitations(authentication);
             return ResponseEntity.ok(groupFundInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -79,15 +80,15 @@ public class InvitationController {
     }
 
     // Lấy tất cả lời mời được nhận
-    @GetMapping("/received/{recipientId}")
-    public ResponseEntity<?> getReceivedInvitations(@PathVariable String recipientId) {
+    @GetMapping("/received")
+    public ResponseEntity<?> getReceivedInvitations(Authentication authentication) {
         try {
-            List<GroupFundInvitation> groupFundInvitations = invitationService.getReceivedInvitations(recipientId);
-            return ResponseEntity.ok(groupFundInvitations);
+            List<GroupFundInvitation> receivedInvitations = invitationService.getReceivedInvitations(authentication);
+            return ResponseEntity.ok(receivedInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống: " + e.getMessage());
         }
     }
 }

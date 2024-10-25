@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -46,11 +45,11 @@ public class Transaction {
 
     @CreatedDate
     @Column(name = "created", nullable = false)
-    private ZonedDateTime created = ZonedDateTime.now();
+    private ZonedDateTime created;
 
     @Column(name = "updated", nullable = false)
     @LastModifiedDate
-    private ZonedDateTime updated = ZonedDateTime.now();
+    private ZonedDateTime updated;
 
     @OneToOne(mappedBy = "transaction")
     private WalletTransaction walletTransaction;
