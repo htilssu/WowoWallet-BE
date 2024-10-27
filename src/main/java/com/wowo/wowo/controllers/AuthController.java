@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,15 +29,17 @@ public class AuthController {
         String userId = decodedJWT.getClaim("userId").asString();
         String partnerId = decodedJWT.getClaim("partnerId").asString();
         String username = decodedJWT.getClaim("username").asString();
+        String firstName = decodedJWT.getClaim("firstName").asString();
+        String lastName = decodedJWT.getClaim("lastName").asString();
         String role = decodedJWT.getClaim("role").asString();
 
         switch (role) {
             case "user" -> {
-                SSOData ssoData = new SSOData(email, userId, username);
+                SSOData ssoData = new SSOData(email, userId, username, firstName, lastName);
                 userService.createUser(ssoData);
             }
             case "partner" -> {
-                SSOData ssoData = new SSOData(email, partnerId, username);
+                SSOData ssoData = new SSOData(email, partnerId, username, firstName, lastName);
                 partnerService.createPartner(ssoData);
             }
 
