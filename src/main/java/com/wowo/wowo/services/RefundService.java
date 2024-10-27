@@ -1,32 +1,29 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Order;
+import com.wowo.wowo.models.PaymentStatus;
+import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.repositories.OrderRepository;
-import org.springframework.http.ResponseEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
+@AllArgsConstructor
 public class RefundService {
 
     private final OrderRepository orderRepository;
+    private final TransferService transferService;
 
-    public RefundService(OrderRepository orderRepository) {this.orderRepository = orderRepository;}
+    public Order refund(Order order) {
 
-    public ResponseEntity<?> refund(String orderId) {
-        final Optional<Order> orderOptional = orderRepository.findById(orderId);
-        if (orderOptional.isEmpty()) throw new NotFoundException("Order not found");
+        final WalletTransaction walletTransaction = order.getTransaction().getWalletTransaction();
 
-        final Order order = orderOptional.get();
-        if (order.getStatus().equals("SUCCESS")) {
+        var senderWallet = walletTransaction.getSenderWallet();
+        var receiverWallet = walletTransaction.getReceiverWallet();
 
-        }
-        else {
-            throw new RuntimeException("Transaction status not found");
-        }
+        transferService.transfer(receiverWallet, senderWallet, order.getTransaction().getAmount());
 
-        return ResponseEntity.ok().build();
+        order.setStatus(PaymentStatus.REFUNDED);
+        return orderRepository.save(order);
     }
 }

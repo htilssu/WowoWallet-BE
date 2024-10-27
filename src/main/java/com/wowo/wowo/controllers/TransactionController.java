@@ -57,4 +57,11 @@ public class TransactionController {
         return new TransactionHistoryResponseDto(recentTransactions.stream().map(transactionMapper::toDto).toList(),total);
     }
 
+    @PostMapping("{id}/refund")
+    public ResponseEntity<?> refundTransaction(@PathVariable String id) {
+        //        transactionService.refundTransaction(id);
+        //TODO: Implement refundTransaction
+        return ResponseEntity.ok().build();
+    }
+
 }

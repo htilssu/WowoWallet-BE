@@ -1,13 +1,17 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsPartner;
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.OrderCreateDto;
 import com.wowo.wowo.data.dto.OrderDto;
+import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.services.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderMapperImpl orderMapperImpl;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable String id) {
@@ -26,7 +31,22 @@ public class OrderController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<?> createOrder(@RequestBody @NotNull OrderCreateDto orderCreateDto) {
+    @IsPartner
+    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDto orderCreateDto) {
         return ResponseEntity.status(201).body(orderService.createOrder(orderCreateDto));
+    }
+
+    @PostMapping("{id}/cancel")
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable @NotNull @Validated String id,
+            Authentication authentication) {
+        return ResponseEntity.ok(
+                orderMapperImpl.toDto(orderService.cancelOrder(id, authentication)));
+    }
+
+    @PostMapping("{id}/refund")
+    public ResponseEntity<OrderDto> refundOrder(@PathVariable @NotNull @Validated String id,
+            Authentication authentication) {
+        return ResponseEntity.ok(
+                orderMapperImpl.toDto(orderService.refundOrder(id, authentication)));
     }
 }

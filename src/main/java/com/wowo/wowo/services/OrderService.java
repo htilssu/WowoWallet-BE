@@ -8,11 +8,14 @@ import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Order;
+import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.mongo.documents.OrderItem;
 import com.wowo.wowo.mongo.repositories.OrderItemRepository;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.util.AuthUtil;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -27,6 +30,7 @@ public class OrderService {
     private final PartnerService partnerService;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemMapper orderItemMapper;
+    private final RefundService refundService;
 
     public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos) {
         var partnerId = AuthUtil.getId();
@@ -63,5 +67,52 @@ public class OrderService {
         final OrderDto orderDto = orderMapperImpl.toDto(order);
         orderDto.setItems(orderItems.stream().map(orderItemMapper::toDto).toList());
         return orderDto;
+    }
+
+    public Order cancelOrder(String id, Authentication authentication) {
+        final Order order = orderRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+
+        if (!order.getPartner().getId().equals(authentication.getPrincipal().toString())) {
+            throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
+        }
+
+        switch (order.getStatus()) {
+            case PENDING -> {
+                order.setStatus(PaymentStatus.CANCELLED);
+            }
+            case SUCCESS -> {
+                throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
+            }
+            case REFUNDED -> {
+                throw new BadRequest("Đơn hàng đã được hoàn tiền");
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
+        }
+
+
+        return orderRepository.save(order);
+    }
+
+    public Order refundOrder(@NotNull String id, Authentication authentication) {
+        final Order order = orderRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+
+        if (!order.getPartner().getId().equals(authentication.getPrincipal().toString())) {
+            throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
+        }
+
+        switch (order.getStatus()) {
+            case PENDING -> {
+                throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
+            }
+            case SUCCESS -> {
+               return refundService.refund(order);
+            }
+            case REFUNDED -> {
+                throw new BadRequest("Đơn hàng đã được hoàn tiền");
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
+        }
     }
 }
