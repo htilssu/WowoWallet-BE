@@ -31,4 +31,6 @@ public class UserDto implements Serializable {
     private String job;
     private String email;
     private String username;
+    private String firstName;
+    private String lastName;
 }
