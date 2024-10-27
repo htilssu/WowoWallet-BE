@@ -94,7 +94,7 @@ class PaymentServiceTest {
                 wallet.setOwnerId("user123");
                 Wallet partnerWallet = new Wallet();
 
-                when(orderService.getById(Long.valueOf(anyString()))).thenReturn(Optional.of(order));
+                when(orderService.getById(anyLong())).thenReturn(Optional.of(order));
                 when(walletService.getWallet(anyInt())).thenReturn(wallet);
                 when(walletService.getPartnerWallet(anyString())).thenReturn(
                         Optional.of(partnerWallet));
@@ -104,7 +104,7 @@ class PaymentServiceTest {
 
                 PaymentDto paymentDto = new PaymentDto();
                 paymentDto.setSourceId("1");
-                paymentDto.setOrderId(Long.valueOf("123"));
+                paymentDto.setOrderId(123L);
                 paymentDto.setPaymentService(Constant.PaymentService.WALLET);
 
                 Order result = paymentService.pay(paymentDto);
