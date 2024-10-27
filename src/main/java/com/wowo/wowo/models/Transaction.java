@@ -11,7 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -54,4 +53,7 @@ public class Transaction {
 
     @OneToOne(mappedBy = "transaction")
     private WalletTransaction walletTransaction;
+
+    @OneToOne(mappedBy = "transaction")
+    private GroupFundTransaction groupFundTransaction;
 }

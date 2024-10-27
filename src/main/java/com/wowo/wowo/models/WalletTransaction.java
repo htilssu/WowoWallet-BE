@@ -31,5 +31,4 @@ public class WalletTransaction {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "receiver_wallet", nullable = false)
     private Wallet receiverWallet;
-
 }

@@ -71,18 +71,15 @@ public class TransferService {
      * @param source      ví nguồn
      * @param destination ví đích
      * @param amount      số tiền chuyển
-     * @exception InsufficientBalanceException nếu số dư của ví nguồn nhỏ hơn số tiền chuyển
-     * @see InsufficientBalanceException
      *
      * @return {@link WalletTransaction} chứa thông tin giao dịch
+     *
+     * @throws InsufficientBalanceException nếu số dư của ví nguồn nhỏ hơn số tiền chuyển
+     * @see InsufficientBalanceException
      */
     public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
                                                                                            InsufficientBalanceException {
-        if (source.getBalance() < amount) {
-            throw new InsufficientBalanceException("Số dư không đủ");
-        }
-        source.setBalance(source.getBalance() - amount);
-        destination.setBalance(destination.getBalance() + amount);
+        transfer(source, destination, amount);
         walletRepository.saveAll(List.of(source, destination));
 
 
@@ -101,5 +98,13 @@ public class TransferService {
         walletTransaction.setTransaction(transaction);
 
         return walletTransaction;
+    }
+
+    public void transfer(BalanceEntity source, BalanceEntity destination, long amount) {
+        if (source.getBalance() < amount) {
+            throw new InsufficientBalanceException("Số dư không đủ");
+        }
+        source.setBalance(source.getBalance() - amount);
+        destination.setBalance(destination.getBalance() + amount);
     }
 }

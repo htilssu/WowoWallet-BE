@@ -49,17 +49,17 @@ class PaymentServiceTest {
 
     @Test
     void pay_OrderNotFound_ThrowsNotFoundException() {
-        when(orderService.getById(anyString())).thenReturn(Optional.empty());
+        when(orderService.getById(anyLong())).thenReturn(Optional.empty());
 
         // Tạo PaymentDto
         PaymentDto paymentDto = new PaymentDto();
         paymentDto.setSourceId("1");
-        paymentDto.setOrderId("123");
+        paymentDto.setOrderId(123L);
         paymentDto.setPaymentService(Constant.PaymentService.WALLET);
 
         assertThrows(NotFoundException.class, () -> paymentService.pay(paymentDto));
 
-        verify(orderService).getById("123");
+        verify(orderService).getById(123L);
     }
 
     @Test
@@ -67,11 +67,11 @@ class PaymentServiceTest {
         Order order = new Order();
         order.setStatus(PaymentStatus.SUCCESS);
 
-        when(orderService.getById(anyString())).thenReturn(Optional.of(order));
+        when(orderService.getById(anyLong())).thenReturn(Optional.of(order));
 
         PaymentDto paymentDto = new PaymentDto();
         paymentDto.setSourceId("1");
-        paymentDto.setOrderId("123");
+        paymentDto.setOrderId(Long.valueOf("123"));
         paymentDto.setPaymentService(Constant.PaymentService.WALLET);
 
         assertThrows(RuntimeException.class, () -> paymentService.pay(paymentDto));
@@ -94,7 +94,7 @@ class PaymentServiceTest {
                 wallet.setOwnerId("user123");
                 Wallet partnerWallet = new Wallet();
 
-                when(orderService.getById(anyString())).thenReturn(Optional.of(order));
+                when(orderService.getById(Long.valueOf(anyString()))).thenReturn(Optional.of(order));
                 when(walletService.getWallet(anyInt())).thenReturn(wallet);
                 when(walletService.getPartnerWallet(anyString())).thenReturn(
                         Optional.of(partnerWallet));
@@ -104,7 +104,7 @@ class PaymentServiceTest {
 
                 PaymentDto paymentDto = new PaymentDto();
                 paymentDto.setSourceId("1");
-                paymentDto.setOrderId("123");
+                paymentDto.setOrderId(Long.valueOf("123"));
                 paymentDto.setPaymentService(Constant.PaymentService.WALLET);
 
                 Order result = paymentService.pay(paymentDto);
@@ -122,7 +122,7 @@ class PaymentServiceTest {
         void pay_InvalidPaymentService_ThrowsException() {
             PaymentDto paymentDto = new PaymentDto();
             paymentDto.setSourceId("1");
-            paymentDto.setOrderId("123");
+            paymentDto.setOrderId(Long.valueOf("123"));
             paymentDto.setPaymentService(null);
 
             assertThrows(RuntimeException.class, () -> paymentService.pay(paymentDto));

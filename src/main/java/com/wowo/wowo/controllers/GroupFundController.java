@@ -7,9 +7,7 @@ import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.kafka.messages.ApiResponse;
 import com.wowo.wowo.models.FundMember;
 import com.wowo.wowo.models.GroupFund;
-import com.wowo.wowo.models.GroupFundTransaction;
 import com.wowo.wowo.services.GroupFundService;
-import kotlin.io.AccessDeniedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
@@ -133,20 +131,6 @@ public class GroupFundController {
         }
     }
 
-
-    // Ghi nhận giao dịch
-    @PostMapping("/{groupId}/transactions")
-    public ResponseEntity<?> createTransaction(@PathVariable Long groupId, @RequestBody GroupFundTransactionDto transactionDto) {
-        try {
-            GroupFundTransaction transaction = groupFundService.createTransaction(groupId, transactionDto.getMemberId(), transactionDto.getMoney());
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("Giao dịch thành công!"));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi ghi nhận giao dịch: " + e.getMessage()));
-        }
-    }
-
     // Lấy danh sách lịch sử giao dịch quỹ
     @GetMapping("/{id}/transactions")
     public ResponseEntity<?> getTransactions(@PathVariable Long id) {
@@ -159,5 +143,6 @@ public class GroupFundController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy lịch sử giao dịch: " + e.getMessage()));
         }
     }
+
 
 }
