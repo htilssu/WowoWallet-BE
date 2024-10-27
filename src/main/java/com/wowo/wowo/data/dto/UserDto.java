@@ -30,4 +30,5 @@ public class UserDto implements Serializable {
     private Boolean isVerified = false;
     private String job;
     private String email;
+    private String username;
 }

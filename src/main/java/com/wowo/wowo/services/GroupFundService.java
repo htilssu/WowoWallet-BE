@@ -12,7 +12,9 @@ import com.wowo.wowo.models.*;
 import com.wowo.wowo.repositories.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +98,7 @@ public class GroupFundService {
 
         Optional<User> userOptional = userRepository.findById(memberId);
         User member = userOptional.orElseThrow(
-                () -> new UserNotFoundException("Thành viên không tồn tại"));
+                () -> new UserNotFoundException("Người dùng không tồn tại"));
 
         //Kiểm tra xem thành viên đã có trong nhóm chưa
         if (fundMemberRepository.existsByGroupIdAndMemberId(groupId, memberId)) {
@@ -115,6 +117,34 @@ public class GroupFundService {
         fundMemberRepository.save(fundMember);
 
         return fundMember;
+    }
+
+    /// Rời khỏi quỹ
+    public Map<String, Object> leaveGroupFund(Long groupId, String memberId) {
+        // Kiểm tra quỹ có tồn tại không
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
+
+        // Kiểm tra xem người dùng có tồn tại không
+        Optional<User> userOptional = userRepository.findById(memberId);
+        User member = userOptional.orElseThrow(
+                () -> new UserNotFoundException("Người dùng không tồn tại"));
+
+        // Kiểm tra xem thành viên có trong quỹ không
+        FundMemberId fundMemberId = new FundMemberId();
+        fundMemberId.setGroupId(groupId);
+        fundMemberId.setMemberId(memberId);
+
+        FundMember fundMember = fundMemberRepository.findById(fundMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("Thành viên không tồn tại trong quỹ này"));
+
+        // Xóa thành viên khỏi quỹ
+        fundMemberRepository.delete(fundMember);
+        String successMessage = "Rời quỹ thành công.";
+        Map<String, Object> response = new HashMap<>();
+        response.put("message",successMessage);
+
+        return response;
     }
 
     // Lấy thông tin quỹ
@@ -164,7 +194,8 @@ public class GroupFundService {
                             member.getIsActive(),
                             member.getIsVerified(),
                             member.getJob(),
-                            member.getEmail()
+                            member.getEmail(),
+                            member.getUsername()
                     );
                 })
                 .toList();
@@ -203,6 +234,32 @@ public class GroupFundService {
 
         return result;
     }
+    // Cập nhật quỹ nhóm
+    public GroupFundDto updateGroupFund(Long groupId, GroupFundDto groupFundDto, Authentication authentication) {
+        String ownerId = (String) authentication.getPrincipal();
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(() -> new ResourceNotFoundException("Quỹ nhóm không tồn tại"));
+
+        // Kiểm tra quyền sở hữu
+        if (!groupFund.getOwner().getId().equals(ownerId)) {
+            throw new AccessDeniedException("Bạn không có quyền cập nhật quỹ nhóm này");
+        }
+
+        // Cập nhật thông tin quỹ nhóm
+        groupFund.setName(groupFundDto.getName());
+        groupFund.setImage(groupFundDto.getImage());
+        groupFund.setType(groupFundDto.getType());
+        groupFund.setDescription(groupFundDto.getDescription());
+        groupFund.setTarget(groupFundDto.getTarget());
+        groupFund.setTargetDate(groupFundDto.getTargetDate());
+
+        // Lưu lại quỹ nhóm
+        GroupFund updatedGroupFund = groupFundRepository.save(groupFund);
+
+        // Chuyển đổi quỹ nhóm đã cập nhật sang DTO và trả về
+        return groupFundMapper.toDto(updatedGroupFund);
+    }
+
 
     // Ghi nhận giao dịch cho quỹ nhóm
     public GroupFundTransaction createTransaction(Long groupId, String memberId, Long amount) {

@@ -1,5 +1,6 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.data.dto.GroupFundInvitationDto;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.exceptions.ReceiverNotFoundException;
 import com.wowo.wowo.exceptions.UserNotFoundException;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,8 +29,12 @@ public class InvitationService {
 
     // Gửi lời mời tham gia quỹ
     public Map<String, Object> sendInvitation(Long groupId, String senderId, String recipientId) {
+        // Kiểm tra nếu người gửi và người nhận là cùng một người
         if (senderId.equals(recipientId)) {
-            throw new IllegalArgumentException("Người gửi không thể trùng với người nhận.");
+            String errorMessage = "Người gửi không thể trùng với người nhận.";
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", errorMessage);
+            return response;
         }
 
         GroupFund groupFund = groupFundRepository.findById(groupId)
@@ -40,12 +46,19 @@ public class InvitationService {
         User recipient = userRepository.findById(recipientId)
                 .orElseThrow(() -> new UserNotFoundException("Người nhận không tồn tại"));
 
+        // Kiểm tra nếu đã gửi lời mời cho người nhận này
         if (invitationRepository.existsByGroupFundAndRecipientAndStatus(groupFund, recipient, InvitationStatus.PENDING)) {
-            throw new IllegalArgumentException("Đã gửi lời mời cho người nhận này và đang chờ xác nhận.");
+            String warningMessage = "Đã gửi lời mời cho người nhận này và đang chờ xác nhận.";
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", warningMessage);
+            return response;
         }
-
+        // Kiểm tra nếu người nhận đã là thành viên của quỹ
         if (fundMemberRepository.existsByGroupIdAndMemberId(groupId, recipientId)) {
-            throw new IllegalArgumentException("Thành viên đã tham gia quỹ này.");
+            String warningMessage = "Thành viên đã tham gia quỹ này.";
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", warningMessage);
+            return response;
         }
 
         // Tạo lời mời mới
@@ -57,16 +70,16 @@ public class InvitationService {
         GroupFundInvitation savedGroupFundInvitation = invitationRepository.save(
                 groupFundInvitation);
 
-        String successMessage = String.format("Lời mời tham gia quỹ nhóm đã được gửi thành công tới %s.", recipient.getId());
+        String successMessage = String.format("Gửi lời mời thành công tới %s.", recipient.getUsername());
         Map<String, Object> response = new HashMap<>();
-        response.put("invitation", savedGroupFundInvitation);
+
         response.put("message", successMessage);
 
         return response;
     }
 
     // Lấy tất cả lời mời đã gửi đi
-    public List<GroupFundInvitation> getSentInvitations(Authentication authentication) {
+    public List<GroupFundInvitationDto> getSentInvitations(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
         User sender = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
@@ -76,11 +89,11 @@ public class InvitationService {
             throw new NotFoundException("Không có lời mời nào được gửi.");
         }
 
-        return groupFundInvitations;
+        return mapToDtoList(groupFundInvitations);
     }
 
     // Lấy tất cả lời mời được nhận
-    public List<GroupFundInvitation> getReceivedInvitations(Authentication authentication) {
+    public List<GroupFundInvitationDto> getReceivedInvitations(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
         User recipient = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
@@ -89,8 +102,22 @@ public class InvitationService {
         if (groupFundInvitations.isEmpty()) {
             throw new NotFoundException("Không có lời mời nào được nhận.");
         }
-
-        return groupFundInvitations;
+        // Chuyển đổi sang DTO
+        return mapToDtoList(groupFundInvitations);
+    }
+    // map entity list to DTO list
+    private List<GroupFundInvitationDto> mapToDtoList(List<GroupFundInvitation> invitations) {
+        return invitations.stream()
+                .map(invitation -> new GroupFundInvitationDto(
+                        invitation.getId(),
+                        invitation.getGroupFund().getName(),
+                        invitation.getGroupFund().getDescription(),
+                        invitation.getSender().getUsername(),
+                        invitation.getSender().getEmail(),
+                        invitation.getStatus(),
+                        invitation.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     // Xác nhận lời mời
