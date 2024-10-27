@@ -5,6 +5,7 @@ import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.data.dto.OrderItemCreateDto;
 import com.wowo.wowo.data.mapper.OrderItemMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Order;
 import com.wowo.wowo.mongo.documents.OrderItem;
@@ -29,7 +30,9 @@ public class OrderService {
 
     public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos) {
         var partnerId = AuthUtil.getId();
-        var partner = partnerService.getPartnerById(partnerId);
+        var partner = partnerService.getPartnerById(partnerId).orElseThrow(
+                () -> new BadRequest("Không tìm thấy đối tác"));
+
         order.setPartner(partner);
         final Order newOrder = orderRepository.save(order);
         var orderItems = orderItemCreateDtos.stream().map(orderItemMapper::toEntity).toList();
