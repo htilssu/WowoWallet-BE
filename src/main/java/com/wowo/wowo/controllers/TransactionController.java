@@ -3,6 +3,7 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.dto.TransactionHistoryParams;
+import com.wowo.wowo.data.dto.TransactionHistoryResponseDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Transaction;
@@ -41,7 +42,7 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    public List<?> getAllTransaction(@ModelAttribute TransactionHistoryParams allParams,
+    public TransactionHistoryResponseDto getAllTransaction(@ModelAttribute TransactionHistoryParams allParams,
             Authentication authentication) {
         int offset = allParams.getOffset();
         int page = allParams.getPage();
@@ -52,7 +53,8 @@ public class TransactionController {
                 offset,
                 page);
 
-        return recentTransactions.stream().map(transactionMapper::toDto).toList();
+        long total = transactionService.getTotalTransactions(((String) authentication.getPrincipal()));
+        return new TransactionHistoryResponseDto(recentTransactions.stream().map(transactionMapper::toDto).toList(),total);
     }
 
 }

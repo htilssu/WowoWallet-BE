@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final WalletService walletService;
 
     public ResponseEntity<UserDto> getUserById(String id) {
