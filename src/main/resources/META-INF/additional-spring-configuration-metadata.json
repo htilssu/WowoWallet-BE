@@ -79,6 +79,21 @@
       "name": "pusher.cluster",
       "type": "java.lang.String",
       "description": "Description for pusher.cluster."
+    },
+    {
+      "name": "aws.s3.access.key.id",
+      "type": "java.lang.String",
+      "description": "Description for aws.s3.access.key.id."
+    },
+    {
+      "name": "aws.s3.secret.access.key",
+      "type": "java.lang.String",
+      "description": "Description for aws.s3.secret.access.key."
+    },
+    {
+      "name": "aws.s3.bucket.name",
+      "type": "java.lang.String",
+      "description": "Description for aws.s3.bucket.name."
     }
   ]
 }

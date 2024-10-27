@@ -12,4 +12,6 @@ public class SSOData {
     String email;
     String id;
     String username;
+    String firstName;
+    String lastName;
 }

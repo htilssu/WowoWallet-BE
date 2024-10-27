@@ -68,8 +68,7 @@ public class EWalletApplication {
                 .hasRole("PARTNER")
                 .requestMatchers("/v?/admin/**")
                 .hasRole("ADMIN")
-                .anyRequest()
-                .fullyAuthenticated());
+                .anyRequest().permitAll());
 
 
         //add token filter to security filter chain

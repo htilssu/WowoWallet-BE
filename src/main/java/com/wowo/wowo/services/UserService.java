@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final WalletService walletService;
 
     public ResponseEntity<UserDto> getUserById(String id) {
@@ -40,6 +38,8 @@ public class UserService {
         newUser.setId(ssoData.getId());
         newUser.setEmail(ssoData.getEmail());
         newUser.setUsername(ssoData.getUsername());
+        newUser.setFirstName(ssoData.getFirstName());
+        newUser.setLastName(ssoData.getLastName());
 
         try {
             userRepository.save(newUser);
