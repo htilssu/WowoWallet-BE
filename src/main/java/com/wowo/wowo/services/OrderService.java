@@ -32,8 +32,9 @@ public class OrderService {
     private final OrderItemMapper orderItemMapper;
     private final RefundService refundService;
 
-    public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos) {
-        var partnerId = AuthUtil.getId();
+    public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos,
+            Authentication authentication) {
+        var partnerId = authentication.getPrincipal().toString();
         var partner = partnerService.getPartnerById(partnerId).orElseThrow(
                 () -> new BadRequest("Không tìm thấy đối tác"));
 
@@ -46,30 +47,29 @@ public class OrderService {
         orderItemRepository.saveAll(orderItems);
     }
 
-    public OrderDto createOrder(OrderCreateDto orderCreateDto) {
+    public OrderDto createOrder(OrderCreateDto orderCreateDto, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreateDto);
-        createOrder(order, orderCreateDto.items());
+        createOrder(order, orderCreateDto.items(), authentication);
         final OrderDto orderDto = orderMapperImpl.toDto(order);
 
         orderDto.setItems(orderCreateDto.items());
         return orderDto;
     }
 
-    public Optional<Order> getById(String id) {
+    public Optional<Order> getById(Long id) {
         return orderRepository.findById(id);
     }
 
-    public OrderDto getOrderDetail(String id) {
+    public OrderDto getOrderDetail(Long id) {
         final Order order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
-        final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(
-                Long.valueOf(id));
+        final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
         final OrderDto orderDto = orderMapperImpl.toDto(order);
         orderDto.setItems(orderItems.stream().map(orderItemMapper::toDto).toList());
         return orderDto;
     }
 
-    public Order cancelOrder(String id, Authentication authentication) {
+    public Order cancelOrder(Long id, Authentication authentication) {
         final Order order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
 
@@ -94,7 +94,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order refundOrder(@NotNull String id, Authentication authentication) {
+    public Order refundOrder(@NotNull Long id, Authentication authentication) {
         final Order order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
 
@@ -107,7 +107,7 @@ public class OrderService {
                 throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
             }
             case SUCCESS -> {
-               return refundService.refund(order);
+                return refundService.refund(order);
             }
             case REFUNDED -> {
                 throw new BadRequest("Đơn hàng đã được hoàn tiền");

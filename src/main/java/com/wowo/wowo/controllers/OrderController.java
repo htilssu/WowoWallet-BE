@@ -25,26 +25,26 @@ public class OrderController {
     private final OrderMapperImpl orderMapperImpl;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable String id) {
+    public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         final OrderDto orderDetail = orderService.getOrderDetail(id);
         return ResponseEntity.ok(orderDetail);
     }
 
     @PostMapping("create")
     @IsPartner
-    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDto orderCreateDto) {
-        return ResponseEntity.status(201).body(orderService.createOrder(orderCreateDto));
+    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDto orderCreateDto, Authentication authentication) {
+        return ResponseEntity.status(201).body(orderService.createOrder(orderCreateDto, authentication));
     }
 
     @PostMapping("{id}/cancel")
-    public ResponseEntity<OrderDto> cancelOrder(@PathVariable @NotNull @Validated String id,
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(
                 orderMapperImpl.toDto(orderService.cancelOrder(id, authentication)));
     }
 
     @PostMapping("{id}/refund")
-    public ResponseEntity<OrderDto> refundOrder(@PathVariable @NotNull @Validated String id,
+    public ResponseEntity<OrderDto> refundOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(
                 orderMapperImpl.toDto(orderService.refundOrder(id, authentication)));

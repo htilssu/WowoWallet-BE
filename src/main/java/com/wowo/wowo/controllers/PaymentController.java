@@ -31,7 +31,7 @@ public class PaymentController {
     private final PaypalService paypalService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> makePay(@PathVariable String id,
+    public ResponseEntity<?> makePay(@PathVariable Long id,
             @RequestBody @Valid PaymentDto paymentDto) {
 
         paymentDto.setOrderId(id);

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PaymentDto {
 
-    private String orderId;
+    private Long orderId;
     @NotNull
     private String sourceId;
     @NotNull
