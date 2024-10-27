@@ -171,17 +171,7 @@ public class GroupFundService {
 
         // Chuyển đổi danh sách FundMember sang danh sách UserDto
         return members.stream()
-                .map(fundMember -> {
-                    User member = fundMember.getMember();
-                    return new UserDto(
-                            member.getId(),
-                            member.getIsActive(),
-                            member.getIsVerified(),
-                            member.getJob(),
-                            member.getEmail(),
-                            member.getUsername()
-                    );
-                })
+                .map(fundMember -> userMapper.toDto(fundMember.getMember()))
                 .toList();
     }
 
