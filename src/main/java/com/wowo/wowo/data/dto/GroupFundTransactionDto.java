@@ -9,10 +9,6 @@ import java.math.BigDecimal;
 
 @Data
 public class GroupFundTransactionDto {
-
-    @NotNull(message = "Member ID cannot be null")
-    private String memberId;
-
     @NotNull(message = "Amount cannot be null")
     private String transaction_id;
     private TransactionDto transaction;
