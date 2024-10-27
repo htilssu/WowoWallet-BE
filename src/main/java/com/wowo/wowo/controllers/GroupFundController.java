@@ -7,7 +7,6 @@ import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.kafka.messages.ApiResponse;
 import com.wowo.wowo.models.FundMember;
 import com.wowo.wowo.models.GroupFund;
-import com.wowo.wowo.models.GroupFundTransaction;
 import com.wowo.wowo.services.GroupFundService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,20 +128,6 @@ public class GroupFundController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseMessage("Có lỗi xảy ra khi cập nhật quỹ: " + e.getMessage()));
-        }
-    }
-
-
-    // Ghi nhận giao dịch
-    @PostMapping("/{groupId}/transactions")
-    public ResponseEntity<?> createTransaction(@PathVariable Long groupId, @RequestBody GroupFundTransactionDto transactionDto) {
-        try {
-            GroupFundTransaction transaction = groupFundService.topUp(groupId, transactionDto.getMemberId(), transactionDto.getTransaction().amount());
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("Giao dịch thành công!"));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi ghi nhận giao dịch: " + e.getMessage()));
         }
     }
 

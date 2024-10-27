@@ -2,9 +2,12 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.GroupFundTransactionDto;
+import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.data.dto.WithdrawRequestDto;
 import com.wowo.wowo.data.mapper.GroupFundTransactionMapper;
 import com.wowo.wowo.services.GroupFundService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +36,11 @@ public class GroupFundTransactionController {
     }
 
     @PostMapping("/withdraw")
-    public void withdraw() {
-        System.out.println("Withdraw");
+    public ResponseEntity<ResponseMessage> withdraw(@RequestBody WithdrawRequestDto withdrawRequestDto) {
+
+        groupFundService.withdraw(withdrawRequestDto.getGroupId(),
+                withdrawRequestDto.getAmount());
+
+        return ResponseEntity.ok(new ResponseMessage("Rút tiền thành công"));
     }
 }
