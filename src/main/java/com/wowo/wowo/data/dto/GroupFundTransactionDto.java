@@ -14,11 +14,9 @@ public class GroupFundTransactionDto {
     private String memberId;
 
     @NotNull(message = "Amount cannot be null")
-    @Positive(message = "Amount must be positive")
-    private Long money;
-
-    @NotNull(message = "Transaction Type cannot be null")
+    private String transaction_id;
+    private TransactionDto transaction;
+    private UserDto member;
+    @NotNull
     private TransactionType transactionType;
-
-    // Constructor, Getters and Setters có thể được tạo tự động bởi Lombok nếu cần
 }

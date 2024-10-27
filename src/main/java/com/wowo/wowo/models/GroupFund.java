@@ -2,7 +2,6 @@ package com.wowo.wowo.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -21,7 +20,8 @@ public class GroupFund {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_fund_id_seq")
-    @SequenceGenerator(name = "group_fund_id_seq", sequenceName = "group_fund_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "group_fund_id_seq", sequenceName = "group_fund_id_seq",
+                       allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -43,11 +43,6 @@ public class GroupFund {
     private String description;
 
     @NotNull
-    @Min(0)
-    @Column(name = "balance", nullable = false)
-    private Long balance;
-
-    @NotNull
     @Column(name = "target", nullable = false)
     private Long target;
 
@@ -55,13 +50,9 @@ public class GroupFund {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
-
-    public double getBalance() {
-        return wallet != null ? wallet.getBalance() : 0L;
-    }
 
     @OneToMany(mappedBy = "group")
     private Set<FundMember> fundMembers = new LinkedHashSet<>();

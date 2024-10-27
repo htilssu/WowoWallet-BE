@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @Entity
@@ -16,6 +14,11 @@ public class GroupFundTransaction {
     @Id
     @Column(name = "transaction_id", nullable = false)
     private String transaction_id;
+
+    @MapsId
+    @JoinColumn(name = "transaction_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    private Transaction transaction;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -29,9 +32,4 @@ public class GroupFundTransaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
     private TransactionType transactionType;
-
-
-    @Column(name = "transaction_date")
-    private LocalDate transactionDate;
-
 }

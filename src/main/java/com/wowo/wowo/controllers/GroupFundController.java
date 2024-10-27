@@ -9,7 +9,6 @@ import com.wowo.wowo.models.FundMember;
 import com.wowo.wowo.models.GroupFund;
 import com.wowo.wowo.models.GroupFundTransaction;
 import com.wowo.wowo.services.GroupFundService;
-import kotlin.io.AccessDeniedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.ResourceNotFoundException;
@@ -138,7 +137,7 @@ public class GroupFundController {
     @PostMapping("/{groupId}/transactions")
     public ResponseEntity<?> createTransaction(@PathVariable Long groupId, @RequestBody GroupFundTransactionDto transactionDto) {
         try {
-            GroupFundTransaction transaction = groupFundService.createTransaction(groupId, transactionDto.getMemberId(), transactionDto.getMoney());
+            GroupFundTransaction transaction = groupFundService.topUp(groupId, transactionDto.getMemberId(), transactionDto.getTransaction().amount());
             return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("Giao dịch thành công!"));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
@@ -159,5 +158,6 @@ public class GroupFundController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy lịch sử giao dịch: " + e.getMessage()));
         }
     }
+
 
 }

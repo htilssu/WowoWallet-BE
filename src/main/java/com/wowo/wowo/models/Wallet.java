@@ -11,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Entity
 @Table(name = "wallet")
-public class Wallet {
+public class Wallet extends BalanceEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -34,25 +34,4 @@ public class Wallet {
     @Size(max = 32)
     @Column(name = "owner_id", length = 32)
     private String ownerId;
-
-    @NotNull
-    @ColumnDefault("0")
-    @Column(name = "balance", nullable = false)
-    private Long balance = 0L;
-
-    public void sendMoney(Wallet receiveWallet, long amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0.");
-        }
-        if (this.balance < amount) {
-            throw new IllegalArgumentException("Insufficient balance.");
-        }
-
-        // Chuyển tiền
-        receiveWallet.balance += amount;
-        this.balance -= amount;
-    }
-
-    @Version
-    private Long version;
 }
