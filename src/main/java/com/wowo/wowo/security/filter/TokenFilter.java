@@ -17,12 +17,11 @@ import java.util.Collections;
 
 public class TokenFilter implements Filter {
 
+    // TokenFilter.java
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
                                                                                               ServletException,
                                                                                               IOException {
-
-
         final Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
         if (cookies == null) {
@@ -30,8 +29,8 @@ public class TokenFilter implements Filter {
             return;
         }
 
-        var cookie = Arrays.stream(cookies).filter(
-                c -> c.getName().equals("Token")).findFirst().orElse(null);
+        var cookie = Arrays.stream(cookies).filter(c -> c.getName().equals("Token")).findFirst()
+                .orElse(null);
 
         if (cookie == null) {
             chain.doFilter(request, response);
@@ -54,24 +53,26 @@ public class TokenFilter implements Filter {
                 new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
         UsernamePasswordAuthenticationToken authenticationToken;
         if (role.equals("user")) {
-            authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                            decodedJWT.getClaim("userId").toString().replaceAll("\"", ""),
-                            cookie.getValue(),
-                            authorities);
+            authenticationToken = new UsernamePasswordAuthenticationToken(
+                    decodedJWT.getClaim("userId").toString().replaceAll("\"", ""),
+                    cookie.getValue(),
+                    authorities);
         }
         else {
-            authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                            decodedJWT.getClaim("partnerId").toString().replaceAll("\"", ""),
-                            cookie.getValue(),
-                            authorities);
+            authenticationToken = new UsernamePasswordAuthenticationToken(
+                    decodedJWT.getClaim("partnerId").toString().replaceAll("\"", ""),
+                    cookie.getValue(),
+                    authorities);
         }
 
         authenticationToken.setDetails(decodedJWT);
 
         context.setAuthentication(authenticationToken);
         contextHolder.setContext(context);
+
+        // Debug logging
+        System.out.println("TokenFilter set SecurityContext: " + context.getAuthentication());
+
         chain.doFilter(request, response);
     }
 }

@@ -1,6 +1,8 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
+import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.models.TransactionVariant;
 import com.wowo.wowo.repositories.OrderRepository;
@@ -18,6 +20,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final OrderRepository orderRepository;
+    private final ReceiverService receiverService;
 
     public void refund(Transaction transaction) {
         if (transaction.getVariant() == TransactionVariant.WALLET) {
@@ -42,6 +45,20 @@ public class TransactionService {
     }
 
     public long getTotalTransactions(String userId) {
-       return transactionRepository.countByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerId(userId,userId);
+        return transactionRepository.countByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerId(
+                userId, userId);
+    }
+
+    public TransactionDto getTransactionDetail(String id) {
+        Transaction transaction = transactionRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Transaction not found"));
+        if (transaction == null) {
+            throw new RuntimeException("Transaction not found");
+        }
+        final TransactionDto transactionDto = transactionMapper.toDto(transaction);
+
+        transactionDto.setReceiver(receiverService.getReceiver(transaction));
+
+        return transactionDto;
     }
 }

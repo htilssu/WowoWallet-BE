@@ -59,6 +59,9 @@ public class User {
     @Column(name = "job")
     private String job;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

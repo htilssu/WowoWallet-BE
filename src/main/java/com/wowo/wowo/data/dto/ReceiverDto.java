@@ -6,5 +6,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class ReceiverDto {
-    String fullName;
+
+    String name;
+    String avatar;
+    String email;
+    String type;
 }

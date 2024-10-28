@@ -34,10 +34,12 @@ public class Transaction {
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     @NotNull
     private TransactionType type = TransactionType.TRANSFER;
 
     @Column(name = "variant", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TransactionVariant variant = TransactionVariant.WALLET;
 
     @Column(name = "description", length = 300)

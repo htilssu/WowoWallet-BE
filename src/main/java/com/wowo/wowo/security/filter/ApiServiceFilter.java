@@ -7,9 +7,10 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,37 +22,39 @@ public class ApiServiceFilter implements Filter {
 
     PartnerRepository partnerRepository;
 
+    // ApiServiceFilter.java
     @Override
-    public void doFilter(ServletRequest request,
-            ServletResponse response,
-            FilterChain chain) throws
-                               IOException,
-                               ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
+                                                                                              IOException,
+                                                                                              ServletException {
         var req = (HttpServletRequest) request;
         var apiKey = req.getHeader("X-API-KEY");
-
 
         if (apiKey == null || apiKey.isEmpty()) {
             chain.doFilter(request, response);
             return;
         }
 
-
         Partner partner = partnerRepository.findPartnerByApiKey(apiKey).orElseThrow(
                 () -> new BadRequest("API key không hợp lệ"));
-        //TODO: replace by partner api key
 
-        var context = SecurityContextHolder.getContext();
+        final SecurityContextHolderStrategy contextHolderStrategy =
+                SecurityContextHolder.getContextHolderStrategy();
+        final SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         final UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(partner.getId()
-                        , apiKey,
+                new UsernamePasswordAuthenticationToken(
+                        partner.getId(),
+                        apiKey,
                         Collections.singleton(new SimpleGrantedAuthority("ROLE_PARTNER")));
         authenticationToken.setDetails(partner);
 
         context.setAuthentication(authenticationToken);
+        contextHolderStrategy.setContext(context);
 
-        req.setAttribute("partner", partner);
+        // Debug logging
+        System.out.println("ApiServiceFilter set SecurityContext: " + context.getAuthentication());
+
         chain.doFilter(request, response);
     }
 }
