@@ -34,7 +34,7 @@ public class PaymentService {
      *
      * @return Đơn hàng đã được thanh toán
      */
-    private Order pay(String sourceId, String orderId) {
+    private Order pay(String sourceId, Long orderId) {
         var order = orderService.getById(orderId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
         return pay(sourceId, order);
@@ -63,7 +63,7 @@ public class PaymentService {
         return orderRepository.save(order);
     }
 
-    private Order isOrderValid(String orderId) {
+    private Order isOrderValid(Long orderId) {
         var order = orderService.getById(orderId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
         if (order.getStatus() != PaymentStatus.PENDING) {

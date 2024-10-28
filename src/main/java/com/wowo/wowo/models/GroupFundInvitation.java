@@ -1,8 +1,11 @@
 package com.wowo.wowo.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,12 +34,7 @@ public class GroupFundInvitation {
     @Column(name = "status")
     private InvitationStatus status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "created_at", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new java.util.Date();
-    }
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

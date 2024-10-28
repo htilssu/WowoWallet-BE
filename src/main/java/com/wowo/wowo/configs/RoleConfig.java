@@ -15,7 +15,8 @@ public class RoleConfig {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("STAFF")
                 .role("STAFF").implies("USER")
-                .role("USER").implies("GUEST")
+                .role("STAFF").implies("PARTNER")
+                .role("USER").implies("GUEST").role("PARTNER").implies("GUEST")
                 .build();
     }
 

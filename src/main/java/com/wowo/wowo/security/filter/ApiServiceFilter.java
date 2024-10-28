@@ -1,10 +1,10 @@
 package com.wowo.wowo.security.filter;
 
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -38,31 +37,21 @@ public class ApiServiceFilter implements Filter {
         }
 
 
-        Optional<Partner> partner = Optional.empty();
-        try {
-            partner = partnerRepository.findPartnerByApiKey(apiKey);
-        } catch (RuntimeException r) {
-            System.out.println("Error: " + r.getMessage());
-        }
+        Partner partner = partnerRepository.findPartnerByApiKey(apiKey).orElseThrow(
+                () -> new BadRequest("API key không hợp lệ"));
+        //TODO: replace by partner api key
 
-        if (partner.isPresent()) {
-            var context = SecurityContextHolder.getContext();
-            Authentication authentication = context.getAuthentication();
+        var context = SecurityContextHolder.getContext();
 
-            if (authentication == null) {
-                context.setAuthentication(new UsernamePasswordAuthenticationToken(partner.get()
+        final UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(partner.getId()
                         , apiKey,
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PARTNER"))));
-            }
+                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PARTNER")));
+        authenticationToken.setDetails(partner);
 
-            req.setAttribute("partner", partner.get());
-            chain.doFilter(request, response);
-            return;
-        }
+        context.setAuthentication(authenticationToken);
 
-        HttpServletResponse res = (HttpServletResponse) response;
-        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        res.getWriter().println("{\"message\": \"API key không hợp lệ\"}");
-        res.setContentType("application/json");
+        req.setAttribute("partner", partner);
+        chain.doFilter(request, response);
     }
 }

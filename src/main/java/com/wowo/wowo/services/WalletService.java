@@ -20,7 +20,6 @@ public class WalletService {
         return walletRepository.findById((long) id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
 
-
     }
 
     public Wallet createWallet(User user) {
@@ -41,11 +40,15 @@ public class WalletService {
     }
 
     public boolean isWalletOwner(String userId, String walletId) {
-        final Long walletIdInt = Long.valueOf(walletId);
+        final long walletIdInt = Long.parseLong(walletId);
         return walletRepository.existsByOwnerIdAndId(userId, (long) walletIdInt);
     }
 
     public Optional<Wallet> getPartnerWallet(String partnerId) {
-        return walletRepository.findByOwnerIdAndOwnerType(partnerId,"partner");
+        return walletRepository.findByOwnerIdAndOwnerType(partnerId, "partner");
+    }
+
+    public Optional<Wallet> getUserWallet(String ownerId) {
+        return walletRepository.findByOwnerId(ownerId);
     }
 }

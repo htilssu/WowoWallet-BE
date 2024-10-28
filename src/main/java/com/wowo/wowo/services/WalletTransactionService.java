@@ -46,9 +46,7 @@ public class WalletTransactionService {
                 .doubleValue()) {
             throw new InsufficientBalanceException("Không đủ tiền để hoàn tiền");
         }
-
-        receiverWallet.sendMoney(senderWallet,
-                walletTransaction.getTransaction().getAmount());
+//        TODO: refund transaction
 
     }
 

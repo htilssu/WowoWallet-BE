@@ -102,7 +102,7 @@ public class TransferController {
 
     @PostMapping("/send-otp")
     @IsUser
-    public ResponseEntity<?> sendOtp(@RequestBody OtpSendDto data,
+    public ResponseEntity<?> sendOtp(@RequestBody @Validated OtpSendDto data,
             Authentication authentication) {
         otpManager.send(emailService, data, authentication);
         return ResponseEntity.ok(new ResponseMessage("Gửi mã otp thành công"));

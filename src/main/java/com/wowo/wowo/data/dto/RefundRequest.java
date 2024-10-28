@@ -6,6 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class RefundRequest {
+
     String transactionId;
-    String orderId;
+    Long orderId;
 }

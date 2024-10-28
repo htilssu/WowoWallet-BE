@@ -36,8 +36,12 @@ public class TransactionService {
         }
     }
 
-    public List<Transaction> getRecentTransactions(String principal, int offset, int page) {
+    public List<Transaction> getRecentTransactions(String userId, int offset, int page) {
         return transactionRepository.findByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
-                principal, principal, Pageable.ofSize(offset).withPage(page));
+                userId, userId, Pageable.ofSize(offset).withPage(page));
+    }
+
+    public long getTotalTransactions(String userId) {
+       return transactionRepository.countByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerId(userId,userId);
     }
 }

@@ -12,7 +12,7 @@ public class TransferDto {
     private String senderId;
     @NotNull(message = "Người nhận không được để trống")
     private String receiverId;
-    @Min(value = 1, message = "Số tiền phải lớn hơn hoặc bằng 0")
+    @Min(value = 1, message = "Số tiền phải lớn hơn 0")
     private Long money;
     private String description;
 }

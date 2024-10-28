@@ -1,9 +1,12 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.SSOData;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PartnerService {
@@ -29,8 +32,7 @@ public class PartnerService {
         }
     }
 
-    public Partner getPartnerById(String partnerId) {
-       return partnerRepository.findById(partnerId).orElseThrow(
-                () -> new RuntimeException("Không tìm thấy đối tác"));
+    public Optional<Partner> getPartnerById(String partnerId) {
+       return partnerRepository.findById(partnerId);
     }
 }

@@ -3,12 +3,11 @@ package com.wowo.wowo.controllers;
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.dto.TransactionHistoryParams;
+import com.wowo.wowo.data.dto.TransactionHistoryResponseDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Transaction;
-import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
-import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.TransactionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -28,8 +26,6 @@ public class TransactionController {
 
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
-    private final UserRepository userRepository;
-    private final PartnerRepository partnerRepository;
     private final TransactionService transactionService;
 
     @GetMapping("/{id}")
@@ -46,7 +42,7 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    public List<?> getAllTransaction(@RequestParam TransactionHistoryParams allParams,
+    public TransactionHistoryResponseDto getAllTransaction(@ModelAttribute TransactionHistoryParams allParams,
             Authentication authentication) {
         int offset = allParams.getOffset();
         int page = allParams.getPage();
@@ -57,7 +53,15 @@ public class TransactionController {
                 offset,
                 page);
 
-        return recentTransactions.stream().map(transactionMapper::toDto).toList();
+        long total = transactionService.getTotalTransactions(((String) authentication.getPrincipal()));
+        return new TransactionHistoryResponseDto(recentTransactions.stream().map(transactionMapper::toDto).toList(),total);
+    }
+
+    @PostMapping("{id}/refund")
+    public ResponseEntity<?> refundTransaction(@PathVariable String id) {
+        //        transactionService.refundTransaction(id);
+        //TODO: Implement refundTransaction
+        return ResponseEntity.ok().build();
     }
 
 }
