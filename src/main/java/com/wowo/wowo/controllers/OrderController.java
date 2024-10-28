@@ -1,7 +1,7 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsAuthenticated;
 import com.wowo.wowo.annotations.authorized.IsPartner;
-import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.OrderCreateDto;
 import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "v1/order", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "v1/orders", produces = "application/json; charset=UTF-8")
 @Tag(name = "Order", description = "Đơn hàng")
-@IsUser
 public class OrderController {
 
     private final OrderService orderService;
     private final OrderMapperImpl orderMapperImpl;
 
+    @IsAuthenticated
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Long id) {
         final OrderDto orderDetail = orderService.getOrderDetail(id);
@@ -32,8 +32,10 @@ public class OrderController {
 
     @PostMapping("create")
     @IsPartner
-    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDto orderCreateDto, Authentication authentication) {
-        return ResponseEntity.status(201).body(orderService.createOrder(orderCreateDto, authentication));
+    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDto orderCreateDto,
+            Authentication authentication) {
+        return ResponseEntity.status(201).body(
+                orderService.createOrder(orderCreateDto, authentication));
     }
 
     @PostMapping("{id}/cancel")
