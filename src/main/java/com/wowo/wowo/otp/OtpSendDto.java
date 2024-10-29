@@ -12,8 +12,6 @@ public class OtpSendDto extends OTPData {
 
     @NotNull
     private Constant.OTPService type;
-    @Setter
-    @NotNull
     private String sendTo;
 
     @Override
