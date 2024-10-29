@@ -302,5 +302,9 @@ public class GroupFundService {
 
 
         transferService.transferMoney(groupFund.getWallet(), ownerWallet, amount);
+        GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
+        groupFundTransaction.setGroup(groupFund);
+        groupFundTransaction.setMember(groupFund.getOwner());
+        groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
