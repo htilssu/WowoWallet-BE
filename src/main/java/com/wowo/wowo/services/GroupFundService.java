@@ -288,7 +288,7 @@ public class GroupFundService {
         return transactions.stream().map(groupFundMapper::toTransactionDto).toList();
     }
 
-    public void withdraw(Long groupFundId, Long amount) {
+    public GroupFundTransaction withdraw(Long groupFundId, Long amount) {
         final GroupFund groupFund = groupFundRepository.findById(groupFundId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy quỹ"));
 
@@ -305,6 +305,6 @@ public class GroupFundService {
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(groupFund.getOwner());
-        groupFundTransactionRepository.save(groupFundTransaction);
+        return groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
