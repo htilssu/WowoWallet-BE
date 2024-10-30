@@ -301,11 +301,13 @@ public class GroupFundService {
                 () -> new NotFoundException("Không tìm thấy ví"));
 
 
-        transferService.transferMoney(groupFund.getWallet(), ownerWallet, amount);
+        final WalletTransaction walletTransaction = transferService.transferMoney(
+                groupFund.getWallet(), ownerWallet, amount);
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(groupFund.getOwner());
         groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
+        groupFundTransaction.setTransaction(walletTransaction.getTransaction());
         return groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
