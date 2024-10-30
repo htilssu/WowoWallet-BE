@@ -300,14 +300,11 @@ public class GroupFundService {
         var ownerWallet = walletService.getUserWallet(authId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy ví"));
 
-        final WalletTransaction walletTransaction = transferService.transferMoney(ownerWallet,
-                groupFund.getWallet(), amount);
 
         transferService.transferMoney(groupFund.getWallet(), ownerWallet, amount);
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(groupFund.getOwner());
-        groupFundTransaction.setTransaction(walletTransaction.getTransaction());
         groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
         return groupFundTransactionRepository.save(groupFundTransaction);
     }
