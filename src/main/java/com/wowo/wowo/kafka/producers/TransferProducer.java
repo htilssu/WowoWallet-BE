@@ -1,7 +1,6 @@
 package com.wowo.wowo.kafka.producers;
 
 import com.wowo.wowo.data.dto.TransferDto;
-import com.wowo.wowo.kafka.messages.TransferMoneyMessage;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;

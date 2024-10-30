@@ -13,13 +13,17 @@ public class PusherConfig {
 
     @Bean
     public Pusher pusher(PusherProperties properties) {
-        return new Pusher(
+        final Pusher pusher = new Pusher(
                 properties.getAppId(), properties.getKey(), properties.getSecret());
+        pusher.setCluster(properties.getCluster());
+        return pusher;
     }
 
     @Bean
     public PusherAsync asyncPusher(PusherProperties properties) {
-        return new PusherAsync(
+        final PusherAsync pusherAsync = new PusherAsync(
                 properties.getAppId(), properties.getKey(), properties.getSecret());
+        pusherAsync.setCluster(properties.getCluster());
+        return pusherAsync;
     }
 }
