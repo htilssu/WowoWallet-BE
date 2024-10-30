@@ -305,6 +305,7 @@ public class GroupFundService {
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(groupFund.getOwner());
+        groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
         return groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
