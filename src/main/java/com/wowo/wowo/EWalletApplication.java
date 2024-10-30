@@ -72,16 +72,12 @@ public class EWalletApplication {
 
 
         //add token filter to security filter chain
-        http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(apiServiceFilter, TokenFilter.class);
 
         return http.build();
     }
 
-    @Bean
-    public TokenFilter tokenFilter() {
-        return new TokenFilter();
-    }
 
     @Bean
     public CorsFilter corsFilter() {

@@ -94,6 +94,11 @@
       "name": "aws.s3.bucket.name",
       "type": "java.lang.String",
       "description": "Description for aws.s3.bucket.name."
+    },
+    {
+      "name": "kafka.bootstrap.servers",
+      "type": "java.lang.String",
+      "description": "Description for kafka.bootstrap.servers."
     }
   ]
 }

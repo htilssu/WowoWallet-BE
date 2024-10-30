@@ -2,10 +2,10 @@ package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.GroupFundTransactionDto;
-import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.TransferDto;
 import com.wowo.wowo.data.dto.WithdrawRequestDto;
 import com.wowo.wowo.data.mapper.GroupFundTransactionMapper;
+import com.wowo.wowo.models.GroupFundTransaction;
 import com.wowo.wowo.services.GroupFundService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,6 @@ public class GroupFundTransactionController {
     private final GroupFundService groupFundService;
     private final GroupFundTransactionMapper groupFundTransactionMapper;
 
-
     @PostMapping("/top-up")
     public GroupFundTransactionDto topUp(@RequestBody @Validated TransferDto transferDto) {
         return groupFundTransactionMapper.toDto(
@@ -34,11 +33,12 @@ public class GroupFundTransactionController {
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<ResponseMessage> withdraw(@RequestBody @Validated WithdrawRequestDto withdrawRequestDto) {
+    public ResponseEntity<GroupFundTransactionDto> withdraw(@RequestBody @Validated WithdrawRequestDto withdrawRequestDto) {
 
-        groupFundService.withdraw(withdrawRequestDto.getGroupId(),
+        final GroupFundTransaction groupFundTransaction = groupFundService.withdraw(
+                withdrawRequestDto.getGroupId(),
                 withdrawRequestDto.getAmount());
 
-        return ResponseEntity.ok(new ResponseMessage("Rút tiền thành công"));
+        return ResponseEntity.ok(groupFundTransactionMapper.toDto(groupFundTransaction));
     }
 }

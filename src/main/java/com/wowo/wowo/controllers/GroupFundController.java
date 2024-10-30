@@ -14,6 +14,7 @@ import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +31,15 @@ public class GroupFundController {
 
     // Tạo quỹ nhóm
     @PostMapping
-    public ResponseEntity<?> createGroupFund(@RequestBody GroupFundDto groupFundDto, Authentication authentication) {
+    public ResponseEntity<?> createGroupFund(@RequestBody GroupFundDto groupFundDto,
+            Authentication authentication) {
         try {
             GroupFund createdFund = groupFundService.createGroupFund(groupFundDto, authentication);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseMessage("Tạo quỹ thành công!"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new ResponseMessage("Tạo quỹ thành công!"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi tạo quỹ: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseMessage("Có lỗi xảy ra khi tạo quỹ: " + e.getMessage()));
         }
     }
 
@@ -43,13 +47,16 @@ public class GroupFundController {
     @PostMapping("/members")
     public ResponseEntity<?> addMemberToGroup(@RequestBody FundMemberDto memberDto) {
         try {
-            FundMember addedMember = groupFundService.addMemberToGroup(memberDto.getGroupId(), memberDto.getMemberId());
+            FundMember addedMember = groupFundService.addMemberToGroup(memberDto.getGroupId(),
+                    memberDto.getMemberId());
             return ResponseEntity.ok(new ResponseMessage("Thêm thành viên thành công!"));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi thêm thành viên: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseMessage("Có lỗi xảy ra khi thêm thành viên: " + e.getMessage()));
         }
     }
 
@@ -57,16 +64,20 @@ public class GroupFundController {
     @PostMapping("/members/leave")
     public ResponseEntity<?> leaveGroup(@RequestBody FundMemberDto memberDto) {
         try {
-            Map<String, Object> message = groupFundService.leaveGroupFund(memberDto.getGroupId(), memberDto.getMemberId());
+            Map<String, Object> message = groupFundService.leaveGroupFund(memberDto.getGroupId(),
+                    memberDto.getMemberId());
             return ResponseEntity.ok(message);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // Thông báo lỗi
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Người dùng không tồn tại
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    e.getMessage()); // Người dùng không tồn tại
         } catch (ReceiverNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // Quỹ không tồn tại
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    e.getMessage()); // Quỹ không tồn tại
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống: " + e.getMessage()); // Lỗi không xác định
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    "Lỗi hệ thống: " + e.getMessage()); // Lỗi không xác định
         }
     }
 
@@ -77,9 +88,11 @@ public class GroupFundController {
             GroupFundDto groupFundDto = groupFundService.getGroupFund(id);
             return ResponseEntity.ok(groupFundDto);
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy thông tin quỹ: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseMessage("Có lỗi xảy ra khi lấy thông tin quỹ: " + e.getMessage()));
         }
     }
 
@@ -90,9 +103,11 @@ public class GroupFundController {
             List<UserDto> members = groupFundService.getGroupMembers(id);
             return ResponseEntity.ok(members);
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy danh sách thành viên quỹ: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage(
+                    "Có lỗi xảy ra khi lấy danh sách thành viên quỹ: " + e.getMessage()));
         }
     }
 
@@ -100,16 +115,19 @@ public class GroupFundController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserGroupFunds(Authentication authentication) {
         try {
-            Map<String, List<GroupFundDto>> userFunds = groupFundService.getUserGroupFunds(authentication);
+            Map<String, List<GroupFundDto>> userFunds = groupFundService.getUserGroupFunds(
+                    authentication);
             if (userFunds.get("createdFunds").isEmpty() && userFunds.get("joinedFunds").isEmpty()) {
-                return ResponseEntity.ok(Map.of("message", "Người dùng không có quỹ nào tham gia hoặc tạo ra."));
+                return ResponseEntity.ok(
+                        Map.of("message", "Người dùng không có quỹ nào tham gia hoặc tạo ra."));
             }
 
             return ResponseEntity.ok(userFunds);
 
         } catch (Exception e) {
             // Xử lý ngoại lệ chung và trả về lỗi 500
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Đã xảy ra lỗi: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    Map.of("message", "Đã xảy ra lỗi: " + e.getMessage()));
         }
     }
 
@@ -121,9 +139,11 @@ public class GroupFundController {
             Authentication authentication) {
         try {
 
-            GroupFundDto updatedFundDto = groupFundService.updateGroupFund(groupId, groupFundDto, authentication);
+            GroupFundDto updatedFundDto = groupFundService.updateGroupFund(groupId, groupFundDto,
+                    authentication);
 
-            ApiResponse<GroupFundDto> response = new ApiResponse<>("Cập nhật quỹ thành công!", updatedFundDto);
+            ApiResponse<GroupFundDto> response = new ApiResponse<>("Cập nhật quỹ thành công!",
+                    updatedFundDto);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -133,16 +153,12 @@ public class GroupFundController {
 
     // Lấy danh sách lịch sử giao dịch quỹ
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<?> getTransactions(@PathVariable Long id) {
-        try {
-            List<GroupFundTransactionDto> transactions = groupFundService.getTransactionHistory(id);
-            return ResponseEntity.ok(transactions);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Có lỗi xảy ra khi lấy lịch sử giao dịch: " + e.getMessage()));
-        }
-    }
+    public ResponseEntity<?> getTransactions(@PathVariable Long id,
+            @ModelAttribute @Validated PagingDto searchParams) {
+        List<GroupFundTransactionDto> transactions = groupFundService.getTransactionHistory(id,
+                searchParams.getOffset(), searchParams.getPage());
+        return ResponseEntity.ok(transactions);
 
+    }
 
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class TransactionHistoryParams {
+public class PagingDto {
 
     @Min(0)
     @NotNull

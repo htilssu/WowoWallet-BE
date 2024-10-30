@@ -2,14 +2,12 @@ package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.SSOData;
 import com.wowo.wowo.data.dto.UserDto;
+import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,9 +16,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final WalletService walletService;
+    private final UserMapper userMapper;
 
-    public ResponseEntity<UserDto> getUserById(String id) {
-        throw new NotImplementedException();
+    public UserDto getUserById(String id) {
+        return userMapper.toDto(userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Người dùng không tồn tại")));
     }
 
     @NotNull
@@ -44,7 +44,7 @@ public class UserService {
         try {
             userRepository.save(newUser);
             walletService.createWallet(newUser);
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }

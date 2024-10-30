@@ -16,8 +16,8 @@ public class GroupFundTransaction {
     private String transaction_id;
 
     @MapsId
-    @JoinColumn(name = "transaction_id", nullable = false)
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "transaction_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Transaction transaction;
 
     @ManyToOne(fetch = FetchType.LAZY)

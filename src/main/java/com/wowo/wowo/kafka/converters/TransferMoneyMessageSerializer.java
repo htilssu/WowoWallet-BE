@@ -14,6 +14,7 @@ public class TransferMoneyMessageSerializer implements Serializer<TransferMoneyM
         Gson gson = new Gson();
         String message = gson.toJson(data); // Serialize the TransferMoneyMessage object to JSON
 
+
         return message.getBytes();
     }
 }

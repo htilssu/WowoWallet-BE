@@ -2,6 +2,7 @@ package com.wowo.wowo.exceptions;
 
 import com.wowo.wowo.data.dto.ErrorVm;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,6 +13,13 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorVm> handleException(Exception ex) {
         return ResponseEntity.status(500).body(ErrorVm.builder().message(ex.getMessage())
                 .errorCode(500).build());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorVm> handelMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex) {
+        return ResponseEntity.status(400).body(ErrorVm.builder().message(ex.getMessage())
+                .errorCode(400).build());
     }
 
     /**

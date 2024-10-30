@@ -1,19 +1,16 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Deploy
+name: Deploy to Staging
 
 on:
   push:
     branches:
-      - 'releases/**'
-      - release
-      - main
+      - staging
   workflow_dispatch:
 
 jobs:
   test:
-    environment: Production
     runs-on: ubuntu-latest
     name: Testing
     steps:
@@ -78,14 +75,15 @@ jobs:
         with:
           context: ./
           push: true
-          tags: htilssu/ewallet-springboot:latest
+          tags: htilssu/ewallet-springboot:staging
   deploy:
     name: deploy
     needs: docker-image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
+      - name: connect-ssh
       - name: pull image
-        run: sudo docker pull htilssu/ewallet-springboot:latest
+        run: sudo docker pull htilssu/ewallet-springboot:staging
 
       - name: rm docker container
         run: sudo docker rm -f ewallet || true
@@ -94,7 +92,7 @@ jobs:
           echo "${{secrets.ENV}}" > .env && mv .env ~/.env
 
       - name: Run container
-        run: sudo docker run --restart always --env-file ~/.env --name ewallet -d -p 8080:8080 htilssu/ewallet-springboot:latest
+        run: sudo docker run --restart always --env-file ~/.env --name ewallet -d -p 8080:8080 htilssu/ewallet-springboot:staging
 
       - name: prune image
         run: sudo docker image prune -f
