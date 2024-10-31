@@ -22,6 +22,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -58,6 +59,9 @@ public class GroupFundService {
             wallet.setBalance(0L);
             wallet.setCurrency("VND");
             // Lưu ví vào cơ sở dữ liệu
+
+            // Kiểm tra tính hợp lệ của các trường dữ liệu
+            validateGroupFundData(groupFundDto);
 
             // Liên kết ví với quỹ nhóm
             groupFund.setWallet(wallet);
@@ -220,6 +224,9 @@ public class GroupFundService {
             throw new AccessDeniedException("Bạn không có quyền cập nhật quỹ nhóm này");
         }
 
+        // Kiểm tra tính hợp lệ của các trường dữ liệu
+        validateGroupFundData(groupFundDto);
+
         // Cập nhật thông tin quỹ nhóm
         groupFund.setName(groupFundDto.getName());
         groupFund.setImage(groupFundDto.getImage());
@@ -235,6 +242,23 @@ public class GroupFundService {
         return groupFundMapper.toDto(updatedGroupFund);
     }
 
+    private void validateGroupFundData(GroupFundDto groupFundDto) {
+        // Kiểm tra tên quỹ không để trống
+        if (groupFundDto.getName() == null || groupFundDto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên quỹ không được để trống");
+        }
+
+        // Kiểm tra số tiền mục tiêu không âm
+        if (groupFundDto.getTarget() < 0) {
+            throw new IllegalArgumentException("Số tiền mục tiêu không được là số âm");
+        }
+
+        // Kiểm tra ngày hạn không phải là ngày quá khứ
+        if (groupFundDto.getTargetDate() != null && groupFundDto.getTargetDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
+        }
+    }
+
     /**
      * Nạp tiền vào quỹ
      *
@@ -244,7 +268,7 @@ public class GroupFundService {
      *
      * @return {@link GroupFundTransaction} chứa thông tin giao dịch
      */
-    public GroupFundTransaction topUp(Long groupId, String memberId, Long amount) {
+    public GroupFundTransaction topUp(Long groupId, String memberId, Long amount, String description) {
         GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
                 () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
@@ -268,6 +292,7 @@ public class GroupFundService {
         groupFundTransaction.setMember(user);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
         groupFundTransaction.setTransactionType(TransactionType.TOP_UP);
+        groupFundTransaction.setDescription(description);
 
         groupFundTransactionRepository.save(groupFundTransaction);
 
@@ -288,7 +313,7 @@ public class GroupFundService {
         return transactions.stream().map(groupFundMapper::toTransactionDto).toList();
     }
 
-    public GroupFundTransaction withdraw(Long groupFundId, Long amount) {
+    public GroupFundTransaction withdraw(Long groupFundId, Long amount, String description) {
         final GroupFund groupFund = groupFundRepository.findById(groupFundId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy quỹ"));
 
@@ -308,6 +333,7 @@ public class GroupFundService {
         groupFundTransaction.setMember(groupFund.getOwner());
         groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
+        groupFundTransaction.setDescription(description);
         return groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
