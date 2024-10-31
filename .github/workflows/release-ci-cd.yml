@@ -84,6 +84,8 @@ jobs:
     needs: docker-image
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Run Container
         run: |
           echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ${{github.workspace}}/id_rsa
