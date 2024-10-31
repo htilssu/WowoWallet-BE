@@ -67,7 +67,7 @@ CREATE TABLE fund_member
 (
     money     BIGINT DEFAULT 0 NOT NULL,
     group_id  BIGINT           NOT NULL,
-    member_id VARCHAR(255)      NOT NULL,
+    member_id VARCHAR(255)     NOT NULL,
     CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
 );
 
