@@ -9,6 +9,7 @@ import com.wowo.wowo.models.GroupFundTransaction;
 import com.wowo.wowo.services.GroupFundService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,10 +26,11 @@ public class GroupFundTransactionController {
     private final GroupFundTransactionMapper groupFundTransactionMapper;
 
     @PostMapping("/top-up")
-    public GroupFundTransactionDto topUp(@RequestBody @Validated TransferDto transferDto) {
+    public GroupFundTransactionDto topUp(@RequestBody @Validated TransferDto transferDto,
+            Authentication authentication) {
         return groupFundTransactionMapper.toDto(
                 groupFundService.topUp(Long.valueOf(transferDto.getReceiverId()),
-                        transferDto.getSenderId(),
+                        ((String) authentication.getPrincipal()),
                         transferDto.getMoney(), transferDto.getDescription()));
     }
 

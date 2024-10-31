@@ -6,9 +6,11 @@ import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.*;
+import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.util.AuthUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,18 +23,21 @@ public class TransferService {
     private final WalletRepository walletRepository;
     private final UserService userService;
     private final WalletTransactionService walletTransactionService;
+    private final TransactionRepository transactionRepository;
 
     @IsUser
     @Transactional
-    public WalletTransaction transfer(TransferDto data) {
+    public WalletTransaction transfer(TransferDto data, Authentication authentication) {
+
+        var senderId = ((String) authentication.getPrincipal());
 
         Wallet senderWallet;
         var authid = AuthUtil.getId();
         if (data.getSourceId() == null) {
-            if (!authid.equals(data.getSenderId())) {
+            if (!authid.equals(senderId)) {
                 throw new BadRequest("Không thể chuyển tiền từ ví không phải của bạn");
             }
-            senderWallet = walletRepository.findByOwnerId(data.getSenderId())
+            senderWallet = walletRepository.findByOwnerId(senderId)
                     .orElseThrow(
                             () -> new NotFoundException("Không tìm thấy ví"));
         }
@@ -57,6 +62,8 @@ public class TransferService {
         WalletTransaction walletTransaction = transferMoney(senderWallet, receiverWallet,
                 data.getMoney());
 
+        walletTransaction.getTransaction().setMessage(data.getMessage());
+
         walletTransaction =
                 walletTransactionService.createWalletTransaction(walletTransaction);
 
@@ -79,7 +86,12 @@ public class TransferService {
      */
     public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
                                                                                            InsufficientBalanceException {
+
+
+        if (source.getId().equals(destination.getId())) throw new BadRequest(
+                "Không thể chuyển tiền từ ví này đến chính ví này");
         transfer(source, destination, amount);
+
         walletRepository.saveAll(List.of(source, destination));
 
 
@@ -93,7 +105,7 @@ public class TransferService {
         transaction.setAmount(amount);
         transaction.setStatus(PaymentStatus.SUCCESS);
         transaction.setType(TransactionType.TRANSFER);
-        transaction.setDescription("Chuyển tiền");
+        transaction.setMessage("Chuyển tiền");
 
         walletTransaction.setTransaction(transaction);
 
