@@ -42,8 +42,8 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionVariant variant = TransactionVariant.WALLET;
 
-    @Column(name = "description", length = 300)
-    private String description;
+    @Column(length = 300)
+    private String message;
 
     @CreatedDate
     @Column(name = "created", nullable = false)

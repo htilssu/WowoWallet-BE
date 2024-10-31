@@ -78,23 +78,25 @@ jobs:
         with:
           context: ./
           push: true
-          tags: htilssu/ewallet-springboot:latest
+          tags: ${{vars.DOCKER_IMAGE}}
+
   deploy:
     name: deploy
-    needs: docker-image
-    runs-on: self-hosted
+    environment: Production
+    needs: [ docker-image ]
+    runs-on: ubuntu-latest
     steps:
-      - name: pull image
-        run: sudo docker pull htilssu/ewallet-springboot:latest
-
-      - name: rm docker container
-        run: sudo docker rm -f ewallet || true
-      - name: download env file
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Container
         run: |
-          echo "${{secrets.ENV}}" > .env && mv .env ~/.env
-
-      - name: Run container
-        run: sudo docker run --restart always --env-file ~/.env --name ewallet -d -p 8080:8080 htilssu/ewallet-springboot:latest
-
-      - name: prune image
-        run: sudo docker image prune -f
+          echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ${{github.workspace}}/id_rsa
+          chmod 600 ${{github.workspace}}/id_rsa
+          cat ${{github.workspace}}/id_rsa
+          ssh -o StrictHostKeyChecking=no -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_USERNAME_DEPLOY}}@${{secrets.REMOTE_HOST_DEPLOY}} << EOF
+              sudo echo "${{secrets.ENV}}" > /env/.env.ewallet &&
+              sudo docker pull ${{vars.DOCKER_IMAGE}} &&
+              sudo docker rm -f ewallet || true &&
+              sudo docker run --restart always --env-file /env/.env.ewallet --name ewallet -d -p 8080:8080 ${{vars.DOCKER_IMAGE}}:latest &&
+              sudo docker image prune -f
+          EOF
