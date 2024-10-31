@@ -93,7 +93,7 @@ jobs:
           echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ${{github.workspace}}/id_rsa
           chmod 600 ${{github.workspace}}/id_rsa
           cat ${{github.workspace}}/id_rsa
-          ssh -o StrictHostKeyChecking=no -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_USERNAME_DEPLOY}}@${{secrets.REMOTE_HOST_DEPLOY}} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_USERNAME_DEPLOY}}@${{secrets.REMOTE_HOST_DEPLOY}} << EOF
               sudo cat "${{secrets.ENV}}" > /env/.env.ewallet &&
               sudo docker pull ${{vars.DOCKER_IMAGE}} &&
               sudo docker rm -f ewallet || true &&
