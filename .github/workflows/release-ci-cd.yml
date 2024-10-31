@@ -94,7 +94,7 @@ jobs:
           chmod 600 ${{github.workspace}}/id_rsa
           cat ${{github.workspace}}/id_rsa
           ssh -o StrictHostKeyChecking=no -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_USERNAME_DEPLOY}}@${{secrets.REMOTE_HOST_DEPLOY}} << EOF
-              sudo cat "${{secrets.ENV}}" > /env/.env.ewallet &&
+              sudo echo "${{secrets.ENV}}" > /env/.env.ewallet &&
               sudo docker pull ${{vars.DOCKER_IMAGE}} &&
               sudo docker rm -f ewallet || true &&
               sudo docker run --restart always --env-file /env/.env.ewallet --name ewallet -d -p 8080:8080 ${{vars.DOCKER_IMAGE}}:latest &&
