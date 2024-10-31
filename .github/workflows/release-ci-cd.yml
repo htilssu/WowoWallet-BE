@@ -82,19 +82,10 @@ jobs:
   deploy:
     name: deploy
     needs: docker-image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - name: pull image
-        run: sudo docker pull htilssu/ewallet-springboot:latest
-
-      - name: rm docker container
-        run: sudo docker rm -f ewallet || true
-      - name: download env file
+      - name: Run Container
         run: |
-          echo "${{secrets.ENV}}" > .env && mv .env ~/.env
-
-      - name: Run container
-        run: sudo docker run --restart always --env-file ~/.env --name ewallet -d -p 8080:8080 htilssu/ewallet-springboot:latest
-
-      - name: prune image
-        run: sudo docker image prune -f
+          echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          cat ${{github.workspace}}/deploy.sh | ssh -i ~/.ssh/id_rsa ${{secrets.REMOTE_HOST_DEPLOY}} 'bash -'
