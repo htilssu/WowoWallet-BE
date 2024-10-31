@@ -15,4 +15,5 @@ public class GroupFundTransactionDto {
     private UserDto member;
     @NotNull
     private TransactionType transactionType;
+    private String description;
 }
