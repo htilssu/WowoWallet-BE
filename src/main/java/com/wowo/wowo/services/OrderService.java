@@ -4,6 +4,7 @@ import com.wowo.wowo.data.dto.OrderCreateDto;
 import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.data.dto.OrderItemCreateDto;
 import com.wowo.wowo.data.mapper.OrderItemMapper;
+import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.NotFoundException;
@@ -30,8 +31,9 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemMapper orderItemMapper;
     private final RefundService refundService;
+    private final OrderMapper orderMapper;
 
-    public void createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos,
+    public OrderDto createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos,
             Authentication authentication) {
         var partnerId = authentication.getPrincipal().toString();
         var partner = partnerService.getPartnerById(partnerId).orElseThrow(
@@ -44,15 +46,16 @@ public class OrderService {
                 .toList();
 
         orderItemRepository.saveAll(orderItems);
+
+        final OrderDto orderDto = orderMapper.toDto(newOrder);
+        orderDto.setItems(orderItemCreateDtos);
+
+        return orderDto;
     }
 
     public OrderDto createOrder(OrderCreateDto orderCreateDto, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreateDto);
-        createOrder(order, orderCreateDto.items(), authentication);
-        final OrderDto orderDto = orderMapperImpl.toDto(order);
-
-        orderDto.setItems(orderCreateDto.items());
-        return orderDto;
+        return createOrder(order, orderCreateDto.items(), authentication);
     }
 
     public Optional<Order> getById(Long id) {
