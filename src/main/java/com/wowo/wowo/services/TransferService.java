@@ -79,7 +79,12 @@ public class TransferService {
      */
     public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
                                                                                            InsufficientBalanceException {
+
+
+        if (source.getId().equals(destination.getId())) throw new BadRequest(
+                "Không thể chuyển tiền từ ví này đến chính ví này");
         transfer(source, destination, amount);
+
         walletRepository.saveAll(List.of(source, destination));
 
 
