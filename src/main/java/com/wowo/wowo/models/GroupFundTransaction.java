@@ -32,4 +32,7 @@ public class GroupFundTransaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)
     private TransactionType transactionType;
+
+    @Column(name = "description", nullable = false)
+    private String description;
 }

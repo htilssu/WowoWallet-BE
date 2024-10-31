@@ -29,7 +29,7 @@ public class GroupFundTransactionController {
         return groupFundTransactionMapper.toDto(
                 groupFundService.topUp(Long.valueOf(transferDto.getReceiverId()),
                         transferDto.getSenderId(),
-                        transferDto.getMoney()));
+                        transferDto.getMoney(), transferDto.getDescription()));
     }
 
     @PostMapping("/withdraw")
@@ -37,7 +37,7 @@ public class GroupFundTransactionController {
 
         final GroupFundTransaction groupFundTransaction = groupFundService.withdraw(
                 withdrawRequestDto.getGroupId(),
-                withdrawRequestDto.getAmount());
+                withdrawRequestDto.getAmount(), withdrawRequestDto.getDescription());
 
         return ResponseEntity.ok(groupFundTransactionMapper.toDto(groupFundTransaction));
     }

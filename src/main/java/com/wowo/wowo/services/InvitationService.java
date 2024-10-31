@@ -31,7 +31,7 @@ public class InvitationService {
     public Map<String, Object> sendInvitation(Long groupId, String senderId, String recipientId) {
         // Kiểm tra nếu người gửi và người nhận là cùng một người
         if (senderId.equals(recipientId)) {
-            String errorMessage = "Người gửi không thể trùng với người nhận.";
+            String errorMessage = "Không thể gửi cho chính mình.";
             Map<String, Object> response = new HashMap<>();
             response.put("message", errorMessage);
             return response;
@@ -48,7 +48,7 @@ public class InvitationService {
 
         // Kiểm tra nếu đã gửi lời mời cho người nhận này
         if (invitationRepository.existsByGroupFundAndRecipientAndStatus(groupFund, recipient, InvitationStatus.PENDING)) {
-            String warningMessage = "Đã gửi lời mời cho người nhận này và đang chờ xác nhận.";
+            String warningMessage = "Đã gửi lời mời trước đó và đang chờ xác nhận.";
             Map<String, Object> response = new HashMap<>();
             response.put("message", warningMessage);
             return response;

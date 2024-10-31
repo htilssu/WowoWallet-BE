@@ -244,7 +244,7 @@ public class GroupFundService {
      *
      * @return {@link GroupFundTransaction} chứa thông tin giao dịch
      */
-    public GroupFundTransaction topUp(Long groupId, String memberId, Long amount) {
+    public GroupFundTransaction topUp(Long groupId, String memberId, Long amount, String description) {
         GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
                 () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
@@ -268,6 +268,7 @@ public class GroupFundService {
         groupFundTransaction.setMember(user);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
         groupFundTransaction.setTransactionType(TransactionType.TOP_UP);
+        groupFundTransaction.setDescription(description);
 
         groupFundTransactionRepository.save(groupFundTransaction);
 
@@ -288,7 +289,7 @@ public class GroupFundService {
         return transactions.stream().map(groupFundMapper::toTransactionDto).toList();
     }
 
-    public GroupFundTransaction withdraw(Long groupFundId, Long amount) {
+    public GroupFundTransaction withdraw(Long groupFundId, Long amount, String description) {
         final GroupFund groupFund = groupFundRepository.findById(groupFundId).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy quỹ"));
 
@@ -308,6 +309,7 @@ public class GroupFundService {
         groupFundTransaction.setMember(groupFund.getOwner());
         groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
+        groupFundTransaction.setDescription(description);
         return groupFundTransactionRepository.save(groupFundTransaction);
     }
 }
