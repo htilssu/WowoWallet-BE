@@ -60,6 +60,9 @@ public class GroupFundService {
             wallet.setCurrency("VND");
             // Lưu ví vào cơ sở dữ liệu
 
+            // Kiểm tra tính hợp lệ của các trường dữ liệu
+            validateGroupFundData(groupFundDto);
+
             // Liên kết ví với quỹ nhóm
             groupFund.setWallet(wallet);
             groupFund.setName(groupFundDto.getName());
