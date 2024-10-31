@@ -22,6 +22,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -220,6 +221,9 @@ public class GroupFundService {
             throw new AccessDeniedException("Bạn không có quyền cập nhật quỹ nhóm này");
         }
 
+        // Kiểm tra tính hợp lệ của các trường dữ liệu
+        validateGroupFundData(groupFundDto);
+
         // Cập nhật thông tin quỹ nhóm
         groupFund.setName(groupFundDto.getName());
         groupFund.setImage(groupFundDto.getImage());
@@ -233,6 +237,23 @@ public class GroupFundService {
 
         // Chuyển đổi quỹ nhóm đã cập nhật sang DTO và trả về
         return groupFundMapper.toDto(updatedGroupFund);
+    }
+
+    private void validateGroupFundData(GroupFundDto groupFundDto) {
+        // Kiểm tra tên quỹ không để trống
+        if (groupFundDto.getName() == null || groupFundDto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên quỹ không được để trống");
+        }
+
+        // Kiểm tra số tiền mục tiêu không âm
+        if (groupFundDto.getTarget() < 0) {
+            throw new IllegalArgumentException("Số tiền mục tiêu không được là số âm");
+        }
+
+        // Kiểm tra ngày hạn không phải là ngày quá khứ
+        if (groupFundDto.getTargetDate() != null && groupFundDto.getTargetDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
+        }
     }
 
     /**
