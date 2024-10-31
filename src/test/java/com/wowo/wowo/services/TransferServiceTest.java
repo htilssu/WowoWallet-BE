@@ -30,9 +30,11 @@ class TransferServiceTest {
         MockitoAnnotations.openMocks(this);
 
         sourceWallet = new Wallet();
+        sourceWallet.setId(1L);
         sourceWallet.setBalance(1000L);
 
         destinationWallet = new Wallet();
+        destinationWallet.setId(2L);
         destinationWallet.setBalance(1000L);
     }
 

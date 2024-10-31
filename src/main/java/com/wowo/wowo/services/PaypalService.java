@@ -5,12 +5,13 @@ import com.paypal.sdk.controllers.OrdersController;
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
+import com.wowo.wowo.data.dto.TopUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.Collections;
 
 @Service
@@ -43,5 +44,36 @@ public class PaypalService {
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
                 ordersCreateInput);
         return orderApiResponse.getResult();
+    }
+
+    public Order createTopUpOrder(TopUpDto topUpDto) throws IOException, ApiException {
+        final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
+
+
+        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(
+                null,
+                new OrderRequest.Builder(
+                        CheckoutPaymentIntent.CAPTURE,
+                        Collections.singletonList(
+                                new PurchaseUnitRequest.Builder(
+                                        new AmountWithBreakdown.Builder(
+                                                "USD",
+                                                new BigDecimal(
+                                                        topUpDto.getAmount() / 23000D).setScale(2,
+                                                        BigDecimal.ROUND_HALF_UP).toString()
+                                        ).build()
+                                ).build()
+                        )
+                ).applicationContext(new OrderApplicationContext.Builder().returnUrl(
+                        "https://wowo.htilssu.id.vn/home").build()).build()
+        ).prefer("return=representation")
+                .build();
+        final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
+                ordersCreateInput);
+        if (orderApiResponse.getStatusCode() == 201) {
+            return orderApiResponse.getResult();
+        }
+
+        return null;
     }
 }
