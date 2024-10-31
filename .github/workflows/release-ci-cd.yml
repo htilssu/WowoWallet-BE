@@ -86,6 +86,6 @@ jobs:
     steps:
       - name: Run Container
         run: |
-          echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          cat ${{github.workspace}}/deploy.sh | ssh -i ~/.ssh/id_rsa ${{secrets.REMOTE_HOST_DEPLOY}} 'bash -'
+          echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ${{github.workspace}}/id_rsa
+          chmod 600 ${{github.workspace}}/id_rsa
+          cat ${{github.workspace}}/deploy.sh | ssh -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_HOST_DEPLOY}} 'bash -'
