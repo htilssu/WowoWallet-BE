@@ -36,4 +36,5 @@ public class OrderDto implements Serializable {
     @Size(max = 100)
     private String serviceName;
     Collection<OrderItemCreateDto> items;
+    private String checkoutUrl;
 }

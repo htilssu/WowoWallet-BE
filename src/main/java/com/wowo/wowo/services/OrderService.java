@@ -12,7 +12,6 @@ import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.mongo.documents.OrderItem;
 import com.wowo.wowo.mongo.repositories.OrderItemRepository;
 import com.wowo.wowo.repositories.OrderRepository;
-import com.wowo.wowo.util.AuthUtil;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -66,6 +65,7 @@ public class OrderService {
         final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
         final OrderDto orderDto = orderMapperImpl.toDto(order);
         orderDto.setItems(orderItems.stream().map(orderItemMapper::toDto).toList());
+        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());
         return orderDto;
     }
 
