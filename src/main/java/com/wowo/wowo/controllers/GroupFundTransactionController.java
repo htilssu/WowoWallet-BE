@@ -31,7 +31,7 @@ public class GroupFundTransactionController {
         return groupFundTransactionMapper.toDto(
                 groupFundService.topUp(Long.valueOf(transferDto.getReceiverId()),
                         ((String) authentication.getPrincipal()),
-                        transferDto.getMoney(), transferDto.getDescription()));
+                        transferDto.getMoney(), transferDto.getMessage()));
     }
 
     @PostMapping("/withdraw")
