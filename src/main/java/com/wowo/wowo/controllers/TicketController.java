@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wowo.wowo.data.dto.SupportTicketDto;
+import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.models.SupportTicket;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.SupportTicketService;
@@ -27,33 +28,35 @@ public class TicketController {
 
     @Autowired
     private SupportTicketService supportTicketService;
+
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createTicket(@RequestBody SupportTicket ticket) {
+    @SuppressWarnings("CallToPrintStackTrace")
+    public ResponseEntity<String> createTicket(@RequestBody SupportTicketDto supportTicketDto) {
         try {
-            String customerId = ticket.getCustomer().getId();
-            
-            if (customerId == null || customerId.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("Không tìm thấy thông tin người dùng.");
+            String customerId = supportTicketDto.getCustomer().getId();
+            System.out.println("Customer ID: " + customerId); 
+            if (customerId == null || customerId.isEmpty()) {
+                return ResponseEntity.badRequest().body("Không tìm thấy thông tin khách hàng.");
             }
 
-            if (!userRepository.existsById(customerId)) {
-                return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
-            }
-
+            userRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
             List<SupportTicket> openTickets = supportTicketService.getUserTicket(customerId);
+
             if (!openTickets.isEmpty()) {
                 return ResponseEntity.badRequest().body("Bạn đã gửi một yêu cầu hỗ trợ chưa được phản hồi.");
             }
 
-            supportTicketService.createTicket(ticket);
+            supportTicketService.createTicket(supportTicketDto);
             return ResponseEntity.ok("Yêu cầu hỗ trợ của bạn đã được tạo. Vui lòng chờ.");
         } catch (DataAccessException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body("Có lỗi xảy ra trong cơ sở dữ liệu khi tạo yêu cầu hỗ trợ.");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body("Có lỗi xảy ra trong quá trình tạo yêu cầu hỗ trợ.");
         }
@@ -61,22 +64,20 @@ public class TicketController {
 
     @GetMapping("/user/{customerId}")
     public ResponseEntity<List<SupportTicketDto>> getUserTickets(@PathVariable String customerId) {
+        List<SupportTicket> tickets = supportTicketService.getUserTicket(customerId);
 
-    List<SupportTicket> tickets = supportTicketService.getUserTicket(customerId);
-    
-    List<SupportTicketDto> ticketDTOs = tickets.stream()
-        .map(ticket -> new SupportTicketDto(
-            ticket.getId(),
-            ticket.getCustomer() != null ? ticket.getCustomer().getId() : null, 
-            ticket.getTitle(),
-            ticket.getContent(),
-            ticket.getStatus().name()
-        ))
-        .collect(Collectors.toList());
+        List<SupportTicketDto> ticketDTOs = tickets.stream()
+            .map(ticket -> new SupportTicketDto(
+                ticket.getId(),
+                new SupportTicketDto.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
+                ticket.getTitle(),
+                ticket.getContent(),
+                ticket.getStatus().name()
+            ))
+            .collect(Collectors.toList());
 
-    return ResponseEntity.ok(ticketDTOs);
-}
-
+        return ResponseEntity.ok(ticketDTOs);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<SupportTicketDto>> getAllTickets() {
@@ -84,7 +85,7 @@ public class TicketController {
         List<SupportTicketDto> ticketDTOs = tickets.stream()
             .map(ticket -> new SupportTicketDto(
                 ticket.getId(),
-                ticket.getCustomer() != null ? ticket.getCustomer().getId() : null, 
+                new SupportTicketDto.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
                 ticket.getTitle(),
                 ticket.getContent(),
                 ticket.getStatus().name()
@@ -94,6 +95,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}/status")
+    @SuppressWarnings("CallToPrintStackTrace")
     public ResponseEntity<String> updateTicketStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             supportTicketService.updateTicketStatus(id, status);
@@ -102,6 +104,7 @@ public class TicketController {
             return ResponseEntity.status(HttpStatus.SC_BAD_REQUEST)
                     .body("Trạng thái không hợp lệ");
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
                     .body(e.getMessage());
         }
