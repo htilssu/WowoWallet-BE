@@ -1,15 +1,19 @@
 package com.wowo.wowo.controllers;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.annotations.authorized.IsAdmin;
-import com.wowo.wowo.annotations.authorized.IsUser;
+import com.wowo.wowo.annotations.authorized.IsAuthenticated;
 import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
+import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.services.EmailService;
+import com.wowo.wowo.services.PartnerService;
+import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -27,7 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping(value = "/v1/user", produces = "application/json; charset=UTF-8")
 @Tag(name = "User", description = "Người dùng")
-@IsUser
+@IsAuthenticated
 public class UserController {
 
     private final UserRepository userRepository;
@@ -36,13 +40,22 @@ public class UserController {
     private final UserMapper userMapperImpl;
     private final WalletMapper walletMapperImpl;
     private final EmailService emailService;
+    private final PartnerService partnerService;
+    private final UserService userService;
 
     @GetMapping()
     @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công",
                  useReturnTypeSchema = true)
     @ApiResponse(responseCode = "404", description = "Không tìm thấy thông tin")
-    public ResponseEntity<UserDto> getUser(Authentication authentication) {
-        return ResponseEntity.notFound().build();
+    public Object getUser(Authentication authentication) {
+        DecodedJWT decodedJWT = (DecodedJWT) authentication.getDetails();
+        String role = decodedJWT.getClaim("role").asString();
+        String id = authentication.getPrincipal().toString();
+        if (role.contains("partner")) {
+            return partnerService.getPartnerById(id).orElseThrow(
+                    () -> new NotFoundException("Không tìm thấy thông tin"));
+        }
+        return userService.getUserById(id);
     }
 
     @GetMapping("wallet")
