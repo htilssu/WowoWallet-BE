@@ -1,5 +1,3 @@
-CREATE SEQUENCE IF NOT EXISTS support_ticket_id_seq START WITH 1 INCREMENT BY 1;
-
 CREATE SEQUENCE IF NOT EXISTS group_fund_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE IF NOT EXISTS order_id_seq START WITH 1 INCREMENT BY 1;
@@ -161,7 +159,7 @@ CREATE TABLE role
 
 CREATE TABLE support_ticket
 (
-    id          BIGINT  NOT NULL,
+    id          VARCHAR(15)  NOT NULL,
     customer_id VARCHAR(255),
     title       VARCHAR(255) NOT NULL,
     content     TEXT         NOT NULL,

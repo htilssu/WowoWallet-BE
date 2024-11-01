@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigInteger;
+
 @Getter
 @Setter
 @Entity
@@ -22,9 +24,10 @@ import lombok.Setter;
 public class SupportTicket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "support_ticket_seq")
-    @SequenceGenerator(name = "support_ticket_seq", sequenceName = "support_ticket_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "support_ticket_id_seq", sequenceName = "support_ticket_id_seq",
+                       allocationSize = 1)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

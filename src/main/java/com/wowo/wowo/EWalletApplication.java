@@ -60,14 +60,6 @@ public class EWalletApplication {
                         "docs/**", "v3/api-docs/**"
                 )
                 .permitAll()
-                .requestMatchers("/v?/user/**", "/v?/wallet/**", "/v?/transaction/**",
-                        "/v?/payment/**")
-                .hasRole("USER")
-                .requestMatchers(
-                        "/v?/partner/**")
-                .hasRole("PARTNER")
-                .requestMatchers("/v?/admin/**")
-                .hasRole("ADMIN")
                 .anyRequest().permitAll());
 
 
@@ -77,7 +69,6 @@ public class EWalletApplication {
 
         return http.build();
     }
-
 
     @Bean
     public CorsFilter corsFilter() {
