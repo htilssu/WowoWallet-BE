@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wowo.wowo.data.dto.SupportTicketDto;
 import com.wowo.wowo.models.SupportTicket;
+import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.SupportTicketService;
 
 @RestController
@@ -26,12 +27,29 @@ public class TicketController {
 
     @Autowired
     private SupportTicketService supportTicketService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/create")
     public ResponseEntity<String> createTicket(@RequestBody SupportTicket ticket) {
         try {
+            String customerId = ticket.getCustomer().getId();
+            
+            if (customerId == null || customerId.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Không tìm thấy thông tin người dùng.");
+            }
+
+            if (!userRepository.existsById(customerId)) {
+                return ResponseEntity.badRequest().body("Người dùng không tồn tại.");
+            }
+
+            List<SupportTicket> openTickets = supportTicketService.getUserTicket(customerId);
+            if (!openTickets.isEmpty()) {
+                return ResponseEntity.badRequest().body("Bạn đã gửi một yêu cầu hỗ trợ chưa được phản hồi.");
+            }
+
             supportTicketService.createTicket(ticket);
-            return ResponseEntity.ok("Yêu cầu hỗ trợ của bạn đã được tạo. Vui lòng chờ");
+            return ResponseEntity.ok("Yêu cầu hỗ trợ của bạn đã được tạo. Vui lòng chờ.");
         } catch (DataAccessException e) {
             return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .body("Có lỗi xảy ra trong cơ sở dữ liệu khi tạo yêu cầu hỗ trợ.");
@@ -42,8 +60,9 @@ public class TicketController {
     }
 
     @GetMapping("/user/{customerId}")
-    public ResponseEntity<List<SupportTicketDto>> getUserTickets(@PathVariable Long customerId) {
-    List<SupportTicket> tickets = supportTicketService.getUserTicket(customerId.toString());
+    public ResponseEntity<List<SupportTicketDto>> getUserTickets(@PathVariable String customerId) {
+
+    List<SupportTicket> tickets = supportTicketService.getUserTicket(customerId);
     
     List<SupportTicketDto> ticketDTOs = tickets.stream()
         .map(ticket -> new SupportTicketDto(

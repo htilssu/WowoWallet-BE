@@ -5,22 +5,28 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.models.SupportTicket;
 import com.wowo.wowo.models.SupportTicketStatus;
+import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.SupportTicketRepository;
+import com.wowo.wowo.repositories.UserRepository;
 
 @Service
 public class SupportTicketService {
 
     @Autowired
     private SupportTicketRepository supportTicketRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public void createTicket(SupportTicket ticket) {
         supportTicketRepository.save(ticket);
     }
 
     public List<SupportTicket> getUserTicket(String customerId) {
-        return supportTicketRepository.findByCustomer_Id(customerId);
+        User user = userRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
+        return supportTicketRepository.findByCustomer_Id(user.getId());
     }
 
     public Optional<SupportTicket> getTicketById(Long id) {
