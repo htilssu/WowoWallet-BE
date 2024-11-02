@@ -49,6 +49,7 @@ public class OrderService {
 
         final OrderDto orderDto = orderMapper.toDto(newOrder);
         orderDto.setItems(orderItemCreateDtos);
+        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/order/"+order.getId());
 
         return orderDto;
     }
