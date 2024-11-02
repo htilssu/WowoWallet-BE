@@ -57,10 +57,10 @@ public class WalletService {
 
     public Optional<Wallet> getPartnerWallet(String partnerId) {
         return walletRepository.findByOwnerIdAndOwnerType(partnerId,
-                WalletOwnerType.PARTNER.name());
+                WalletOwnerType.PARTNER);
     }
 
     public Optional<Wallet> getUserWallet(String ownerId) {
-        return walletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER.name());
+        return walletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
     }
 }
