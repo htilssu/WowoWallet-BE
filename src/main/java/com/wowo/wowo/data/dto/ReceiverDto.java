@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ReceiverDto {
 
-    String name;
+    String fullName;
     String avatar;
     String email;
     String type;
