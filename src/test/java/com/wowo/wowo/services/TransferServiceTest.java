@@ -22,6 +22,9 @@ class TransferServiceTest {
     @InjectMocks
     private TransferService transferService;
 
+    @Mock
+    private WalletTransactionService walletTransactionService;
+
     private Wallet sourceWallet;
     private Wallet destinationWallet;
 
@@ -46,12 +49,14 @@ class TransferServiceTest {
         assertEquals(1100L, destinationWallet.getBalance());
 
         verify(walletRepository, times(1)).saveAll(anyList());
+        verify(walletTransactionService, times(1)).createWalletTransaction(any());
     }
 
     @Test
     void transferMoney_InsufficientBalance() {
-        InsufficientBalanceException exception = assertThrows(InsufficientBalanceException.class, () ->
-                transferService.transferMoney(sourceWallet, destinationWallet, 1200L)
+        InsufficientBalanceException exception = assertThrows(InsufficientBalanceException.class,
+                () ->
+                        transferService.transferMoney(sourceWallet, destinationWallet, 1200L)
         );
 
         assertEquals("Số dư không đủ", exception.getMessage());
