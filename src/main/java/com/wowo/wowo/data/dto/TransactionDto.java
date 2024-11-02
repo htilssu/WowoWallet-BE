@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * DTO for {@link Transaction}
@@ -26,8 +27,8 @@ public final class TransactionDto
     private @NotNull PaymentStatus status;
     private @NotNull TransactionType type;
     private TransactionVariant variant;
-    private String description;
-    private @NotNull String created;
-    private @NotNull String updated;
+    private String message;
+    private Instant created;
+    private Instant updated;
     private ReceiverDto receiver;
 }

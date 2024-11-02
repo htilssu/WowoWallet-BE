@@ -55,7 +55,7 @@ public class GroupFundService {
 
         try {
             Wallet wallet = new Wallet();
-            wallet.setOwnerType("group_fund");
+            wallet.setOwnerType(WalletOwnerType.GROUP_FUND);
             wallet.setBalance(0L);
             wallet.setCurrency("VND");
             // Lưu ví vào cơ sở dữ liệu

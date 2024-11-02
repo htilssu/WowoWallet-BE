@@ -19,11 +19,10 @@ public class Wallet extends BalanceEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_id_seq")
     private Long id;
 
-    @Size(max = 20)
     @NotNull
-    @ColumnDefault("'user'")
-    @Column(name = "owner_type", nullable = false, length = 20)
-    private String ownerType;
+    @Column(name = "owner_type", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
+    private WalletOwnerType ownerType = WalletOwnerType.USER;
 
     @Size(max = 5)
     @NotNull
