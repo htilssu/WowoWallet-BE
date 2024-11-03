@@ -33,7 +33,6 @@ public class TicketController {
     private UserRepository userRepository;
 
     @PostMapping("/create")
-    @SuppressWarnings("CallToPrintStackTrace")
     public ResponseEntity<String> createTicket(@RequestBody SupportTicketDto supportTicketDto) {
         try {
             String customerId = supportTicketDto.getCustomer().getId();
@@ -95,7 +94,6 @@ public class TicketController {
     }
 
     @PutMapping("/{id}/status")
-    @SuppressWarnings("CallToPrintStackTrace")
     public ResponseEntity<String> updateTicketStatus(@PathVariable Long id, @RequestParam String status) {
         try {
             supportTicketService.updateTicketStatus(id, status);
