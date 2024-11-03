@@ -1,8 +1,9 @@
 package com.wowo.wowo.services;
 
-import com.wowo.wowo.data.mapper.WalletMapper;
+import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.models.WalletOwnerType;
 import com.wowo.wowo.repositories.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class WalletService {
 
-    private final WalletMapper walletMapper;
     private final WalletRepository walletRepository;
 
     public Wallet getWallet(int id) {
@@ -22,14 +22,25 @@ public class WalletService {
 
     }
 
+    public Wallet createWallet(Partner partner) {
+        Wallet wallet = new Wallet();
+        wallet.setOwnerId(partner.getId());
+        wallet.setOwnerType(WalletOwnerType.PARTNER);
+
+        try {
+            return walletRepository.save(wallet);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Wallet createWallet(User user) {
         Wallet wallet = new Wallet();
         wallet.setOwnerId(user.getId());
-        wallet.setOwnerType("user");
+        wallet.setOwnerType(WalletOwnerType.USER);
 
         try {
-            wallet = walletRepository.save(wallet);
-            return wallet;
+            return walletRepository.save(wallet);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -41,14 +52,15 @@ public class WalletService {
 
     public boolean isWalletOwner(String userId, String walletId) {
         final long walletIdInt = Long.parseLong(walletId);
-        return walletRepository.existsByOwnerIdAndId(userId, (long) walletIdInt);
+        return walletRepository.existsByOwnerIdAndId(userId, walletIdInt);
     }
 
     public Optional<Wallet> getPartnerWallet(String partnerId) {
-        return walletRepository.findByOwnerIdAndOwnerType(partnerId, "partner");
+        return walletRepository.findByOwnerIdAndOwnerType(partnerId,
+                WalletOwnerType.PARTNER);
     }
 
     public Optional<Wallet> getUserWallet(String ownerId) {
-        return walletRepository.findByOwnerId(ownerId);
+        return walletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
     }
 }

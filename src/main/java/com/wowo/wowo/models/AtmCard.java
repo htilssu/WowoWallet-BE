@@ -5,11 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -44,10 +42,12 @@ public class AtmCard {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "expired", nullable = false)
-    private String expired;
+    @Column(name = "month", nullable = false)
+    private Integer month;
+    @NotNull
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
     @JoinColumn(name = "bank_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)

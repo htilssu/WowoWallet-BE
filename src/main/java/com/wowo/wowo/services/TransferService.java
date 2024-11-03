@@ -84,6 +84,7 @@ public class TransferService {
      * @throws InsufficientBalanceException nếu số dư của ví nguồn nhỏ hơn số tiền chuyển
      * @see InsufficientBalanceException
      */
+    @Transactional
     public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
                                                                                            InsufficientBalanceException {
 
@@ -109,7 +110,7 @@ public class TransferService {
 
         walletTransaction.setTransaction(transaction);
 
-        return walletTransaction;
+        return walletTransactionService.createWalletTransaction(walletTransaction);
     }
 
     public void transfer(BalanceEntity source, BalanceEntity destination, long amount) {

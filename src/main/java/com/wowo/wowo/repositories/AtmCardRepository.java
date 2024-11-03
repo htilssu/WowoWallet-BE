@@ -14,5 +14,5 @@ public interface AtmCardRepository extends JpaRepository<AtmCard, Integer> {
     @NonNull
     Optional<AtmCard> findByOwner(User owner);
     List<AtmCard> findDistinctByOwnerAllIgnoreCase(User owner, Sort sort);
-    AtmCard findByCardNumber(String cardNumber);
+    Optional<AtmCard> findByCardNumber(String cardNumber);
 }

@@ -1,20 +1,25 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsUser;
+import com.wowo.wowo.data.dto.AtmCardCreateDto;
 import com.wowo.wowo.data.dto.AtmCardDto;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.AtmCard;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.repositories.AtmCardRepository;
 import com.wowo.wowo.repositories.BankRepostitory;
 import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.util.ObjectUtil;
+import com.wowo.wowo.services.AtmCardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +27,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
+@IsUser
 @Tag(name = "Card", description = "Thẻ ngân hàng")
 public class CardController {
 
@@ -29,32 +35,16 @@ public class CardController {
     private final AtmCardRepository atmCardRepository;
     private final UserRepository userRepository;
     private final BankRepostitory bankRepostitory;
+    private final AtmCardService atmCardService;
 
     @PostMapping
-    public ResponseEntity<?> createCard(@RequestBody AtmCardDto atmCardDto,
+    public AtmCardDto createCard(@RequestBody @NotNull @Validated AtmCardCreateDto atmCardDto,
             Authentication authentication) {
         if (atmCardDto == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage("Dữ liệu không hợp lệ"));
-        }
-        String userId = (String) authentication.getPrincipal();
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return ResponseEntity.ok(new ResponseMessage("Người dùng không tồn tại"));
-        }
-        final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardDto);
-        atmCard.setOwner(user);
-
-
-        try {
-            atmCardRepository.save(atmCard);
-        } catch (Exception e) {
-            return ResponseEntity.ok().body(new ResponseMessage("Thẻ đã tồn tại"));
+            throw new BadRequest("Dữ liệu không hợp lệ");
         }
 
-        return ResponseEntity.ok(ObjectUtil.mergeObjects(
-                ObjectUtil.wrapObject("card", atmCardMapperImpl.toDto(atmCard)),
-                new ResponseMessage("Tạo thẻ thành công")));
-
+        return atmCardService.createAtmCard(atmCardDto, authentication);
     }
 
     @GetMapping
