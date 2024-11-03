@@ -9,6 +9,7 @@ import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.models.WalletOwnerType;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.services.EmailService;
@@ -61,7 +62,7 @@ public class UserController {
     @GetMapping("wallet")
     public ResponseEntity<?> getWallet(Authentication authentication) {
         Optional<Wallet> wallet = walletRepository.findByOwnerIdAndOwnerType(
-                (String) authentication.getPrincipal(), "user");
+                (String) authentication.getPrincipal(), WalletOwnerType.USER);
         if (wallet.isPresent()) {
             return ResponseEntity.ok(walletMapperImpl.toResponse(wallet.get()));
         }

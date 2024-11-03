@@ -6,6 +6,7 @@ import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.TransactionRequest;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.models.WalletOwnerType;
 import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.otp.OTPVerifyDto;
 import com.wowo.wowo.otp.OtpSendDto;
@@ -76,7 +77,7 @@ public class TransferController {
 
 
         Optional<Wallet> optionalSenderWallet = walletRepository.findByOwnerIdAndOwnerType(senderId,
-                "user");
+                WalletOwnerType.USER);
 
         if (optionalSenderWallet.isEmpty()) {
             return ResponseEntity.ok()
