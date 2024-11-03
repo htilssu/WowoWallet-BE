@@ -1,6 +1,7 @@
 package com.wowo.wowo.controllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wowo.wowo.data.dto.SupportTicketDto;
 import com.wowo.wowo.exceptions.UserNotFoundException;
 import com.wowo.wowo.models.SupportTicket;
+import com.wowo.wowo.models.SupportTicketStatus;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.SupportTicketService;
 
@@ -36,15 +38,18 @@ public class TicketController {
     public ResponseEntity<String> createTicket(@RequestBody SupportTicketDto supportTicketDto) {
         try {
             String customerId = supportTicketDto.getCustomer().getId();
-            System.out.println("Customer ID: " + customerId); 
+
             if (customerId == null || customerId.isEmpty()) {
                 return ResponseEntity.badRequest().body("Không tìm thấy thông tin khách hàng.");
             }
 
             userRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
+
             List<SupportTicket> openTickets = supportTicketService.getUserTicket(customerId);
 
-            if (!openTickets.isEmpty()) {
+            boolean hasOpenTicket = openTickets.stream().anyMatch(ticket -> ticket.getStatus() == SupportTicketStatus.OPEN);
+
+            if (hasOpenTicket) {
                 return ResponseEntity.badRequest().body("Bạn đã gửi một yêu cầu hỗ trợ chưa được phản hồi.");
             }
 
@@ -107,4 +112,60 @@ public class TicketController {
                     .body(e.getMessage());
         }
     }
+
+    @PostMapping("/{id}/again")
+    public ResponseEntity<String> requestTicketAgain(@PathVariable Long id, @RequestBody SupportTicketDto supportTicketDto) {
+        try {
+
+            String customerId = supportTicketDto.getCustomer().getId();
+
+            if (customerId == null || customerId.isEmpty()) {
+                return ResponseEntity.badRequest().body("Không tìm thấy thông tin khách hàng.");
+            }
+
+            userRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
+            
+            Optional<SupportTicket> optionalTicket = supportTicketService.getTicketById(id);
+
+            List<SupportTicket> openTickets = supportTicketService.getUserTicket(customerId);
+
+            boolean hasOpenTicket = openTickets.stream().anyMatch(ticket -> ticket.getStatus() == SupportTicketStatus.OPEN);
+
+            if (hasOpenTicket) {
+                return ResponseEntity.badRequest().body("Bạn đã gửi một yêu cầu hỗ trợ chưa được phản hồi.");
+            }
+
+            if (!optionalTicket.isPresent()) {
+                return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+                    .body("Không tìm thấy yêu cầu hỗ trợ.");
+            }
+
+            SupportTicket ticket = optionalTicket.get();
+
+            if (ticket.getStatus() == SupportTicketStatus.OPEN) {
+                return ResponseEntity.badRequest().body("Yêu cầu hỗ trợ này bạn đã gửi");
+            }
+
+            if (ticket.getStatus() == SupportTicketStatus.RESOLVED) {   
+                return ResponseEntity.badRequest().body("Yêu cầu hỗ trợ này đã được xử lý");
+            }
+
+            SupportTicketDto newTicketDto = new SupportTicketDto(
+                null, 
+                new SupportTicketDto.Customer(ticket.getCustomer().getId()), 
+                ticket.getTitle(), 
+                ticket.getContent(), 
+                SupportTicketStatus.OPEN.name() 
+            );
+
+            supportTicketService.createTicket(newTicketDto);
+
+            return ResponseEntity.ok("Yêu cầu hỗ trợ đã được gửi lại.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body("Có lỗi xảy ra trong quá trình mở lại yêu cầu hỗ trợ.");
+        }
+    }
+        
 }
