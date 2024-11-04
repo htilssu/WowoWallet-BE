@@ -48,8 +48,6 @@ public class PaypalController {
                     paypalService.captureOrder(orderId);
                 }
                 case "CHECKOUT.ORDER.COMPLETED" -> {
-                    var orderId = data.getJSONObject("resource").getString("id");
-                    topUpService.topUp(orderId);
                 }
                 default -> logger.info("Unknown event type: " + eventType);
             }
