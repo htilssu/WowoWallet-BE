@@ -12,7 +12,10 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "atm_card")
+@Table(name = "atm_card", indexes = {
+        @Index(name = "atm_card_owner_id_index", columnList = "owner_id"),
+        @Index(name = "atm_card_bank_id_index", columnList = "bank_id")
+})
 public class AtmCard {
 
     @Id
