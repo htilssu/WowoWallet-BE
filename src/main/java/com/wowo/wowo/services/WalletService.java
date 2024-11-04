@@ -65,7 +65,7 @@ public class WalletService {
     }
 
     public Wallet plusBalance(String walletId, Long amount) {
-        final Wallet wallet = getWallet(walletId);
+        final Wallet wallet = getWallet(Integer.parseInt(walletId));
         wallet.setBalance(wallet.getBalance() + amount);
         return walletRepository.save(wallet);
     }
