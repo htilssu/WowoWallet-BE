@@ -7,6 +7,7 @@ import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
 import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.mongo.documents.TopUpRequest;
 import com.wowo.wowo.mongo.repositories.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,21 +32,11 @@ public class PaypalService {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
 
-        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(
-                null,
-                new OrderRequest.Builder(
-                        CheckoutPaymentIntent.CAPTURE,
-                        Collections.singletonList(
-                                new PurchaseUnitRequest.Builder(
-                                        new AmountWithBreakdown.Builder(
-                                                "USD",
-                                                "100000"
-                                        ).build()
-                                ).build()
-                        )
-                ).build()
-        ).prefer("return=representation")
-                .build();
+        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(null,
+                new OrderRequest.Builder(CheckoutPaymentIntent.CAPTURE, Collections.singletonList(
+                        new PurchaseUnitRequest.Builder(new AmountWithBreakdown.Builder("USD",
+                                "100000").build()).build())).build()).prefer(
+                "return=representation").build();
 
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
                 ordersCreateInput);
@@ -57,30 +48,24 @@ public class PaypalService {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
 
-        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(
-                null,
-                new OrderRequest.Builder(
-                        CheckoutPaymentIntent.CAPTURE,
-                        Collections.singletonList(
-                                new PurchaseUnitRequest.Builder(
-                                        new AmountWithBreakdown.Builder(
-                                                "USD",
-                                                BigDecimal.valueOf(
-                                                                topUpRequestDto.getAmount() / 23000D)
-                                                        .setScale(2,
-                                                                RoundingMode.HALF_UP).toString()
-                                        ).build()
-                                ).build()
-                        )
-                ).applicationContext(new OrderApplicationContext.Builder().returnUrl(
-                        "https://wowo.htilssu.id.vn/home").build()
-                ).build()
-        ).prefer("return=representation")
-                .build();
+        OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(null,
+                new OrderRequest.Builder(CheckoutPaymentIntent.CAPTURE, Collections.singletonList(
+                        new PurchaseUnitRequest.Builder(
+                                new AmountWithBreakdown.Builder("USD", BigDecimal.valueOf(
+                                                topUpRequestDto.getAmount() / 23000D)
+                                        .setScale(2, RoundingMode.HALF_UP)
+                                        .toString()).build()).build())).applicationContext(
+                        new OrderApplicationContext.Builder().returnUrl(
+                                "https://wowo.htilssu.id.vn/home").build()).build()).prefer(
+                "return=representation").build();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
                 ordersCreateInput);
         if (orderApiResponse.getStatusCode() == 201) {
-            return orderApiResponse.getResult();
+
+            final Order order = orderApiResponse.getResult();
+            topUpRequestRepository.save(TopUpRequest.builder().orderId(order.getId())
+                    .walletId(topUpRequestDto.getTo()).amount(topUpRequestDto.getAmount()).build());
+            return order;
         }
 
         return null;
@@ -89,11 +74,7 @@ public class PaypalService {
     public Wallet captureOrder(String orderId) throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
-                new OrdersCaptureInput.Builder()
-                        .id(orderId)
-                        .prefer("return=minimal")
-                        .build()
-        );
+                new OrdersCaptureInput.Builder().id(orderId).prefer("return=minimal").build());
 
         if (orderApiResponse.getStatusCode() == 200) {
             System.out.println("Capture order success");
