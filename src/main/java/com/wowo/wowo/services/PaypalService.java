@@ -6,7 +6,8 @@ import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
-import com.wowo.wowo.mongo.documents.TopUpRequest;
+import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.mongo.repositories.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class PaypalService {
 
     private final PaypalServerSDKClient paypalServerSDKClient;
     private final TopUpService topUpService;
+    private final TopUpRequestRepository topUpRequestRepository;
+    private final WalletService walletService;
 
     public Order createOrder() throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
@@ -83,7 +86,7 @@ public class PaypalService {
         return null;
     }
 
-    public void captureOrder(String orderId) throws IOException, ApiException {
+    public Wallet captureOrder(String orderId) throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
                 new OrdersCaptureInput.Builder()
@@ -94,10 +97,11 @@ public class PaypalService {
 
         if (orderApiResponse.getStatusCode() == 200) {
             System.out.println("Capture order success");
-            topUpService.topUp(orderApiResponse.getResult());
+            return topUpService.topUp(orderApiResponse.getResult());
         }
         else {
             System.out.println("Capture order failed");
         }
+        return null;
     }
 }

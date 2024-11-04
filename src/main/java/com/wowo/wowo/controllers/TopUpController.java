@@ -18,6 +18,7 @@ import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.models.Order;
 import com.wowo.wowo.data.dto.TopUpDto;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.services.PaypalService;
 import com.wowo.wowo.services.TopUpService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,12 @@ import java.io.IOException;
 @AllArgsConstructor
 public class TopUpController {
 
-    private final TopUpService topUpService;
+    private final PaypalService paypalService;
 
     @PostMapping
     public ResponseEntity<TopUpDto> topUp(@RequestBody @Validated TopUpRequestDto topUpRequestDto) throws IOException,
                                                                                                           ApiException {
-        final Order order = topUpService.topUpByPaypal(topUpRequestDto);
+        final Order order = paypalService.createTopUpOrder(topUpRequestDto);
         return ResponseEntity.ok(TopUpDto.builder()
                         .redirectTo(order.getLinks().get(1).getHref())
                 .build());

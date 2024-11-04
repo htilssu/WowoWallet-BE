@@ -28,4 +28,10 @@ public class TopUpRequestDto {
     @NotNull(message = "Amount is required")
     @Min(value = 10000, message = "Amount must be greater than 10000 VND")
     private Long amount;
+    private TopUpSource source;
+
+
+    public enum TopUpSource {
+        PAYPAL, STRIPE, ATM_CARD
+    }
 }
