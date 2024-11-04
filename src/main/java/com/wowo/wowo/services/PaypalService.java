@@ -74,7 +74,8 @@ public class PaypalService {
     public Wallet captureOrder(String orderId) throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
-                new OrdersCaptureInput.Builder().id(orderId).prefer("return=minimal").build());
+                new OrdersCaptureInput.Builder(orderId, null)
+                        .prefer("return=representation").build());
 
         if (orderApiResponse.getStatusCode() == 200) {
             System.out.println("Capture order success");

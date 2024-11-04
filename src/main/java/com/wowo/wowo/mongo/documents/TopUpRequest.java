@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collation = "top_up_requests")
+@Document(collation = "top_up_requests", value = "top_up_requests")
 @Data
 @Builder
 public class TopUpRequest {

@@ -29,9 +29,13 @@ public class TopUpService {
     private final TopUpRequestRepository topUpRequestRepository;
     private final WalletService walletService;
 
-    public Wallet topUp(Order result) {
+    public Wallet topUp(Order order) {
+        return topUp(order.getId());
+    }
+
+    public Wallet topUp(String orderId) {
         final TopUpRequest order = topUpRequestRepository.findByOrderId(
-                        result.getId())
+                        orderId)
                 .orElseThrow(() -> new BadRequest("Order not found"));
         return walletService.plusBalance(order.getWalletId(), order.getAmount());
     }

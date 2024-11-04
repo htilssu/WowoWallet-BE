@@ -15,6 +15,7 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.services.PaypalService;
+import com.wowo.wowo.services.TopUpService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class PaypalController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaypalController.class);
     private final PaypalService paypalService;
-
+    private final TopUpService topUpService;
 
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(@RequestBody String payload) {
@@ -41,9 +42,9 @@ public class PaypalController {
 
             // Kiểm tra loại sự kiện
             String eventType = data.getString("event_type");
-            if ("CHECKOUT.ORDER.APPROVED".equals(eventType)) {
+            if ("CHECKOUT.ORDER.COMPLETED".equals(eventType)) {
                 var orderId = data.getJSONObject("resource").getString("id");
-                paypalService.captureOrder(orderId);
+                topUpService.topUp(orderId);
             }
         } catch (Exception e) {
             logger.error("Error while handling webhook", e);
