@@ -8,20 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 28-10-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE transaction
-DROP
-COLUMN type;
+package com.wowo.wowo.mongo.documents;
 
-ALTER TABLE transaction
-DROP
-COLUMN variant;
+import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-ALTER TABLE transaction
-    ADD type VARCHAR(255) NOT NULL;
+@Document
+public class Voucher {
 
-ALTER TABLE transaction
-    ADD variant VARCHAR(255) NOT NULL;
+    @Id
+    private String id;
+    private String name;
+    private String discount;
+    private Long orderId;
+}

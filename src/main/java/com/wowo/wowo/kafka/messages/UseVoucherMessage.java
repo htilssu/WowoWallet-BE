@@ -8,12 +8,13 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 31-10-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE group_fund_transaction
-    ADD description VARCHAR(255);
+package com.wowo.wowo.kafka.messages;
 
-ALTER TABLE group_fund_transaction
-    ALTER COLUMN description SET NOT NULL;
+public record UseVoucherMessage(String voucherId, String voucherName, String discount,
+                                String newMoney, Long orderId) {
+
+}

@@ -55,7 +55,7 @@ public class GroupFundService {
 
         try {
             Wallet wallet = new Wallet();
-            wallet.setOwnerType("group_fund");
+            wallet.setOwnerType(WalletOwnerType.GROUP_FUND);
             wallet.setBalance(0L);
             wallet.setCurrency("VND");
             // Lưu ví vào cơ sở dữ liệu
@@ -254,7 +254,8 @@ public class GroupFundService {
         }
 
         // Kiểm tra ngày hạn không phải là ngày quá khứ
-        if (groupFundDto.getTargetDate() != null && groupFundDto.getTargetDate().isBefore(LocalDate.now())) {
+        if (groupFundDto.getTargetDate() != null && groupFundDto.getTargetDate().isBefore(
+                LocalDate.now())) {
             throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
         }
     }
@@ -268,7 +269,10 @@ public class GroupFundService {
      *
      * @return {@link GroupFundTransaction} chứa thông tin giao dịch
      */
-    public GroupFundTransaction topUp(Long groupId, String memberId, Long amount, String description) {
+    public GroupFundTransaction topUp(Long groupId,
+            String memberId,
+            Long amount,
+            String description) {
         GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
                 () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
@@ -284,7 +288,7 @@ public class GroupFundService {
         final WalletTransaction walletTransaction = transferService.transferMoney(userWallet,
                 groupFund.getWallet(), amount);
 
-
+        walletTransaction.getTransaction().setVariant(TransactionVariant.GROUP_FUND);
         fundMember.setMoney(fundMember.getMoney() + amount);
 
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();

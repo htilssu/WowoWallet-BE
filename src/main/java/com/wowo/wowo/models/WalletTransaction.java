@@ -8,7 +8,13 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "wallet_transaction")
+@Table(name = "wallet_transaction",
+       indexes = {
+               @Index(name = "wallet_transaction_sender_wallet_id_index",
+                      columnList = "sender_wallet"),
+               @Index(name = "wallet_transaction_receiver_wallet_id_index",
+                      columnList = "receiver_wallet")
+       })
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletTransaction {

@@ -24,6 +24,8 @@ public class Partner {
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
 
+    private String name;
+
     @Email
     @Column(name = "email", nullable = false)
     @NotNull

@@ -10,7 +10,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "wallet")
+@Table(name = "wallet", indexes = {
+        @Index(name = "wallet_owner_id_index", columnList = "owner_id"),
+        @Index(name = "wallet_owner_id_owner_type_index", columnList = "owner_id, owner_type")
+})
 public class Wallet extends BalanceEntity {
 
     @Id
@@ -19,11 +22,10 @@ public class Wallet extends BalanceEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wallet_id_seq")
     private Long id;
 
-    @Size(max = 20)
     @NotNull
-    @ColumnDefault("'user'")
-    @Column(name = "owner_type", nullable = false, length = 20)
-    private String ownerType;
+    @Column(name = "owner_type", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
+    private WalletOwnerType ownerType = WalletOwnerType.USER;
 
     @Size(max = 5)
     @NotNull
