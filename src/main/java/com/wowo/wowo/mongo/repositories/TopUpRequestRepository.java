@@ -12,16 +12,15 @@
  *  ******************************************************
  */
 
-package com.wowo.wowo.data.dto;
+package com.wowo.wowo.mongo.repositories;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import com.wowo.wowo.mongo.documents.TopUpRequest;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Data
-@AllArgsConstructor
-@Builder
-public class TopUpDto {
+import java.util.Optional;
 
-    private String redirectTo;
+public interface TopUpRequestRepository extends MongoRepository<TopUpRequest, String> {
+
+    Optional<TopUpRequest> findByOrderId(String id);
 }

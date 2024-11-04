@@ -41,15 +41,14 @@ public class TransactionController {
         int page = allParams.getPage();
         offset = Math.min(30, Math.max(offset, 0));
 
-        final List<Transaction> recentTransactions = transactionService.getRecentTransactions(
+        final List<TransactionDto> recentTransactions = transactionService.getRecentTransactions(
                 ((String) authentication.getPrincipal()),
                 offset,
                 page);
 
         long total = transactionService.getTotalTransactions(
                 ((String) authentication.getPrincipal()));
-        return new TransactionHistoryResponseDto(
-                recentTransactions.stream().map(transactionMapper::toDto).toList(), total);
+        return new TransactionHistoryResponseDto(recentTransactions, total);
     }
 
     @PostMapping("{id}/refund")
