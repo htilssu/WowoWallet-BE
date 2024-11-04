@@ -104,7 +104,6 @@ CREATE TABLE group_fund_transaction
     group_id         BIGINT       NOT NULL,
     member_id        VARCHAR(255) NOT NULL,
     transaction_type VARCHAR(255) NOT NULL,
-    description       VARCHAR(255),
     transaction_date date,
     CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
 );
