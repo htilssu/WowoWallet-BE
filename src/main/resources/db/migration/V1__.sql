@@ -1,3 +1,17 @@
+/*
+ * ******************************************************
+ *  * Copyright (c) 2024 htilssu
+ *  *
+ *  * This code is the property of htilssu. All rights reserved.
+ *  * Redistribution or reproduction of any part of this code
+ *  * in any form, with or without modification, is strictly
+ *  * prohibited without prior written permission from the author.
+ *  *
+ *  * Author: htilssu
+ *  * Created: 5-11-2024
+ *  ******************************************************
+ */
+
 CREATE SEQUENCE IF NOT EXISTS group_fund_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE IF NOT EXISTS order_id_seq START WITH 1 INCREMENT BY 1;
@@ -5,6 +19,8 @@ CREATE SEQUENCE IF NOT EXISTS order_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS payment_system_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE SEQUENCE IF NOT EXISTS role_id_seq START WITH 1 INCREMENT BY 1;
+
+CREATE SEQUENCE IF NOT EXISTS support_ticket_seq START WITH 1 INCREMENT BY 50;
 
 CREATE SEQUENCE IF NOT EXISTS wallet_id_seq START WITH 1 INCREMENT BY 1;
 
@@ -24,7 +40,8 @@ CREATE TABLE atm_card
     ccv         VARCHAR(3),
     holder_name VARCHAR(255)                             NOT NULL,
     owner_id    VARCHAR(255),
-    expired     VARCHAR(255)                             NOT NULL,
+    month       INTEGER                                  NOT NULL,
+    year        INTEGER                                  NOT NULL,
     created     TIMESTAMP WITHOUT TIME ZONE              NOT NULL,
     CONSTRAINT pk_atm_card PRIMARY KEY (id)
 );
@@ -67,7 +84,7 @@ CREATE TABLE fund_member
 (
     money     BIGINT DEFAULT 0 NOT NULL,
     group_id  BIGINT           NOT NULL,
-    member_id VARCHAR(255)     NOT NULL,
+    member_id VARCHAR(32)      NOT NULL,
     CONSTRAINT pk_fund_member PRIMARY KEY (group_id, member_id)
 );
 
@@ -78,7 +95,6 @@ CREATE TABLE group_fund
     image        VARCHAR(256),
     type         VARCHAR(100),
     description  VARCHAR(255),
-    balance      BIGINT       NOT NULL,
     target       BIGINT       NOT NULL,
     owner_id     VARCHAR(255),
     wallet_id    BIGINT,
@@ -104,7 +120,7 @@ CREATE TABLE group_fund_transaction
     group_id         BIGINT       NOT NULL,
     member_id        VARCHAR(255) NOT NULL,
     transaction_type VARCHAR(255) NOT NULL,
-    transaction_date date,
+    description      VARCHAR(255) NOT NULL,
     CONSTRAINT pk_group_fund_transaction PRIMARY KEY (transaction_id)
 );
 
@@ -113,6 +129,7 @@ CREATE TABLE "order"
     id             BIGINT   NOT NULL,
     partner_id     VARCHAR(32),
     money          BIGINT   NOT NULL,
+    discount_money BIGINT,
     status         SMALLINT NOT NULL,
     transaction_id VARCHAR(40),
     return_url     VARCHAR(300),
@@ -127,9 +144,17 @@ CREATE TABLE partner
 (
     id          VARCHAR(32)  NOT NULL,
     description TEXT,
+    name        VARCHAR(255),
     email       VARCHAR(255) NOT NULL,
     api_key     VARCHAR(255) NOT NULL,
     CONSTRAINT pk_partner PRIMARY KEY (id)
+);
+
+CREATE TABLE partner_api_key
+(
+    id         VARCHAR(255) NOT NULL,
+    partner_id VARCHAR(32)  NOT NULL,
+    CONSTRAINT pk_partner_api_key PRIMARY KEY (id)
 );
 
 CREATE TABLE payment_method
@@ -159,7 +184,7 @@ CREATE TABLE role
 
 CREATE TABLE support_ticket
 (
-    id          VARCHAR(15)  NOT NULL,
+    id          BIGINT       NOT NULL,
     customer_id VARCHAR(255),
     title       VARCHAR(255) NOT NULL,
     content     TEXT         NOT NULL,
@@ -169,14 +194,14 @@ CREATE TABLE support_ticket
 
 CREATE TABLE transaction
 (
-    id          VARCHAR(40) NOT NULL,
-    amount      BIGINT      NOT NULL,
-    status      SMALLINT    NOT NULL,
-    type        SMALLINT    NOT NULL,
-    variant     SMALLINT    NOT NULL,
-    description VARCHAR(300),
-    created     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    id      VARCHAR(40)  NOT NULL,
+    amount  BIGINT       NOT NULL,
+    status  SMALLINT     NOT NULL,
+    type    VARCHAR(255) NOT NULL,
+    variant VARCHAR(255) NOT NULL,
+    message VARCHAR(300),
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT pk_transaction PRIMARY KEY (id)
 );
 
@@ -191,17 +216,18 @@ CREATE TABLE "user"
     is_verified BOOLEAN DEFAULT FALSE NOT NULL,
     total_money BIGINT  DEFAULT 0     NOT NULL,
     job         VARCHAR(255),
+    avatar      VARCHAR(255),
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
 
 CREATE TABLE wallet
 (
-    id         BIGINT                     NOT NULL,
-    owner_type VARCHAR(20) DEFAULT 'user' NOT NULL,
-    currency   VARCHAR(5)  DEFAULT 'VND'  NOT NULL,
-    owner_id   VARCHAR(32),
-    balance    BIGINT      DEFAULT 0      NOT NULL,
+    id         BIGINT                   NOT NULL,
+    balance    BIGINT     DEFAULT 0     NOT NULL,
     version    BIGINT,
+    owner_type VARCHAR(30)              NOT NULL,
+    currency   VARCHAR(5) DEFAULT 'VND' NOT NULL,
+    owner_id   VARCHAR(32),
     CONSTRAINT pk_wallet PRIMARY KEY (id)
 );
 
@@ -228,11 +254,21 @@ ALTER TABLE "user"
 ALTER TABLE "user"
     ADD CONSTRAINT uc_user_username UNIQUE (username);
 
+CREATE INDEX search_unique_user ON "user" (id, username, email);
+
+CREATE INDEX wallet_owner_id_index ON wallet (owner_id);
+
+CREATE INDEX wallet_owner_id_owner_type_index ON wallet (owner_id, owner_type);
+
 ALTER TABLE atm_card
     ADD CONSTRAINT FK_ATM_CARD_ON_BANK FOREIGN KEY (bank_id) REFERENCES banks (id);
 
+CREATE INDEX atm_card_bank_id_index ON atm_card (bank_id);
+
 ALTER TABLE atm_card
     ADD CONSTRAINT FK_ATM_CARD_ON_OWNER FOREIGN KEY (owner_id) REFERENCES "user" (id);
+
+CREATE INDEX atm_card_owner_id_index ON atm_card (owner_id);
 
 ALTER TABLE employee
     ADD CONSTRAINT FK_EMPLOYEE_ON_ID FOREIGN KEY (id) REFERENCES "user" (id);
@@ -242,6 +278,8 @@ ALTER TABLE employee
 
 ALTER TABLE fund_member
     ADD CONSTRAINT FK_FUND_MEMBER_ON_GROUP FOREIGN KEY (group_id) REFERENCES group_fund (id);
+
+CREATE INDEX fund_member_group_id_index ON fund_member (group_id);
 
 ALTER TABLE fund_member
     ADD CONSTRAINT FK_FUND_MEMBER_ON_MEMBER FOREIGN KEY (member_id) REFERENCES "user" (id);
@@ -267,11 +305,17 @@ ALTER TABLE group_fund_transaction
 ALTER TABLE group_fund_transaction
     ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_MEMBER FOREIGN KEY (member_id) REFERENCES "user" (id);
 
+ALTER TABLE group_fund_transaction
+    ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES transaction (id);
+
 ALTER TABLE "order"
     ADD CONSTRAINT FK_ORDER_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
 
 ALTER TABLE "order"
     ADD CONSTRAINT FK_ORDER_ON_TRANSACTION FOREIGN KEY (transaction_id) REFERENCES transaction (id);
+
+ALTER TABLE partner_api_key
+    ADD CONSTRAINT FK_PARTNER_API_KEY_ON_PARTNER FOREIGN KEY (partner_id) REFERENCES partner (id);
 
 ALTER TABLE support_ticket
     ADD CONSTRAINT FK_SUPPORT_TICKET_ON_CUSTOMER FOREIGN KEY (customer_id) REFERENCES "user" (id);
@@ -282,5 +326,9 @@ ALTER TABLE wallet_transaction
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_RECEIVER_WALLET FOREIGN KEY (receiver_wallet) REFERENCES wallet (id);
 
+CREATE INDEX wallet_transaction_receiver_wallet_id_index ON wallet_transaction (receiver_wallet);
+
 ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_SENDER_WALLET FOREIGN KEY (sender_wallet) REFERENCES wallet (id);
+
+CREATE INDEX wallet_transaction_sender_wallet_id_index ON wallet_transaction (sender_wallet);

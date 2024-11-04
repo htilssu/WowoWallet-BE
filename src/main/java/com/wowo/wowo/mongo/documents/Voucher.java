@@ -8,12 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 31-10-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE group_fund_transaction
-    ADD description VARCHAR(255);
+package com.wowo.wowo.mongo.documents;
 
-ALTER TABLE group_fund_transaction
-    ALTER COLUMN description SET NOT NULL;
+import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class Voucher {
+
+    @Id
+    private String id;
+    private String name;
+    private String discount;
+    private Long orderId;
+}

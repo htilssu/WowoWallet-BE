@@ -8,15 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 1-11-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-CREATE SEQUENCE IF NOT EXISTS support_ticket_seq START WITH 1 INCREMENT BY 50;
+package com.wowo.wowo.kafka.consumers;
 
-ALTER TABLE support_ticket
-DROP
-COLUMN id;
+import com.wowo.wowo.kafka.messages.UseVoucherMessage;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
 
-ALTER TABLE support_ticket
-    ADD id DECIMAL NOT NULL PRIMARY KEY;
+@KafkaListener(topics = "useVoucher", groupId = "my-group")
+public class UseVoucherConsumer {
+
+    @KafkaHandler
+    public void consume(UseVoucherMessage message) {
+
+    }
+}
