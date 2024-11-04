@@ -42,9 +42,16 @@ public class PaypalController {
 
             // Kiểm tra loại sự kiện
             String eventType = data.getString("event_type");
-            if ("CHECKOUT.ORDER.COMPLETED".equals(eventType)) {
-                var orderId = data.getJSONObject("resource").getString("id");
-                topUpService.topUp(orderId);
+            switch (eventType) {
+                case "CHECKOUT.ORDER.APPROVED" -> {
+                    var orderId = data.getJSONObject("resource").getString("id");
+                    paypalService.captureOrder(orderId);
+                }
+                case "CHECKOUT.ORDER.COMPLETED" -> {
+                    var orderId = data.getJSONObject("resource").getString("id");
+                    topUpService.topUp(orderId);
+                }
+                default -> logger.info("Unknown event type: " + eventType);
             }
         } catch (Exception e) {
             logger.error("Error while handling webhook", e);

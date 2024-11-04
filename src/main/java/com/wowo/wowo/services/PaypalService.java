@@ -75,11 +75,10 @@ public class PaypalService {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
                 new OrdersCaptureInput.Builder(orderId, null)
-                        .prefer("return=representation").build());
+                        .prefer("return=minimal").build());
 
-        if (orderApiResponse.getStatusCode() == 200) {
+        if (orderApiResponse.getStatusCode() == 201) {
             System.out.println("Capture order success");
-            return topUpService.topUp(orderApiResponse.getResult());
         }
         else {
             System.out.println("Capture order failed");
