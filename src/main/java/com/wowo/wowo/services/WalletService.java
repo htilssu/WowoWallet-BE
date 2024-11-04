@@ -63,4 +63,10 @@ public class WalletService {
     public Optional<Wallet> getUserWallet(String ownerId) {
         return walletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
     }
+
+    public Wallet plusBalance(String walletId, Long amount) {
+        final Wallet wallet = getWallet(walletId);
+        wallet.setBalance(wallet.getBalance() + amount);
+        return walletRepository.save(wallet);
+    }
 }

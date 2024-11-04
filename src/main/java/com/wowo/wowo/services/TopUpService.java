@@ -14,10 +14,13 @@
 
 package com.wowo.wowo.services;
 
-import com.paypal.sdk.PaypalServerSDKClient;
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.models.Order;
-import com.wowo.wowo.data.dto.TopUpDto;
+import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.exceptions.BadRequest;
+import com.wowo.wowo.models.Wallet;
+import com.wowo.wowo.mongo.documents.TopUpRequest;
+import com.wowo.wowo.mongo.repositories.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +31,22 @@ import java.io.IOException;
 public class TopUpService {
 
     private final PaypalService paypalService;
+    private final TopUpRequestRepository topUpRequestRepository;
+    private final WalletService walletService;
 
-    public Order topUp(TopUpDto topUpDto) throws IOException, ApiException {
-        return paypalService.createTopUpOrder(topUpDto);
+    public Order topUpByPaypal(TopUpRequestDto topUpRequestDto) throws IOException, ApiException {
+        final Order topUpOrder = paypalService.createTopUpOrder(topUpRequestDto);
+        topUpRequestRepository.save(TopUpRequest.builder()
+                .amount(topUpRequestDto.getAmount())
+                .walletId(topUpRequestDto.getTo())
+                .orderId(topUpOrder.getId())
+                .build());
+        return topUpOrder;
     }
 
+    public Wallet topUp(Order result) {
+        final TopUpRequest topUpRequest = topUpRequestRepository.findByOrderId(result.getId())
+                .orElseThrow(() -> new BadRequest("Order not found"));
+        return walletService.plusBalance(topUpRequest.getWalletId(), topUpRequest.getAmount());
+    }
 }

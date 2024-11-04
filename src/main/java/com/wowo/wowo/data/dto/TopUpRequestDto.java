@@ -8,20 +8,24 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 4-11-2024
+ *  * Created: 30-10-2024
  *  ******************************************************
  */
 
 package com.wowo.wowo.data.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Builder
-public class TopUpDto {
+public class TopUpRequestDto {
 
-    private String redirectTo;
+    @NotNull(message = "source is required")
+    private String to;
+    @NotNull(message = "Amount is required")
+    @Min(value = 10000, message = "Amount must be greater than 10000 VND")
+    private Long amount;
 }

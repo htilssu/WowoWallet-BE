@@ -15,8 +15,10 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.ReceiverDto;
+import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.models.GroupFund;
 import com.wowo.wowo.models.Transaction;
+import com.wowo.wowo.models.TransactionVariant;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,4 +44,5 @@ public class ReceiverService {
             default -> throw new RuntimeException("Transaction target not found");
         }
     }
+
 }

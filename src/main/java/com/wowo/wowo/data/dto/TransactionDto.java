@@ -1,9 +1,6 @@
 package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.models.PaymentStatus;
-import com.wowo.wowo.models.Transaction;
-import com.wowo.wowo.models.TransactionType;
-import com.wowo.wowo.models.TransactionVariant;
+import com.wowo.wowo.models.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +25,7 @@ public final class TransactionDto
     private @NotNull TransactionType type;
     private TransactionVariant variant;
     private String message;
-    private Instant created;
-    private Instant updated;
+    private String created;
+    private String updated;
     private ReceiverDto receiver;
 }

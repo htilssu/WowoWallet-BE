@@ -5,13 +5,15 @@ import com.paypal.sdk.controllers.OrdersController;
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
-import com.wowo.wowo.data.dto.TopUpDto;
+import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.mongo.documents.TopUpRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 
 @Service
@@ -20,6 +22,7 @@ import java.util.Collections;
 public class PaypalService {
 
     private final PaypalServerSDKClient paypalServerSDKClient;
+    private final TopUpService topUpService;
 
     public Order createOrder() throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
@@ -46,7 +49,8 @@ public class PaypalService {
         return orderApiResponse.getResult();
     }
 
-    public Order createTopUpOrder(TopUpDto topUpDto) throws IOException, ApiException {
+    public Order createTopUpOrder(TopUpRequestDto topUpRequestDto) throws IOException,
+                                                                          ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
 
@@ -58,14 +62,16 @@ public class PaypalService {
                                 new PurchaseUnitRequest.Builder(
                                         new AmountWithBreakdown.Builder(
                                                 "USD",
-                                                new BigDecimal(
-                                                        topUpDto.getAmount() / 23000D).setScale(2,
-                                                        BigDecimal.ROUND_HALF_UP).toString()
+                                                BigDecimal.valueOf(
+                                                                topUpRequestDto.getAmount() / 23000D)
+                                                        .setScale(2,
+                                                                RoundingMode.HALF_UP).toString()
                                         ).build()
                                 ).build()
                         )
                 ).applicationContext(new OrderApplicationContext.Builder().returnUrl(
-                        "https://wowo.htilssu.id.vn/home").build()).build()
+                        "https://wowo.htilssu.id.vn/home").build()
+                ).build()
         ).prefer("return=representation")
                 .build();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCreate(
@@ -75,5 +81,23 @@ public class PaypalService {
         }
 
         return null;
+    }
+
+    public void captureOrder(String orderId) throws IOException, ApiException {
+        final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
+        final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
+                new OrdersCaptureInput.Builder()
+                        .id(orderId)
+                        .prefer("return=minimal")
+                        .build()
+        );
+
+        if (orderApiResponse.getStatusCode() == 200) {
+            System.out.println("Capture order success");
+            topUpService.topUp(orderApiResponse.getResult());
+        }
+        else {
+            System.out.println("Capture order failed");
+        }
     }
 }
