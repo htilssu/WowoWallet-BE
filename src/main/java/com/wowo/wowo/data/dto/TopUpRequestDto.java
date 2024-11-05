@@ -28,7 +28,7 @@ public class TopUpRequestDto {
     @NotNull(message = "Số tiền không được để trống")
     @PositiveOrZero(message = "Số tiền phải lớn hơn hoặc bằng 0")
     private Long amount;
-    private TopUpSource source;
+    private TopUpSource method;
 
 
     public enum TopUpSource {
