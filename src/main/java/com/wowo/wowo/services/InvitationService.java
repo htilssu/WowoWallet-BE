@@ -85,9 +85,6 @@ public class InvitationService {
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
         List<GroupFundInvitation> groupFundInvitations = invitationRepository.findBySender(sender);
-        if (groupFundInvitations.isEmpty()) {
-            throw new NotFoundException("Không có lời mời nào được gửi.");
-        }
 
         return mapToDtoList(groupFundInvitations);
     }
@@ -99,9 +96,7 @@ public class InvitationService {
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
         List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipient(recipient);
-        if (groupFundInvitations.isEmpty()) {
-            throw new NotFoundException("Không có lời mời nào được nhận.");
-        }
+
         // Chuyển đổi sang DTO
         return mapToDtoList(groupFundInvitations);
     }
