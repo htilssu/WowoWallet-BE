@@ -1,5 +1,6 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
@@ -66,6 +67,9 @@ public class WalletService {
 
     public Wallet plusBalance(String walletId, Long amount) {
         final Wallet wallet = getWallet(Integer.parseInt(walletId));
+        if (amount < 0 && wallet.getBalance() < Math.abs(amount)) {
+            throw new InsufficientBalanceException("Số dư không đủ");
+        }
         wallet.setBalance(wallet.getBalance() + amount);
         return walletRepository.save(wallet);
     }
