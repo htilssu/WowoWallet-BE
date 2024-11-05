@@ -53,7 +53,7 @@ public class TopUpController {
                         .redirectTo(order.getLinks().stream().filter(linkDescription ->
                                         linkDescription.getRel().equals("approve")).findFirst()
                                 .orElseThrow(() -> new BadRequest("Bad request"))
-                                .toString())
+                                .getHref())
                         .build());
             }
         }
