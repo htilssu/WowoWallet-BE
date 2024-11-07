@@ -1,10 +1,10 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.SSOData;
-import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -12,11 +12,14 @@ import java.util.Optional;
 public class PartnerService {
 
     private final PartnerRepository partnerRepository;
+    private final WalletService walletService;
 
-    public PartnerService(PartnerRepository partnerRepository) {
+    public PartnerService(PartnerRepository partnerRepository, WalletService walletService) {
         this.partnerRepository = partnerRepository;
+        this.walletService = walletService;
     }
 
+    @Transactional
     public void createPartner(SSOData ssoData) {
         var partner = partnerRepository.findById(ssoData.getId());
         if (partner.isPresent()) return;
@@ -26,13 +29,14 @@ public class PartnerService {
         newPartner.setEmail(ssoData.getEmail());
         newPartner.setApiKey(ssoData.getId());
         try {
-            partnerRepository.save(newPartner);
+            newPartner = partnerRepository.save(newPartner);
+            walletService.createWallet(newPartner);
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo đối tác");
         }
     }
 
     public Optional<Partner> getPartnerById(String partnerId) {
-       return partnerRepository.findById(partnerId);
+        return partnerRepository.findById(partnerId);
     }
 }
