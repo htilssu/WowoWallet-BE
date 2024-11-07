@@ -8,12 +8,12 @@ import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.util.AuthUtil;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -48,17 +48,17 @@ public class PaymentService {
      *
      * @return Đơn hàng đã được thanh toán
      */
-    public Order pay(@Valid PaymentDto paymentDto) {
-        Order order = isOrderValid(paymentDto.getOrderId());
+    public Order pay(Long id, Authentication authentication) {
+        Order order = isOrderValid(id);
 
-        switch (paymentDto.getPaymentService()) {
-            case WALLET -> order = pay(paymentDto.getSourceId(), order);
-            case PAYPAL -> order = pay(paymentDto.getSourceId(), paymentDto.getOrderId());
-            default -> {
-                throw new RuntimeException("Dịch vụ thanh toán không hợp lệ");
-            }
-        }
+        var partner = order.getPartner();
+        var userId = ((String) authentication.getPrincipal());
+        final Wallet partnerWallet = walletService.getPartnerWallet(partner.getId())
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy ví đối tác"));
+        final Wallet userWallet = walletService.getUserWallet(userId).orElseThrow(
+                () -> new NotFoundException("Không tìm thấy ví nguồn thanh toán"));
 
+        transferService.transferMoney(userWallet, partnerWallet, order.getDiscountMoney());
         order.setStatus(PaymentStatus.SUCCESS);
         return orderRepository.save(order);
     }

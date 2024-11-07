@@ -1,6 +1,5 @@
 package com.wowo.wowo.security.filter;
 
-import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import jakarta.servlet.*;
@@ -35,8 +34,11 @@ public class ApiServiceFilter implements Filter {
             return;
         }
 
-        Partner partner = partnerRepository.findPartnerByApiKey(apiKey).orElseThrow(
-                () -> new BadRequest("API key không hợp lệ"));
+        Partner partner = partnerRepository.findPartnerByApiKey(apiKey).orElse(null);
+        if (partner == null) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         final SecurityContextHolderStrategy contextHolderStrategy =
                 SecurityContextHolder.getContextHolderStrategy();
