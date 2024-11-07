@@ -14,8 +14,8 @@
 
 package com.wowo.wowo.data.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -25,10 +25,10 @@ public class TopUpRequestDto {
 
     @NotNull(message = "source is required")
     private String to;
-    @NotNull(message = "Amount is required")
-    @Min(value = 10000, message = "Amount must be greater than 10000 VND")
+    @NotNull(message = "Số tiền không được để trống")
+    @PositiveOrZero(message = "Số tiền phải lớn hơn hoặc bằng 0")
     private Long amount;
-    private TopUpSource source;
+    private TopUpSource method;
 
 
     public enum TopUpSource {

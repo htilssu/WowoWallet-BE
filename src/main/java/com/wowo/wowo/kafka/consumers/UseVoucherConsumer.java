@@ -8,20 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 28-10-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE transaction
-DROP
-COLUMN type;
+package com.wowo.wowo.kafka.consumers;
 
-ALTER TABLE transaction
-DROP
-COLUMN variant;
+import com.wowo.wowo.kafka.messages.UseVoucherMessage;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
 
-ALTER TABLE transaction
-    ADD type VARCHAR(255) NOT NULL;
+@KafkaListener(topics = "useVoucher", groupId = "my-group")
+public class UseVoucherConsumer {
 
-ALTER TABLE transaction
-    ADD variant VARCHAR(255) NOT NULL;
+    @KafkaHandler
+    public void consume(UseVoucherMessage message) {
+
+    }
+}

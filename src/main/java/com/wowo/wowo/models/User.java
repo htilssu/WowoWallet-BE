@@ -14,8 +14,6 @@ import java.util.Objects;
 @Entity
 @Builder
 @Table(name = "\"user\"", indexes = {
-        @Index(name = "user_username_index", columnList = "username"),
-        @Index(name = "user_email_index", columnList = "email"),
         @Index(name = "search_unique_user", columnList = "id,username,email")
 })
 @NoArgsConstructor

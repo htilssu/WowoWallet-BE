@@ -8,9 +8,13 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 1-11-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE partner
-    ADD name VARCHAR(255);
+package com.wowo.wowo.kafka.messages;
+
+public record UseVoucherMessage(String voucherId, String voucherName, String discount,
+                                String newMoney, Long orderId) {
+
+}

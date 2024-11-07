@@ -20,7 +20,7 @@ public class NotifyConsumer {
     public void handleNotifyMessage(NotifyDto message) throws ExecutionException,
                                                               InterruptedException {
         notifyService.notifyReceiveMoney(message.getReceiverId(), message).thenAccept(_ -> {
-            System.out.println("Received notify message: " + message.toString());
+            System.out.println("Received notify message: " + message);
         });
     }
 }
