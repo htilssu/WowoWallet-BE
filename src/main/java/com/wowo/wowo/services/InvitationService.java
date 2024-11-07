@@ -40,6 +40,11 @@ public class InvitationService {
         GroupFund groupFund = groupFundRepository.findById(groupId)
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
+        // Kiểm tra xem quỹ có bị khóa không
+        if (groupFund.getIsLocked()) {
+            throw new IllegalStateException("Quỹ này đã bị khóa.");
+        }
+
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new UserNotFoundException("Người gửi không tồn tại"));
 
@@ -122,6 +127,11 @@ public class InvitationService {
 
         GroupFund groupFund = groupFundRepository.findById(groupFundInvitation.getGroupFund().getId())
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
+
+        // Kiểm tra xem quỹ có bị khóa không
+        if (groupFund.getIsLocked()) {
+            throw new IllegalStateException("Quỹ này đã bị khóa.");
+        }
 
         Optional<User> userOptional = userRepository.findById(groupFundInvitation.getRecipient().getId());
         User user = userOptional.orElseThrow(
