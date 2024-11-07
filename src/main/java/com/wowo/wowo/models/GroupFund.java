@@ -54,6 +54,9 @@ public class GroupFund {
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
+    @Column(name = "is_locked", nullable = false, columnDefinition = "boolean default false")
+    private boolean isLocked = false;
+
     @OneToMany(mappedBy = "group")
     private Set<FundMember> fundMembers = new LinkedHashSet<>();
 
@@ -67,4 +70,12 @@ public class GroupFund {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "target_date", nullable = false)
     private LocalDate targetDate;
+
+    public boolean getIsLocked() {
+        return isLocked;
+    }
+
+    public void setIsLocked(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
 }
