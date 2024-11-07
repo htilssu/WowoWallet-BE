@@ -15,6 +15,7 @@
 package com.wowo.wowo.services;
 
 import com.paypal.sdk.models.Order;
+import com.wowo.wowo.data.dto.TopUpRequestDto;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.mongo.documents.TopUpRequest;
@@ -39,4 +40,9 @@ public class TopUpService {
                 .orElseThrow(() -> new BadRequest("Order not found"));
         return walletService.plusBalance(order.getWalletId(), order.getAmount());
     }
+
+    public Wallet topUp(String walletId, long amount) {
+        return walletService.plusBalance(walletId, amount);
+    }
+
 }

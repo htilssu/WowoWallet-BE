@@ -18,6 +18,7 @@ import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.models.Order;
 import com.wowo.wowo.data.dto.TopUpDto;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.services.PaypalService;
 import com.wowo.wowo.services.TopUpService;
 import lombok.AllArgsConstructor;
@@ -36,13 +37,26 @@ import java.io.IOException;
 public class TopUpController {
 
     private final PaypalService paypalService;
+    private final TopUpService topUpService;
 
     @PostMapping
-    public ResponseEntity<TopUpDto> topUp(@RequestBody @Validated TopUpRequestDto topUpRequestDto) throws IOException,
-                                                                                                          ApiException {
-        final Order order = paypalService.createTopUpOrder(topUpRequestDto);
-        return ResponseEntity.ok(TopUpDto.builder()
-                        .redirectTo(order.getLinks().get(1).getHref())
-                .build());
+    public ResponseEntity<TopUpDto> topUp(@RequestBody @Validated TopUpRequestDto topUpRequestDto) throws
+                                                                                                   IOException,
+                                                                                                   ApiException {
+        switch (topUpRequestDto.getMethod()) {
+            case ATM_CARD -> {
+                topUpService.topUp(topUpRequestDto.getTo(), topUpRequestDto.getAmount());
+            }
+            case PAYPAL -> {
+                final Order order = paypalService.createTopUpOrder(topUpRequestDto);
+                return ResponseEntity.ok(TopUpDto.builder()
+                        .redirectTo(order.getLinks().stream().filter(linkDescription ->
+                                        linkDescription.getRel().equals("approve")).findFirst()
+                                .orElseThrow(() -> new BadRequest("Bad request"))
+                                .getHref())
+                        .build());
+            }
+        }
+        return ResponseEntity.ok().build();
     }
 }
