@@ -2,10 +2,10 @@ package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.exceptions.NotFoundException;
+import com.wowo.wowo.mongo.documents.OtpClaim;
+import com.wowo.wowo.mongo.repositories.OtpClaimRepository;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.EmailService;
-import com.wowo.wowo.util.DateTimeUtil;
-import com.wowo.wowo.util.OTPUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,8 @@ public class OTPManager {
 
     final
     OTPGenerator otpGenerator;
-    final
-    ClaimOTPRepository claimOTPRepository;
     private final UserRepository userRepository;
+    private final OtpClaimRepository otpClaimRepository;
 
     /**
      * Gửi mã OTP cho người dùng, thông tin người nhận sẽ được lấy từ {@link OtpSendDto#getSendTo()}
@@ -49,14 +48,14 @@ public class OTPManager {
 
         otpGenerator.generateOTP().thenAccept(otp -> {
             otpSender.sendOTP(senderMail, otp);
-            ClaimOTPModel claim = new ClaimOTPModel(otp, authentication.getPrincipal().toString(),
-                    DateTimeUtil.convertToString(Instant.now()
-                            .plus(OTPUtil.getExpiryTime(),
-                                    ChronoUnit.SECONDS
-                            ))
-            );
 
-            claimOTPRepository.save(claim).join(); //save
+            OtpClaim otpClaim = OtpClaim.builder()
+                    .claimant(authentication.getPrincipal().toString())
+                    .otp(otp)
+                    .expiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
+                    .build();
+
+            otpClaimRepository.save(otpClaim);
         });
 
     }
@@ -65,16 +64,17 @@ public class OTPManager {
      * Xác thực mã OTP có đúng của người dùng hiện tại hay không
      */
     public boolean verify(String userId, OTPData otpSend) {
-        var userClaim = claimOTPRepository.findOtpByUserId(userId).join();
-        if (userClaim == null) return false;
-        if (userClaim.isExpired()) {
-            claimOTPRepository.deleteByUserId(userId).join();
+        var userClaim = otpClaimRepository.findByClaimant(userId);
+        if (userClaim.isEmpty()) return false;
+        final OtpClaim claim = userClaim.get();
+        if (claim.isExpired()) {
+            otpClaimRepository.deleteByClaimant(userId);
             return false;
         }
 
-        final boolean isMatch = otpSend.getOtp().equals(userClaim.getOtp());
+        final boolean isMatch = otpSend.getOtp().equals(claim.getOtp());
         if (isMatch) {
-            claimOTPRepository.deleteByUserId(userId).join();
+            otpClaimRepository.deleteByClaimant(userId);
         }
 
         return isMatch;

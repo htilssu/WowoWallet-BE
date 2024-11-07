@@ -2,6 +2,7 @@ package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wowo.wowo.models.PaymentStatus;
+import com.wowo.wowo.mongo.documents.Voucher;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -36,5 +37,6 @@ public class OrderDto implements Serializable {
     @Size(max = 100)
     private String serviceName;
     Collection<OrderItemCreateDto> items;
+    Collection<Voucher> vouchers;
     private String checkoutUrl;
 }
