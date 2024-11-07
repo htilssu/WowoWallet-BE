@@ -11,7 +11,9 @@ import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.Order;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.mongo.documents.OrderItem;
+import com.wowo.wowo.mongo.documents.Voucher;
 import com.wowo.wowo.mongo.repositories.OrderItemRepository;
+import com.wowo.wowo.mongo.repositories.VoucherRepository;
 import com.wowo.wowo.repositories.OrderRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -32,6 +35,7 @@ public class OrderService {
     private final OrderItemMapper orderItemMapper;
     private final RefundService refundService;
     private final OrderMapper orderMapper;
+    private final VoucherRepository voucherRepository;
 
     public OrderDto createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos,
             Authentication authentication) {
@@ -49,13 +53,15 @@ public class OrderService {
 
         final OrderDto orderDto = orderMapper.toDto(newOrder);
         orderDto.setItems(orderItemCreateDtos);
-        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/order/"+order.getId());
+        orderDto.setVouchers(Collections.emptyList());
+        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
 
         return orderDto;
     }
 
     public OrderDto createOrder(OrderCreateDto orderCreateDto, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreateDto);
+        order.setDiscountMoney(order.getMoney());
         return createOrder(order, orderCreateDto.items(), authentication);
     }
 
@@ -67,8 +73,10 @@ public class OrderService {
         final Order order = orderRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Không tìm thấy đơn hàng"));
         final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
+        final Collection<Voucher> voucher = voucherRepository.findByOrderId(order.getId());
         final OrderDto orderDto = orderMapperImpl.toDto(order);
         orderDto.setItems(orderItems.stream().map(orderItemMapper::toDto).toList());
+        orderDto.setVouchers(voucher);
         orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());
         return orderDto;
     }

@@ -8,17 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 2-11-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE support_ticket
-DROP
-COLUMN id;
+package com.wowo.wowo.mongo.documents;
 
-ALTER TABLE support_ticket
-    ADD id BIGINT NOT NULL PRIMARY KEY;
+import jakarta.persistence.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-ALTER TABLE wallet
-ALTER
-COLUMN owner_type TYPE VARCHAR(30) USING (owner_type::VARCHAR(30));
+@Document
+public class Voucher {
+
+    @Id
+    private String id;
+    private String name;
+    private String discount;
+    private Long orderId;
+}

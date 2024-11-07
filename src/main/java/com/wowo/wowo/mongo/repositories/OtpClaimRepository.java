@@ -8,9 +8,20 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 1-11-2024
+ *  * Created: 7-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE partner
-    ADD name VARCHAR(255);
+package com.wowo.wowo.mongo.repositories;
+
+import com.wowo.wowo.mongo.documents.OtpClaim;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Optional;
+
+public interface OtpClaimRepository extends MongoRepository<OtpClaim, ObjectId> {
+
+    Optional<OtpClaim> findByClaimant(String claimant);
+    void deleteByClaimant(String userId);
+}

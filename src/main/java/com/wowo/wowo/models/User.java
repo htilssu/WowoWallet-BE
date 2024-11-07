@@ -1,9 +1,6 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -16,7 +13,9 @@ import java.util.Objects;
 @Setter
 @Entity
 @Builder
-@Table(name = "\"user\"")
+@Table(name = "\"user\"", indexes = {
+        @Index(name = "search_unique_user", columnList = "id,username,email")
+})
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor

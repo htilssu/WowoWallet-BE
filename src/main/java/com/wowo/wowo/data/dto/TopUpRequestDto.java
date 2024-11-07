@@ -8,20 +8,30 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 4-11-2024
+ *  * Created: 30-10-2024
  *  ******************************************************
  */
 
 package com.wowo.wowo.data.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Builder
-public class TopUpDto {
+public class TopUpRequestDto {
 
-    private String redirectTo;
+    @NotNull(message = "source is required")
+    private String to;
+    @NotNull(message = "Số tiền không được để trống")
+    @PositiveOrZero(message = "Số tiền phải lớn hơn hoặc bằng 0")
+    private Long amount;
+    private TopUpSource method;
+
+
+    public enum TopUpSource {
+        PAYPAL, STRIPE, ATM_CARD
+    }
 }

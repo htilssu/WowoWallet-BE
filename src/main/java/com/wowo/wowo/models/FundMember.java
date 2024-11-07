@@ -9,7 +9,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "fund_member")
+@Table(name = "fund_member", indexes = {
+        @Index(name = "fund_member_group_id_member_id_index", columnList = "group_id,member_id"),
+        @Index(name = "fund_member_group_id_index", columnList = "group_id"),
+})
 public class FundMember {
 
     @EmbeddedId

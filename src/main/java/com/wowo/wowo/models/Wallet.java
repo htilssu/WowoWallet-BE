@@ -10,7 +10,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "wallet")
+@Table(name = "wallet", indexes = {
+        @Index(name = "wallet_owner_id_index", columnList = "owner_id"),
+        @Index(name = "wallet_owner_id_owner_type_index", columnList = "owner_id, owner_type")
+})
 public class Wallet extends BalanceEntity {
 
     @Id

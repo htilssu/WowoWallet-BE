@@ -8,9 +8,19 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 29-10-2024
+ *  * Created: 4-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE "user"
-    ADD avatar VARCHAR(255);
+package com.wowo.wowo.mongo.repositories;
+
+import com.wowo.wowo.mongo.documents.TopUpRequest;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Optional;
+
+public interface TopUpRequestRepository extends MongoRepository<TopUpRequest, String> {
+
+    Optional<TopUpRequest> findByOrderId(String id);
+}

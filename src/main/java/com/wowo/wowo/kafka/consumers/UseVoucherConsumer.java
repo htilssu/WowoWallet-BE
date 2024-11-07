@@ -8,13 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 31-10-2024
+ *  * Created: 5-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE transaction
-    ADD message VARCHAR(300);
+package com.wowo.wowo.kafka.consumers;
 
-ALTER TABLE transaction
-DROP
-COLUMN description;
+import com.wowo.wowo.kafka.messages.UseVoucherMessage;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+
+@KafkaListener(topics = "useVoucher", groupId = "my-group")
+public class UseVoucherConsumer {
+
+    @KafkaHandler
+    public void consume(UseVoucherMessage message) {
+
+    }
+}

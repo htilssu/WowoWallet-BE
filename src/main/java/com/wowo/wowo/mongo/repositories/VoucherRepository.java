@@ -8,12 +8,18 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 31-10-2024
+ *  * Created: 7-11-2024
  *  ******************************************************
  */
 
-ALTER TABLE group_fund_transaction
-    ADD description VARCHAR(255);
+package com.wowo.wowo.mongo.repositories;
 
-ALTER TABLE group_fund_transaction
-    ALTER COLUMN description SET NOT NULL;
+import com.wowo.wowo.mongo.documents.Voucher;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Collection;
+
+public interface VoucherRepository extends MongoRepository<Voucher, String> {
+
+    Collection<Voucher> findByOrderId(Long orderId);
+}

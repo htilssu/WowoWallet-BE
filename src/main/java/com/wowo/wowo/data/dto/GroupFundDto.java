@@ -38,6 +38,8 @@ public class GroupFundDto implements Serializable {
     @Size(max = 255)
     private String description;
 
+    private Boolean isLocked;
+
     @NotNull
     @Min(0)
     private Double balance;
