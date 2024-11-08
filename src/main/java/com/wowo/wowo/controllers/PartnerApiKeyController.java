@@ -4,6 +4,7 @@ import com.wowo.wowo.annotations.authorized.IsPartner;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.models.PartnerApiKey;
 import com.wowo.wowo.services.PartnerApiKeyService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
+@Tag(name = "Partner Api Key", description = "Quản lý api key của đối tác")
 @RequestMapping("/v1/partner/api-key")
 public class PartnerApiKeyController {
 
