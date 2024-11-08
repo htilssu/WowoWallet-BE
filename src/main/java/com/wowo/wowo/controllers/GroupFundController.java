@@ -161,4 +161,30 @@ public class GroupFundController {
 
     }
 
+    //  khóa quỹ
+    @PostMapping("/{groupId}/lock")
+    public ResponseEntity<?> lockGroupFund(@PathVariable Long groupId, Authentication authentication) {
+        try {
+            // Khóa quỹ bằng service
+            GroupFund lockedFund = groupFundService.lockGroupFund(groupId, authentication);
+            return ResponseEntity.ok(new ResponseMessage("Khóa quỹ thành công!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseMessage("Có lỗi xảy ra khi khóa quỹ: " + e.getMessage()));
+        }
+    }
+
+    //  mở quỹ
+    @PostMapping("/{groupId}/unlock")
+    public ResponseEntity<?> unlockGroupFund(@PathVariable Long groupId, Authentication authentication) {
+        try {
+            // Mở quỹ bằng service
+            GroupFund unlockedFund = groupFundService.unlockGroupFund(groupId, authentication);
+            return ResponseEntity.ok(new ResponseMessage("Mở khóa quỹ thành công!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseMessage("Có lỗi xảy ra khi mở quỹ: " + e.getMessage()));
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.mongo.documents.OrderItem;
 import com.wowo.wowo.mongo.repositories.OrderItemRepository;
+import com.wowo.wowo.mongo.repositories.VoucherRepository;
 import com.wowo.wowo.repositories.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,9 @@ class OrderServiceTest {
 
     @Mock
     private RefundService refundService;
+
+    @Mock
+    private VoucherRepository voucherRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -94,6 +98,7 @@ class OrderServiceTest {
                 List.of(orderItem));
         when(orderItemMapper.toDto(orderItem)).thenReturn(new OrderItemCreateDto("1", 1L, 1000L));
         when(orderMapperImpl.toDto(order)).thenReturn(new OrderDto().setId(orderId));
+        when(voucherRepository.findByOrderId(orderId)).thenReturn(List.of());
 
         OrderDto orderDto = orderService.getOrderDetail(orderId);
 
