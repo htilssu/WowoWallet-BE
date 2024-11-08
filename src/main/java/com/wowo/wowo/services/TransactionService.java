@@ -42,6 +42,8 @@ public class TransactionService {
     }
 
     public List<TransactionDto> getRecentTransactions(String userId, int offset, int page) {
+        //Kiểm tra có phải admin không
+
         var transactions =
                 transactionRepository.findByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
                         userId, userId, Pageable.ofSize(offset).withPage(page));

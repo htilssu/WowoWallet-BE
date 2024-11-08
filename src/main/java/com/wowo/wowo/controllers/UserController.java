@@ -12,7 +12,6 @@ import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletOwnerType;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.repositories.WalletRepository;
-import com.wowo.wowo.services.EmailService;
 import com.wowo.wowo.services.PartnerService;
 import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,10 +35,8 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapperImpl;
     private final WalletMapper walletMapperImpl;
-    private final EmailService emailService;
     private final PartnerService partnerService;
     private final UserService userService;
 
