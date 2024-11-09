@@ -30,8 +30,8 @@ public class GroupFundTransaction {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "transaction_type", nullable = false)
-    private TransactionType transactionType;
+    @Column(name = "type", nullable = false)
+    private TransactionType type = TransactionType.TOP_UP;
 
     @Column(name = "description", nullable = false)
     private String description;

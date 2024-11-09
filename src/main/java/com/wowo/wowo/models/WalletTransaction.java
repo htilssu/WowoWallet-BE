@@ -8,13 +8,10 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "wallet_transaction",
-       indexes = {
-               @Index(name = "wallet_transaction_sender_wallet_id_index",
-                      columnList = "sender_wallet"),
-               @Index(name = "wallet_transaction_receiver_wallet_id_index",
-                      columnList = "receiver_wallet")
-       })
+@Table(name = "wallet_transaction", indexes = {
+        @Index(name = "wallet_transaction_sender_wallet_id_index", columnList = "sender_wallet"),
+        @Index(name = "wallet_transaction_receiver_wallet_id_index",
+               columnList = "receiver_wallet")})
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletTransaction {
@@ -27,6 +24,8 @@ public class WalletTransaction {
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id", nullable = false)
     private Transaction transaction;
+
+    private TransactionType type = TransactionType.TRANSFER;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -1,13 +1,15 @@
 package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.models.*;
+import com.wowo.wowo.models.FlowType;
+import com.wowo.wowo.models.PaymentStatus;
+import com.wowo.wowo.models.Transaction;
+import com.wowo.wowo.models.TransactionVariant;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Instant;
 
 /**
  * DTO for {@link Transaction}
@@ -22,10 +24,11 @@ public final class TransactionDto
     private String id;
     private @NotNull Long amount;
     private @NotNull PaymentStatus status;
-    private @NotNull TransactionType type;
+    private @NotNull FlowType type;
     private TransactionVariant variant;
     private String message;
     private String created;
     private String updated;
-    private ReceiverDto receiver;
+    private String receiverName;
+    private String senderName;
 }
