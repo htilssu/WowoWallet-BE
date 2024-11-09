@@ -14,6 +14,6 @@ public class GroupFundTransactionDto {
     private TransactionDto transaction;
     private UserDto member;
     @NotNull
-    private TransactionType transactionType;
+    private TransactionType type;
     private String description;
 }

@@ -1,7 +1,6 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.SSOData;
-import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
@@ -18,9 +17,9 @@ public class UserService {
     private final WalletService walletService;
     private final UserMapper userMapper;
 
-    public UserDto getUserById(String id) {
-        return userMapper.toDto(userRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Người dùng không tồn tại")));
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Người dùng không tồn tại"));
     }
 
     @NotNull

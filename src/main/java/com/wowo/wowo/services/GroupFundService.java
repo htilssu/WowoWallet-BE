@@ -30,6 +30,8 @@ import java.util.*;
 @AllArgsConstructor
 public class GroupFundService {
 
+    private final TransactionRepository transactionRepository;
+
     private final GroupFundRepository groupFundRepository;
     private final FundMemberRepository fundMemberRepository;
     private final GroupFundTransactionRepository groupFundTransactionRepository;
@@ -304,13 +306,16 @@ public class GroupFundService {
                 groupFund.getWallet(), amount);
 
         walletTransaction.getTransaction().setVariant(TransactionVariant.GROUP_FUND);
+        walletTransaction.getTransaction().setReceiverName(groupFund.getName());
+
+        transactionRepository.save(walletTransaction.getTransaction());
         fundMember.setMoney(fundMember.getMoney() + amount);
 
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(user);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
-        groupFundTransaction.setTransactionType(TransactionType.TOP_UP);
+        groupFundTransaction.setType(TransactionType.TOP_UP);
         groupFundTransaction.setDescription(description);
 
         groupFundTransactionRepository.save(groupFundTransaction);
@@ -350,7 +355,7 @@ public class GroupFundService {
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);
         groupFundTransaction.setMember(groupFund.getOwner());
-        groupFundTransaction.setTransactionType(TransactionType.WITHDRAW);
+        groupFundTransaction.setType(TransactionType.WITHDRAW);
         groupFundTransaction.setTransaction(walletTransaction.getTransaction());
         groupFundTransaction.setDescription(description);
         return groupFundTransactionRepository.save(groupFundTransaction);
@@ -359,7 +364,8 @@ public class GroupFundService {
     //Khóa quỹ
     public GroupFund lockGroupFund(Long groupId, Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(() -> new NotFoundException("Quỹ không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
+                () -> new NotFoundException("Quỹ không tồn tại"));
 
         // Kiểm tra quyền sở hữu quỹ
         if (!groupFund.getOwner().getId().equals(userId)) {
@@ -381,7 +387,8 @@ public class GroupFundService {
     // Mở quỹ
     public GroupFund unlockGroupFund(Long groupId, Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(() -> new NotFoundException("Quỹ không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
+                () -> new NotFoundException("Quỹ không tồn tại"));
 
         // Kiểm tra quyền sở hữu quỹ
         if (!groupFund.getOwner().getId().equals(userId)) {

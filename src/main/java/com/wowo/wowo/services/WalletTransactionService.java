@@ -5,7 +5,6 @@ import com.wowo.wowo.exceptions.TransactionNotFoundException;
 import com.wowo.wowo.models.Transaction;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletTransaction;
-import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletTransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class WalletTransactionService {
 
-    private final WalletService walletService;
     private final WalletTransactionRepository walletTransactionRepository;
-    private final TransactionRepository transactionRepository;
-    private final TransactionService transactionService;
 
     /**
      * Hoàn tiền cho giao dịch qua ví
