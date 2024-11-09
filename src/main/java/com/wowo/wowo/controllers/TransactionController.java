@@ -55,32 +55,8 @@ public class TransactionController {
                 (userId));
         return new TransactionHistoryResponseDto(recentTransactions, total);
     }
-    //lấy lịch sử giao dịch của 1 user nào đó trong hệ thống
-    @GetMapping("/{userId}/history")
-    public ResponseEntity<TransactionHistoryResponseDto> getAllTransactionsByUserId(
-            @ModelAttribute @Validated PagingDto allParams,
-            @PathVariable String userId) {
 
-        // Lấy các tham số phân trang từ PagingDto
-        int offset = allParams.getOffset();
-        int page = allParams.getPage();
-
-        // Đảm bảo offset không vượt quá 30 và không nhỏ hơn 0
-        offset = Math.min(30, Math.max(offset, 0));
-
-        // Lấy danh sách giao dịch gần đây của người dùng
-        final List<TransactionDto> recentTransactions = transactionService.getRecentTransactions(
-                userId, offset, page);
-
-        // Lấy tổng số giao dịch của người dùng
-        long total = transactionService.getTotalTransactions(userId);
-
-        TransactionHistoryResponseDto response = new TransactionHistoryResponseDto(recentTransactions, total);
-
-        return ResponseEntity.ok(response);
-    }
-
-
+    //lấy all transaction của user
 //    @IsAdmin
     @GetMapping("/{userId}/history")
     public TransactionHistoryResponseDto getAllTransactionsByUserId(
