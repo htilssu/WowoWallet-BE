@@ -17,6 +17,8 @@ public class PartnerApiKey {
     @Column(name = "id")
     private String id;
 
+    private String name;
+
     @JoinColumn(name = "partner_id", nullable = false)
     @ManyToOne(targetEntity = Partner.class, fetch = FetchType.LAZY)
     private Partner partner;

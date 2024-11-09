@@ -23,7 +23,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Document(value = "otp_claims")
 @Builder
@@ -37,6 +36,7 @@ public class OtpClaim {
     String claimant;
     String otp;
     Instant expiresAt;
+    Instant createdAt;
 
     public boolean isExpired() {
         return Instant.now().isAfter(expiresAt);

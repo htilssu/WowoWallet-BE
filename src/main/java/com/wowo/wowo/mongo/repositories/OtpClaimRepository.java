@@ -24,4 +24,6 @@ public interface OtpClaimRepository extends MongoRepository<OtpClaim, ObjectId> 
 
     Optional<OtpClaim> findByClaimant(String claimant);
     void deleteByClaimant(String userId);
+
+    Optional<OtpClaim> findFirstByClaimantOrderByCreatedAtAsc(String claimant);
 }
