@@ -1,6 +1,7 @@
 package com.wowo.wowo.controllers;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
+import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.models.Order;
 import com.wowo.wowo.services.PaymentService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,11 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final OrderMapper orderMapper;
 
     @PostMapping("/{id}")
     public ResponseEntity<?> makePay(@PathVariable Long id, Authentication authentication) {
 
         final Order order = paymentService.pay(id, authentication);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(orderMapper.toDto(order));
     }
 }

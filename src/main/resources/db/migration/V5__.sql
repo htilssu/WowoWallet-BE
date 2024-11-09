@@ -13,20 +13,11 @@
  */
 
 ALTER TABLE transaction
-    ADD other_name VARCHAR(255);
+    ADD receiver_name VARCHAR(255);
 
-ALTER TABLE group_fund_transaction
-    ADD type VARCHAR(255);
+ALTER TABLE transaction
+    ADD sender_name VARCHAR(255);
 
-ALTER TABLE group_fund_transaction
-    ALTER COLUMN type SET NOT NULL;
-
-ALTER TABLE wallet_transaction
-    ADD type SMALLINT;
-
-ALTER TABLE group_fund_transaction
+ALTER TABLE transaction
 DROP
-COLUMN transaction_type;
-
-ALTER TABLE group_fund
-    ALTER COLUMN is_locked SET NOT NULL;
+COLUMN other_name;

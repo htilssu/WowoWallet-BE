@@ -1,12 +1,9 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.annotations.authorized.IsAdmin;
 import com.wowo.wowo.annotations.authorized.IsUser;
 import com.wowo.wowo.data.dto.PagingDto;
 import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.dto.TransactionHistoryResponseDto;
-import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.services.TransactionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -24,13 +21,13 @@ import java.util.List;
 @Tag(name = "Transaction", description = "Giao dịch")
 public class TransactionController {
 
-    private final TransactionRepository transactionRepository;
-    private final TransactionMapper transactionMapper;
     private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionDto> getTransaction(@PathVariable String id) {
-        final TransactionDto transactionDetail = transactionService.getTransactionDetail(id);
+    public ResponseEntity<TransactionDto> getTransaction(@PathVariable String id,
+            Authentication authentication) {
+        final TransactionDto transactionDetail = transactionService.getTransactionDetail(id,
+                authentication);
         return ResponseEntity.ok(transactionDetail);
     }
 
@@ -56,8 +53,8 @@ public class TransactionController {
         return new TransactionHistoryResponseDto(recentTransactions, total);
     }
 
-    //lấy all transaction của user
-//    @IsAdmin
+
+    //    @IsAdmin
     @GetMapping("/{userId}/history")
     public TransactionHistoryResponseDto getAllTransactionsByUserId(
             @ModelAttribute @Validated PagingDto allParams,
