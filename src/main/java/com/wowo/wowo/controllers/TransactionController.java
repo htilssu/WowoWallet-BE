@@ -53,6 +53,7 @@ public class TransactionController {
         return new TransactionHistoryResponseDto(recentTransactions, total);
     }
 
+
     //    @IsAdmin
     @GetMapping("/{userId}/history")
     public TransactionHistoryResponseDto getAllTransactionsByUserId(
