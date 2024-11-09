@@ -8,22 +8,18 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.OtpClaim;
-import org.bson.types.ObjectId;
+import com.wowo.wowo.models.YearAnalysis;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface OtpClaimRepository extends MongoRepository<OtpClaim, ObjectId> {
+public interface YearAnalysisRepository extends MongoRepository<YearAnalysis, String> {
 
-    Optional<OtpClaim> findByClaimant(String claimant);
-    void deleteByClaimant(String userId);
-
-    Optional<OtpClaim> findFirstByClaimantOrderByCreatedAtAsc(String claimant);
+    Optional<YearAnalysis> findFirstByByTargetAndYear(String target, int year);
 }

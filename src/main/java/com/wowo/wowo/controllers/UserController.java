@@ -3,6 +3,7 @@ package com.wowo.wowo.controllers;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.annotations.authorized.IsAdmin;
 import com.wowo.wowo.annotations.authorized.IsAuthenticated;
+import com.wowo.wowo.data.dto.UserAnalysisDto;
 import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
@@ -80,5 +81,13 @@ public class UserController {
             }
         }
         return null;
+    }
+
+
+    @GetMapping("/analysis")
+    public UserAnalysisDto analysis(Authentication authentication) {
+        String userId = authentication.getPrincipal().toString();
+
+        return userService.analysis(userId);
     }
 }

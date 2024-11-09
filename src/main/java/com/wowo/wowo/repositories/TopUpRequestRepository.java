@@ -8,14 +8,13 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 4-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.TopUpRequest;
-import org.bson.types.ObjectId;
+import com.wowo.wowo.models.TopUpRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -63,5 +64,6 @@ public class TransactionService {
         }
         return transactionMapper.toDto(transaction);
     }
+
 
 }

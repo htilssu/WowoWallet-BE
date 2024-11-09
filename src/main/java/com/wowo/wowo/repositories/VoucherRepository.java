@@ -8,13 +8,13 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.Voucher;
+import com.wowo.wowo.models.Voucher;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Collection;

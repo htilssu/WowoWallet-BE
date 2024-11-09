@@ -2,8 +2,8 @@ package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.exceptions.NotFoundException;
-import com.wowo.wowo.mongo.documents.OtpClaim;
-import com.wowo.wowo.mongo.repositories.OtpClaimRepository;
+import com.wowo.wowo.models.OtpClaim;
+import com.wowo.wowo.repositories.OtpClaimRepository;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.EmailService;
 import lombok.AllArgsConstructor;
