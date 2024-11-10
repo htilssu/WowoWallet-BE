@@ -19,6 +19,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -47,5 +51,17 @@ public class DayAnalysis extends Analysis {
         this.totalInMoney += inMoney;
         this.totalOutMoney += outMoney;
         this.totalTransactions++;
+    }
+
+    public static List<DayAnalysis> createDayAnalysisList(int month) {
+        List<DayAnalysis> dayAnalyses = new ArrayList<>();
+        var year = LocalDate.now()
+                .getYear();
+
+        var dayOfMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+        for (int i = 1; i <= dayOfMonth; i++) {
+            dayAnalyses.add(new DayAnalysis(i));
+        }
+        return dayAnalyses;
     }
 }

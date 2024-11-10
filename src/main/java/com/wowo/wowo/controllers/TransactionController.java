@@ -65,7 +65,6 @@ public class TransactionController {
 
     @PostMapping("{id}/refund")
     public ResponseEntity<?> refundTransaction(@PathVariable String id) {
-        //        transactionService.refundTransaction(id);
         //TODO: Implement refundTransaction
         return ResponseEntity.ok().build();
     }

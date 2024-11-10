@@ -83,4 +83,10 @@ public class YearAnalysis extends Analysis {
         currentMonthAnalysis.updateAnalysis(inMoney, outMoney);
         addMonthAnalysis(currentMonthAnalysis);
     }
+
+    public static YearAnalysis create(String target) {
+        var date = LocalDate.now();
+        return new YearAnalysis(null, date.getYear(), target,
+                MonthAnalysis.createMonthAnalysisList());
+    }
 }

@@ -3,7 +3,6 @@ package com.wowo.wowo.services;
 import com.wowo.wowo.data.MailContent;
 import com.wowo.wowo.otp.OTPSender;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,7 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +54,8 @@ public class EmailService implements OTPSender {
             newMail.addRecipients(TO, sendTo);
             newMail.setContent(htmlText, "text/html; charset=utf-8");
         } catch (MessagingException e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
+            Logger.getAnonymousLogger()
+                    .log(Level.WARNING, e.getMessage());
         }
 
         javaMailSender.send(newMail);
@@ -81,21 +80,6 @@ public class EmailService implements OTPSender {
 
         return CompletableFuture.completedFuture(null);
     }
-//TODO: implement this method
-    /*public void sendResetPassword(String token, String email) {
-        final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        var resetPasswordHtml = resetPasswordTemplate.replace("{{RESET_LINK}}",
-                "https://wowo.htilssu.id.vn/password/reset?token=" + token);
-        try {
-            mimeMessage.setSubject("Đặt lại mật khẩu", "utf-8");
-            mimeMessage.addRecipients(TO, email);
-            mimeMessage.setContent(resetPasswordHtml, "text/html; charset=utf-8");
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-
-        javaMailSender.send(mimeMessage);
-    }*/
 
     public void sendResetPasswordToken(@Size(max = 255) @NotNull String email, String token) {
 
