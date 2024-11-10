@@ -1,5 +1,6 @@
 package com.wowo.wowo.controllers;
 
+import com.wowo.wowo.annotations.authorized.IsAdmin;
 import com.wowo.wowo.data.dto.PartnerDto;
 import com.wowo.wowo.data.dto.PartnerRequest;
 import com.wowo.wowo.data.dto.ResponseMessage;
@@ -7,6 +8,7 @@ import com.wowo.wowo.data.mapper.PartnerMapper;
 import com.wowo.wowo.models.Partner;
 import com.wowo.wowo.repositories.PartnerRepository;
 import com.wowo.wowo.services.JwtService;
+import com.wowo.wowo.services.PartnerService;
 import com.wowo.wowo.util.ApiKeyUtil;
 import com.wowo.wowo.util.ObjectUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +32,7 @@ public class PartnerController {
     private final PartnerRepository partnerRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PartnerMapper partnerMapperImpl;
+    private final PartnerService partnerService;
 
     @PostMapping("/register")
     public ResponseEntity<?> createPartner(@RequestBody PartnerRequest newPartner) {
@@ -75,5 +78,49 @@ public class PartnerController {
             partnerDtoList.add(partnerMapperImpl.toDto(partner));
         }
         return ResponseEntity.ok(partnerDtoList);
+    }
+
+    //@IsAdmin
+    @PostMapping("/approve/{partnerId}")
+    public ResponseEntity<String> approvePartner(@PathVariable String partnerId) {
+        try {
+            partnerService.approvePartner(partnerId);
+            return ResponseEntity.ok("Đối tác đã được Phê Duyệt thành công");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //@IsAdmin
+    @PostMapping("/suspend/{partnerId}")
+    public ResponseEntity<String> suspendPartner(@PathVariable String partnerId) {
+        try {
+            partnerService.suspendPartner(partnerId);
+            return ResponseEntity.ok("Đối tác đã bị Tạm Ngưng thành công");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //@IsAdmin
+    @PostMapping("/restore/{partnerId}")
+    public ResponseEntity<String> restorePartner(@PathVariable String partnerId) {
+        try {
+            partnerService.restorePartner(partnerId);
+            return ResponseEntity.ok("Đối tác đã được Hoạt Động trở lại");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //@IsAdmin
+    @PostMapping("/delete/{partnerId}")
+    public ResponseEntity<String> rejectPartner(@PathVariable String partnerId) {
+        try {
+            partnerService.deletePartner(partnerId);
+            return ResponseEntity.ok("Đối tác đã được xóa hoặc bị từ chối phê duyệt thành công");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletTransaction;
 import com.wowo.wowo.repositories.OrderRepository;
 import com.wowo.wowo.util.AuthUtil;
+import com.wowo.wowo.util.RequestUtil;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -60,6 +61,7 @@ public class PaymentService {
 
         transferService.transferMoney(userWallet, partnerWallet, order.getDiscountMoney());
         order.setStatus(PaymentStatus.SUCCESS);
+        RequestUtil.sendRequest(order.getSuccessUrl(), "POST");
         return orderRepository.save(order);
     }
 

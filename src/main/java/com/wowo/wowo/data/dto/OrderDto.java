@@ -1,8 +1,10 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wowo.wowo.models.PartnerStatus;
 import com.wowo.wowo.models.PaymentStatus;
-import com.wowo.wowo.mongo.documents.Voucher;
+import com.wowo.wowo.models.Voucher;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -39,4 +41,15 @@ public class OrderDto implements Serializable {
     Collection<OrderItemCreateDto> items;
     Collection<Voucher> vouchers;
     private String checkoutUrl;
+    private PartnerDto partner;
+
+
+    /**
+     * DTO for {@link com.wowo.wowo.models.Partner}
+     */
+    public record PartnerDto(@Size(max = 32) String id, String description, String name,
+                             @NotNull @Email String email, PartnerStatus status)
+            implements Serializable {
+
+    }
 }

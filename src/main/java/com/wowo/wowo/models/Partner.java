@@ -1,9 +1,6 @@
 package com.wowo.wowo.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -34,4 +31,8 @@ public class Partner {
     @Size(max = 255)
     @Column(name = "api_key", nullable = false)
     private String apiKey;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 50, nullable = false)
+    private PartnerStatus status = PartnerStatus.INACTIVE;
 }

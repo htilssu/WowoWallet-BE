@@ -8,22 +8,18 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.OtpClaim;
-import org.bson.types.ObjectId;
+import com.wowo.wowo.models.Voucher;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Optional;
+import java.util.Collection;
 
-public interface OtpClaimRepository extends MongoRepository<OtpClaim, ObjectId> {
+public interface VoucherRepository extends MongoRepository<Voucher, String> {
 
-    Optional<OtpClaim> findByClaimant(String claimant);
-    void deleteByClaimant(String userId);
-
-    Optional<OtpClaim> findFirstByClaimantOrderByCreatedAtAsc(String claimant);
+    Collection<Voucher> findByOrderId(Long orderId);
 }
