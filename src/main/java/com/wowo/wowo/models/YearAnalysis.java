@@ -53,6 +53,7 @@ public class YearAnalysis extends Analysis {
         totalOutMoney -= analysis.getTotalOutMoney();
     }
 
+
     @JsonIgnore
     public MonthAnalysis getMonthAnalysis(int month) {
         var analysis = monthAnalyses.stream()
