@@ -21,7 +21,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -50,6 +52,7 @@ public class MonthAnalysis extends Analysis {
         removeDayAnalysis(analysis);
         addDayAnalysis(analysis);
     }
+
     @JsonIgnore
     public DayAnalysis getDayAnalysis(int day) {
         var analysis = dayAnalysis.stream()
@@ -64,6 +67,7 @@ public class MonthAnalysis extends Analysis {
 
         return analysis;
     }
+
     @JsonIgnore
     public DayAnalysis getCurrentDayAnalysis() {
         return getDayAnalysis(LocalDate.now()
@@ -76,5 +80,14 @@ public class MonthAnalysis extends Analysis {
         removeDayAnalysis(currentDayAnalysis);
         currentDayAnalysis.updateAnalysis(inMoney, outMoney);
         addDayAnalysis(currentDayAnalysis);
+    }
+
+    public static List<MonthAnalysis> createMonthAnalysisList() {
+        List<MonthAnalysis> monthAnalyses = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            monthAnalyses.add(new MonthAnalysis(i, DayAnalysis.createDayAnalysisList(i)));
+        }
+
+        return monthAnalyses;
     }
 }

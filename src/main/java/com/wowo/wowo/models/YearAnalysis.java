@@ -53,7 +53,6 @@ public class YearAnalysis extends Analysis {
         totalOutMoney -= analysis.getTotalOutMoney();
     }
 
-
     @JsonIgnore
     public MonthAnalysis getMonthAnalysis(int month) {
         var analysis = monthAnalyses.stream()
@@ -82,5 +81,11 @@ public class YearAnalysis extends Analysis {
         removeMonthAnalysis(currentMonthAnalysis);
         currentMonthAnalysis.updateAnalysis(inMoney, outMoney);
         addMonthAnalysis(currentMonthAnalysis);
+    }
+
+    public static YearAnalysis create(String target) {
+        var date = LocalDate.now();
+        return new YearAnalysis(null, date.getYear(), target,
+                MonthAnalysis.createMonthAnalysisList());
     }
 }
