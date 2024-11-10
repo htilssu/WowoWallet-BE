@@ -19,4 +19,5 @@ import com.wowo.wowo.models.Analysis;
 public interface AnalysisService<T extends Analysis> {
 
     T getAnalysis(String target, int position);
+    T updateAnalysis(String target, long inMoney, long outMoney);
 }

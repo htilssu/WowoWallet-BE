@@ -14,12 +14,16 @@
 
 package com.wowo.wowo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wowo.wowo.annotations.jpa.IndexAndHash;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @EqualsAndHashCode(callSuper = true)
@@ -28,6 +32,8 @@ import java.util.Collection;
 @AllArgsConstructor
 public class YearAnalysis extends Analysis {
 
+    @Id
+    String id;
     int year;
     @IndexAndHash
     String target;
@@ -47,15 +53,34 @@ public class YearAnalysis extends Analysis {
         totalOutMoney -= analysis.getTotalOutMoney();
     }
 
-    public void updateMonthAnalysis(MonthAnalysis analysis) {
-        removeMonthAnalysis(analysis);
-        addMonthAnalysis(analysis);
-    }
 
+    @JsonIgnore
     public MonthAnalysis getMonthAnalysis(int month) {
-        return monthAnalyses.stream()
+        var analysis = monthAnalyses.stream()
                 .filter(m -> m.getMonth() == month)
                 .findFirst()
                 .orElse(null);
+
+        if (analysis == null) {
+            analysis = new MonthAnalysis(month, new ArrayList<>());
+            monthAnalyses.add(analysis);
+        }
+
+        return analysis;
+    }
+
+    @JsonIgnore
+    public MonthAnalysis getCurrentMonthAnalysis() {
+        var date = LocalDate.now();
+        return getMonthAnalysis(date.getMonth()
+                .getValue());
+    }
+
+    @Override
+    public void updateAnalysis(double inMoney, double outMoney) {
+        final MonthAnalysis currentMonthAnalysis = getCurrentMonthAnalysis();
+        removeMonthAnalysis(currentMonthAnalysis);
+        currentMonthAnalysis.updateAnalysis(inMoney, outMoney);
+        addMonthAnalysis(currentMonthAnalysis);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WalletTransactionService {
 
     private final WalletTransactionRepository walletTransactionRepository;
+    private final YearAnalysisService yearAnalysisService;
 
     /**
      * Hoàn tiền cho giao dịch qua ví
@@ -29,8 +30,9 @@ public class WalletTransactionService {
      */
     public void refund(Transaction transaction) throws TransactionNotFoundException,
                                                        InsufficientBalanceException {
-        var walletTransaction = walletTransactionRepository.findById(transaction.getId()).orElse(
-                null);
+        var walletTransaction = walletTransactionRepository.findById(transaction.getId())
+                .orElse(
+                        null);
         if (walletTransaction == null) {
             throw new TransactionNotFoundException("Không thể tìm thấy giao dịch");
         }
@@ -38,11 +40,13 @@ public class WalletTransactionService {
         final Wallet senderWallet = walletTransaction.getSenderWallet();
         final Wallet receiverWallet = walletTransaction.getReceiverWallet();
 
-        if (receiverWallet.getBalance() <= walletTransaction.getTransaction().getAmount()
-                .doubleValue()) {
+        if (receiverWallet.getBalance() <=
+                walletTransaction.getTransaction()
+                        .getAmount()
+                        .doubleValue()) {
             throw new InsufficientBalanceException("Không đủ tiền để hoàn tiền");
         }
-//        TODO: refund transaction
+        //        TODO: refund transaction
 
     }
 
@@ -51,6 +55,17 @@ public class WalletTransactionService {
         if (walletTransaction.getTransaction() == null) {
             throw new RuntimeException("Không thể tạo giao dịch mà không có thông tin giao dịch");
         }
+
+        yearAnalysisService.updateAnalysis(walletTransaction.getSenderWallet()
+                        .getOwnerId(),
+                0,
+                walletTransaction.getTransaction()
+                        .getAmount());
+        yearAnalysisService.updateAnalysis(walletTransaction.getReceiverWallet()
+                        .getOwnerId(),
+                walletTransaction.getTransaction()
+                        .getAmount(),
+                0);
 
         try {
             return walletTransactionRepository.save(walletTransaction);

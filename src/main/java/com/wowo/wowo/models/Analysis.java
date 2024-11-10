@@ -15,21 +15,19 @@
 package com.wowo.wowo.models;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@EqualsAndHashCode
 public abstract class Analysis {
 
     long totalTransactions;
     double totalInMoney;
     double totalOutMoney;
 
-    public void updateAnalysis(double inMoney, double outMoney) {
-        totalTransactions++;
-        totalInMoney += inMoney;
-        totalOutMoney += outMoney;
-    }
+    public abstract void updateAnalysis(double inMoney, double outMoney);
 }

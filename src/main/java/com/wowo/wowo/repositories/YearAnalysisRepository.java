@@ -21,5 +21,5 @@ import java.util.Optional;
 
 public interface YearAnalysisRepository extends MongoRepository<YearAnalysis, String> {
 
-    Optional<YearAnalysis> findFirstByByTargetAndYear(String target, int year);
+    Optional<YearAnalysis> findFirstByTargetAndYear(String target, int year);
 }

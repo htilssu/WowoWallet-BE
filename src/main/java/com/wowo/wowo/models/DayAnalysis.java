@@ -41,4 +41,11 @@ public class DayAnalysis extends Analysis {
 
         totalTransactions++;
     }
+
+    @Override
+    public void updateAnalysis(double inMoney, double outMoney) {
+        this.totalInMoney += inMoney;
+        this.totalOutMoney += outMoney;
+        this.totalTransactions++;
+    }
 }

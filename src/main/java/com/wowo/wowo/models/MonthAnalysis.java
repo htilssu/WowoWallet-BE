@@ -14,11 +14,13 @@
 
 package com.wowo.wowo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 @EqualsAndHashCode(callSuper = true)
@@ -48,11 +50,31 @@ public class MonthAnalysis extends Analysis {
         removeDayAnalysis(analysis);
         addDayAnalysis(analysis);
     }
-
+    @JsonIgnore
     public DayAnalysis getDayAnalysis(int day) {
-        return dayAnalysis.stream()
+        var analysis = dayAnalysis.stream()
                 .filter(d -> d.getDay() == day)
                 .findFirst()
                 .orElse(null);
+
+        if (analysis == null) {
+            analysis = new DayAnalysis(day);
+            dayAnalysis.add(analysis);
+        }
+
+        return analysis;
+    }
+    @JsonIgnore
+    public DayAnalysis getCurrentDayAnalysis() {
+        return getDayAnalysis(LocalDate.now()
+                .getDayOfMonth());
+    }
+
+    @Override
+    public void updateAnalysis(double inMoney, double outMoney) {
+        final DayAnalysis currentDayAnalysis = getCurrentDayAnalysis();
+        removeDayAnalysis(currentDayAnalysis);
+        currentDayAnalysis.updateAnalysis(inMoney, outMoney);
+        addDayAnalysis(currentDayAnalysis);
     }
 }
