@@ -90,4 +90,14 @@ public class MonthAnalysis extends Analysis {
 
         return monthAnalyses;
     }
+
+    @JsonIgnore
+    public MonthAnalysis getCurrentMonthAnalysisFromFistToNow() {
+        final int currentDay = LocalDate.now()
+                .getDayOfMonth();
+        final MonthAnalysis currentMonthAnalysis = new MonthAnalysis(month, new ArrayList<>());
+        dayAnalysis.stream().filter(d -> d.getDay() <= currentDay)
+                .forEach(currentMonthAnalysis::addDayAnalysis);
+        return currentMonthAnalysis;
+    }
 }

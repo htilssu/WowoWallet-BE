@@ -19,7 +19,6 @@ import com.wowo.wowo.repositories.YearAnalysisRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -33,9 +32,14 @@ public class YearAnalysisService implements AnalysisService<YearAnalysis> {
 
     @Override
     public YearAnalysis getAnalysis(String target, int position) {
+        var currentYear = LocalDate.now()
+                .getYear();
+        if (position > currentYear) {
+            throw new IllegalArgumentException("Invalid year");
+        }
         final Optional<YearAnalysis> yearAnalysis =
                 yearAnalysisRepository.findFirstByTargetAndYear(target, position);
-        return yearAnalysis.orElseGet(() -> createAnalysis(target, position));
+        return yearAnalysis.orElseGet(() -> createAnalysis(target));
     }
 
     @Override
@@ -51,8 +55,8 @@ public class YearAnalysisService implements AnalysisService<YearAnalysis> {
         yearAnalysisRepository.save(analysis);
     }
 
-    private YearAnalysis createAnalysis(String target, int year) {
-        YearAnalysis analysis = new YearAnalysis(null, year, target, new ArrayList<>());
+    private YearAnalysis createAnalysis(String target) {
+        YearAnalysis analysis = YearAnalysis.create(target);
         return yearAnalysisRepository.save(analysis);
     }
 
