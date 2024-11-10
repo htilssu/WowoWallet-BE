@@ -2,6 +2,7 @@ package com.wowo.wowo.services;
 
 import com.wowo.wowo.data.dto.SSOData;
 import com.wowo.wowo.exceptions.NotFoundException;
+import com.wowo.wowo.models.MonthAnalysis;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.YearAnalysis;
 import com.wowo.wowo.repositories.UserRepository;
@@ -59,8 +60,10 @@ public class UserService {
      *
      * @return dữ liệu phân tích
      */
-    public YearAnalysis analysis(String userId) {
-      return  yearAnalysisService.getAnalysis(userId, LocalDate.now()
+    public MonthAnalysis analysis(String userId) {
+        final YearAnalysis analysis = yearAnalysisService.getAnalysis(userId, LocalDate.now()
                 .getYear());
+        return analysis.getCurrentMonthAnalysis()
+                .getCurrentMonthAnalysisFromFistToNow();
     }
 }
