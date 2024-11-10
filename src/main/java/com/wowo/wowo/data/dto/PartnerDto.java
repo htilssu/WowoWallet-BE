@@ -43,5 +43,7 @@ public class PartnerDto implements Serializable {
     @Setter
     @NotNull
     String created;
+    @NotNull
+    String status;
 
 }
