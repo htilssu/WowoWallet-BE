@@ -61,6 +61,10 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

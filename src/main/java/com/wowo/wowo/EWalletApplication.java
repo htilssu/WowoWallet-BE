@@ -32,8 +32,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableMethodSecurity
 @EnableCaching
 @EnableJpaRepositories
-@EnableMongoRepositories("com.wowo.wowo.mongo.repositories")
 @EnableJpaAuditing
+@EnableMongoRepositories
 @EnableRetry
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
@@ -60,7 +60,8 @@ public class EWalletApplication {
                         "docs/**", "v3/api-docs/**"
                 )
                 .permitAll()
-                .anyRequest().permitAll());
+                .anyRequest()
+                .permitAll());
 
 
         //add token filter to security filter chain

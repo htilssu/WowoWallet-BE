@@ -24,6 +24,7 @@ public class TransferService {
     private final UserService userService;
     private final WalletTransactionService walletTransactionService;
     private final TransactionRepository transactionRepository;
+    private final ReceiverService receiverService;
 
     @IsUser
     @Transactional
@@ -53,19 +54,19 @@ public class TransferService {
         final User receiver = userService.getUserByIdOrUsernameOrEmail(
                 data.getReceiverId(), data.getReceiverId(),
                 data.getReceiverId());
+        final User user = userService.getUserById(senderWallet.getOwnerId());
         var receiverWallet = walletRepository.findByOwnerId(receiver.getId())
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví người nhận"));
 
-        assert senderWallet != null;
 
         WalletTransaction walletTransaction = transferMoney(senderWallet, receiverWallet,
                 data.getMoney());
 
-        walletTransaction.getTransaction().setMessage(data.getMessage());
+        walletTransaction.getTransaction().setReceiverName(receiver.getFullName());
+        walletTransaction.getTransaction().setSenderName(user.getFullName());
 
-        walletTransaction =
-                walletTransactionService.createWalletTransaction(walletTransaction);
+        walletTransaction.getTransaction().setMessage(data.getMessage());
 
         return walletTransaction;
     }
@@ -99,13 +100,14 @@ public class TransferService {
         final var walletTransaction = new WalletTransaction();
         walletTransaction.setSenderWallet(source);
         walletTransaction.setReceiverWallet(destination);
+        walletTransaction.setType(TransactionType.TRANSFER);
 
         Transaction transaction = new Transaction();
 
         transaction.setVariant(TransactionVariant.WALLET);
         transaction.setAmount(amount);
         transaction.setStatus(PaymentStatus.SUCCESS);
-        transaction.setType(TransactionType.TRANSFER);
+        transaction.setType(FlowType.OUT);
         transaction.setMessage("Chuyển tiền");
 
         walletTransaction.setTransaction(transaction);

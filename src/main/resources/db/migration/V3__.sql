@@ -8,19 +8,9 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 4-11-2024
+ *  * Created: 8-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
-
-import com.wowo.wowo.mongo.documents.TopUpRequest;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.util.Optional;
-
-public interface TopUpRequestRepository extends MongoRepository<TopUpRequest, String> {
-
-    Optional<TopUpRequest> findByOrderId(String id);
-}
+ALTER TABLE partner_api_key
+    ADD name VARCHAR(255);

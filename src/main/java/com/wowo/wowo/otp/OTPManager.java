@@ -2,8 +2,8 @@ package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.exceptions.NotFoundException;
-import com.wowo.wowo.mongo.documents.OtpClaim;
-import com.wowo.wowo.mongo.repositories.OtpClaimRepository;
+import com.wowo.wowo.models.OtpClaim;
+import com.wowo.wowo.repositories.OtpClaimRepository;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.services.EmailService;
 import lombok.AllArgsConstructor;
@@ -52,6 +52,7 @@ public class OTPManager {
             OtpClaim otpClaim = OtpClaim.builder()
                     .claimant(authentication.getPrincipal().toString())
                     .otp(otp)
+                    .createdAt(Instant.now())
                     .expiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
                     .build();
 
@@ -64,7 +65,7 @@ public class OTPManager {
      * Xác thực mã OTP có đúng của người dùng hiện tại hay không
      */
     public boolean verify(String userId, OTPData otpSend) {
-        var userClaim = otpClaimRepository.findByClaimant(userId);
+        var userClaim = otpClaimRepository.findFirstByClaimantOrderByCreatedAtAsc(userId);
         if (userClaim.isEmpty()) return false;
         final OtpClaim claim = userClaim.get();
         if (claim.isExpired()) {

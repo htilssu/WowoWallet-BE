@@ -29,6 +29,9 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Long amount;
 
+    private String receiverName;
+    private String senderName;
+
     @NotNull
     @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;
@@ -36,7 +39,7 @@ public class Transaction {
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionType type = TransactionType.TRANSFER;
+    private FlowType type = FlowType.OUT;
 
     @Column(name = "variant", nullable = false)
     @Enumerated(EnumType.STRING)

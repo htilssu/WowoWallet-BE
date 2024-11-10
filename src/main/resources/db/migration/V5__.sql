@@ -8,18 +8,16 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 8-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+ALTER TABLE transaction
+    ADD receiver_name VARCHAR(255);
 
-import com.wowo.wowo.mongo.documents.Voucher;
-import org.springframework.data.mongodb.repository.MongoRepository;
+ALTER TABLE transaction
+    ADD sender_name VARCHAR(255);
 
-import java.util.Collection;
-
-public interface VoucherRepository extends MongoRepository<Voucher, String> {
-
-    Collection<Voucher> findByOrderId(Long orderId);
-}
+ALTER TABLE transaction
+DROP
+COLUMN other_name;

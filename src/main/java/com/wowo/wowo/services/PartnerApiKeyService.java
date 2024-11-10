@@ -22,11 +22,12 @@ public class PartnerApiKeyService {
         return partnerApiKeyRepository.findAllByPartner_Id(partnerId);
     }
 
-    public PartnerApiKey createApiKey(String partnerId) {
+    public PartnerApiKey createApiKey(String partnerId, String name) {
         final Partner partner = partnerService.getPartnerById(partnerId).orElseThrow(
                 () -> new BadRequest("Không tìm thấy đối tác"));
         PartnerApiKey partnerApiKey = new PartnerApiKey();
         partnerApiKey.setPartner(partner);
+        partnerApiKey.setName(name);
         return partnerApiKeyRepository.save(partnerApiKey);
     }
 
