@@ -8,21 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 5-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.documents;
+package com.wowo.wowo.repositories;
 
-import jakarta.persistence.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.wowo.wowo.models.Equity;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Document
-public class Voucher {
+import java.util.Optional;
 
-    @Id
-    private String id;
-    private String name;
-    private String discount;
-    private Long orderId;
+public interface EquityRepository extends MongoRepository<Equity, String> {
+
+    Optional<Equity> findByUser(String user);
+    Equity findByUserAndMonthAndYear(String user,
+            Integer month,
+            Integer year);
 }

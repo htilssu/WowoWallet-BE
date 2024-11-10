@@ -10,6 +10,7 @@ import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.User;
 import com.wowo.wowo.models.Wallet;
 import com.wowo.wowo.models.WalletOwnerType;
+import com.wowo.wowo.models.YearAnalysis;
 import com.wowo.wowo.repositories.UserRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.services.PartnerService;
@@ -80,5 +81,13 @@ public class UserController {
             }
         }
         return null;
+    }
+
+
+    @GetMapping("/analysis")
+    public YearAnalysis analysis(Authentication authentication) {
+        String userId = authentication.getPrincipal().toString();
+
+        return userService.analysis(userId);
     }
 }

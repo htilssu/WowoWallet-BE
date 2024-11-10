@@ -8,18 +8,18 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.Voucher;
+import com.wowo.wowo.models.YearAnalysis;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Collection;
+import java.util.Optional;
 
-public interface VoucherRepository extends MongoRepository<Voucher, String> {
+public interface YearAnalysisRepository extends MongoRepository<YearAnalysis, String> {
 
-    Collection<Voucher> findByOrderId(Long orderId);
+    Optional<YearAnalysis> findFirstByTargetAndYear(String target, int year);
 }

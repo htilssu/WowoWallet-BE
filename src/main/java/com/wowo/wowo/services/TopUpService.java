@@ -15,11 +15,10 @@
 package com.wowo.wowo.services;
 
 import com.paypal.sdk.models.Order;
-import com.wowo.wowo.data.dto.TopUpRequestDto;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.models.Wallet;
-import com.wowo.wowo.mongo.documents.TopUpRequest;
-import com.wowo.wowo.mongo.repositories.TopUpRequestRepository;
+import com.wowo.wowo.models.TopUpRequest;
+import com.wowo.wowo.repositories.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
