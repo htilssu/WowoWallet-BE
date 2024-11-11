@@ -22,12 +22,12 @@ import lombok.Setter;
 public class Verify {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "verify_id_seq", sequenceName = "verify_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "verify_id_seq", sequenceName = "verify_id_seq", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verify_id_seq")
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = true)  
     private User customer;
 
