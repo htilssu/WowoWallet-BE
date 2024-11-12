@@ -33,12 +33,6 @@ public class VerifyService {
             return "Loại xác thực không được rỗng.";
         }
     
-        if (verifyDto.getFontImage() == null || verifyDto.getFontImage().trim().isEmpty() ||
-            verifyDto.getBehindImage() == null || verifyDto.getBehindImage().trim().isEmpty() ||
-            verifyDto.getUserImage() == null || verifyDto.getUserImage().trim().isEmpty()) {
-            return "Các trường ảnh không được rỗng.";
-        }
-    
         if (verifyDto.getOpenDay() == null || verifyDto.getCloseDay() == null) {
             return "Ngày mở và ngày đóng không được rỗng.";
         }
