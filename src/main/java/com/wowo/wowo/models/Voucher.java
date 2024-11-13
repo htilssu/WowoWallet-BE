@@ -26,6 +26,7 @@ public class Voucher {
 
     @Id
     private String id;
+    private String voucherId;
     private String name;
     private String discount;
     private Long orderId;

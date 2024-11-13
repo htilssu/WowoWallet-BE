@@ -15,6 +15,8 @@
 package com.wowo.wowo.kafka.consumers;
 
 import com.wowo.wowo.kafka.messages.UseVoucherMessage;
+import com.wowo.wowo.models.Order;
+import com.wowo.wowo.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,8 +27,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UseVoucherConsumer {
 
+    private final OrderService orderService;
+
     @KafkaHandler
     public void consumer(UseVoucherMessage message) {
-        orderService
+        orderService.useVoucher(message);
     }
 }

@@ -8,13 +8,14 @@ import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.NotFoundException;
+import com.wowo.wowo.kafka.messages.UseVoucherMessage;
 import com.wowo.wowo.models.Order;
-import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.OrderItem;
+import com.wowo.wowo.models.PaymentStatus;
 import com.wowo.wowo.models.Voucher;
 import com.wowo.wowo.repositories.OrderItemRepository;
-import com.wowo.wowo.repositories.VoucherRepository;
 import com.wowo.wowo.repositories.OrderRepository;
+import com.wowo.wowo.repositories.VoucherRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,17 +37,23 @@ public class OrderService {
     private final RefundService refundService;
     private final OrderMapper orderMapper;
     private final VoucherRepository voucherRepository;
+    private final VoucherService voucherService;
 
-    public OrderDto createOrder(Order order, Collection<OrderItemCreateDto> orderItemCreateDtos,
+    public OrderDto createOrder(Order order,
+            Collection<OrderItemCreateDto> orderItemCreateDtos,
             Authentication authentication) {
-        var partnerId = authentication.getPrincipal().toString();
-        var partner = partnerService.getPartnerById(partnerId).orElseThrow(
-                () -> new BadRequest("Không tìm thấy đối tác"));
+        var partnerId = authentication.getPrincipal()
+                .toString();
+        var partner = partnerService.getPartnerById(partnerId)
+                .orElseThrow(() -> new BadRequest("Không tìm thấy đối tác"));
 
         order.setPartner(partner);
         final Order newOrder = orderRepository.save(order);
-        var orderItems = orderItemCreateDtos.stream().map(orderItemMapper::toEntity).toList();
-        orderItems = orderItems.stream().peek(orderItem -> orderItem.setOrderId(newOrder.getId()))
+        var orderItems = orderItemCreateDtos.stream()
+                .map(orderItemMapper::toEntity)
+                .toList();
+        orderItems = orderItems.stream()
+                .peek(orderItem -> orderItem.setOrderId(newOrder.getId()))
                 .toList();
 
         orderItemRepository.saveAll(orderItems);
@@ -70,22 +77,27 @@ public class OrderService {
     }
 
     public OrderDto getOrderDetail(Long id) {
-        final Order order = orderRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+        final Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
         final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
         final Collection<Voucher> voucher = voucherRepository.findByOrderId(order.getId());
         final OrderDto orderDto = orderMapperImpl.toDto(order);
-        orderDto.setItems(orderItems.stream().map(orderItemMapper::toDto).toList());
+        orderDto.setItems(orderItems.stream()
+                .map(orderItemMapper::toDto)
+                .toList());
         orderDto.setVouchers(voucher);
         orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());
         return orderDto;
     }
 
     public Order cancelOrder(Long id, Authentication authentication) {
-        final Order order = orderRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+        final Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner().getId().equals(authentication.getPrincipal().toString())) {
+        if (!order.getPartner()
+                .getId()
+                .equals(authentication.getPrincipal()
+                        .toString())) {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
@@ -107,10 +119,13 @@ public class OrderService {
     }
 
     public Order refundOrder(@NotNull Long id, Authentication authentication) {
-        final Order order = orderRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+        final Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner().getId().equals(authentication.getPrincipal().toString())) {
+        if (!order.getPartner()
+                .getId()
+                .equals(authentication.getPrincipal()
+                        .toString())) {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
@@ -126,5 +141,19 @@ public class OrderService {
             }
             default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
         }
+    }
+
+    public Order getOrderOrThrow(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
+    }
+
+    public Order useVoucher(UseVoucherMessage message) {
+        final Order order = getOrderOrThrow(message.orderId());
+        Voucher voucher = new Voucher(null, message.voucherId(), message.voucherName(),
+                message.discount(), order.getId());
+        order.useVoucher(voucher);
+        voucherService.save(voucher);
+        return orderRepository.save(order);
     }
 }
