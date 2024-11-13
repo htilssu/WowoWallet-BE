@@ -29,6 +29,7 @@ public class PartnerService {
         newPartner.setId(ssoData.getId());
         newPartner.setEmail(ssoData.getEmail());
         newPartner.setApiKey(ssoData.getEmail());
+        newPartner.setName(ssoData.getName());
         try {
             newPartner = partnerRepository.save(newPartner);
             walletService.createWallet(newPartner);
