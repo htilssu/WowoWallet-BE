@@ -36,8 +36,9 @@ public class PaymentService {
      * @return Đơn hàng đã được thanh toán
      */
     private Order pay(String sourceId, Long orderId) {
-        var order = orderService.getById(orderId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+        var order = orderService.getById(orderId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy đơn hàng"));
         return pay(sourceId, order);
     }
 
@@ -56,18 +57,25 @@ public class PaymentService {
         var userId = ((String) authentication.getPrincipal());
         final Wallet partnerWallet = walletService.getPartnerWallet(partner.getId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy ví đối tác"));
-        final Wallet userWallet = walletService.getUserWallet(userId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy ví nguồn thanh toán"));
+        final Wallet userWallet = walletService.getUserWallet(userId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy ví nguồn thanh toán"));
 
-        transferService.transferMoney(userWallet, partnerWallet, order.getDiscountMoney());
+        final WalletTransaction walletTransaction = transferService.transferMoney(userWallet,
+                partnerWallet, order.getDiscountMoney());
+
+        walletTransaction.getTransaction()
+                .setReceiverName(partner.getName());
+
         order.setStatus(PaymentStatus.SUCCESS);
         RequestUtil.sendRequest(order.getSuccessUrl(), "POST");
         return orderRepository.save(order);
     }
 
     private Order isOrderValid(Long orderId) {
-        var order = orderService.getById(orderId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy đơn hàng"));
+        var order = orderService.getById(orderId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy đơn hàng"));
         if (order.getStatus() != PaymentStatus.PENDING) {
             throw new RuntimeException("Đơn hàng đã được thanh toán");
         }
@@ -81,13 +89,16 @@ public class PaymentService {
     public Order pay(@NotNull String sourceId, Order order) {
         var authId = AuthUtil.getId();
         var wallet = walletService.getWallet(Integer.parseInt(sourceId));
-        if (!wallet.getOwnerId().equals(authId)) {
+        if (!wallet.getOwnerId()
+                .equals(authId)) {
             throw new NotFoundException("Không tìm thấy ví");
         }
 
-        final String partnerId = order.getPartner().getId();
-        var partnerWallet = walletService.getPartnerWallet(partnerId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy ví đối tác"));
+        final String partnerId = order.getPartner()
+                .getId();
+        var partnerWallet = walletService.getPartnerWallet(partnerId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy ví đối tác"));
 
         final WalletTransaction walletTransaction = transferService.transferMoney(wallet,
                 partnerWallet, order.getMoney());
