@@ -8,9 +8,12 @@ import com.wowo.wowo.models.YearAnalysis;
 import com.wowo.wowo.repositories.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -51,6 +54,11 @@ public class UserService {
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }
+    }
+
+    //lấy tất cả người dùng
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     /**
