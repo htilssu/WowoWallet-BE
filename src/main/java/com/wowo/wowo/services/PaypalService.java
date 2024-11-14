@@ -79,7 +79,7 @@ public class PaypalService {
 
         if (orderApiResponse.getStatusCode() == 201) {
             System.out.println("Capture order success");
-            topUpService.topUp(orderId);
+            topUpService.topUpWithLimit(orderId);
         }
         else {
             System.out.println("Capture order failed");

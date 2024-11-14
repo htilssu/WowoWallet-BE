@@ -1,5 +1,6 @@
 package com.wowo.wowo.models;
 
+import com.wowo.wowo.exceptions.BadRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -61,6 +62,9 @@ public class Order {
     private String serviceName;
 
     public void useVoucher(Voucher voucher) {
+        if (status != PaymentStatus.PENDING) {
+            throw new BadRequest("Đơn hàng đã được thanh toán");
+        }
         this.discountMoney = money - Long.parseLong(voucher.getDiscount());
         voucher.setOrderId(this.id);
     }

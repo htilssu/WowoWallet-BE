@@ -37,9 +37,8 @@ public class PaymentController {
         orderDetail.getVouchers()
                 .stream()
                 .findFirst()
-                .ifPresent(voucher -> {
-                    voucherProducer.sendVoucherMessage(
-                            new VoucherMessage(voucher.getId(), PaymentStatus.SUCCESS));
+                .ifPresent(_ -> {
+                    voucherProducer.sendVoucherMessage(PaymentStatus.SUCCESS.name());
                 });
 
         return orderDetail;
