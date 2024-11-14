@@ -1,10 +1,12 @@
 package com.wowo.wowo.otp;
 
-import com.wowo.wowo.constants.Constant;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
 import java.util.Objects;
+
+import com.wowo.wowo.constants.Constant;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @AllArgsConstructor
 @Data

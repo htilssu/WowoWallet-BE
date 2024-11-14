@@ -59,4 +59,9 @@ public class Order {
     @Size(max = 100)
     @Column(name = "service_name", length = 100)
     private String serviceName;
+
+    public void useVoucher(Voucher voucher) {
+        this.discountMoney = money - Long.parseLong(voucher.getDiscount());
+        voucher.setOrderId(this.id);
+    }
 }

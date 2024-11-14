@@ -25,27 +25,38 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> handleCallback(Authentication authentication) {
         DecodedJWT decodedJWT = (DecodedJWT) authentication.getDetails();
-        String email = decodedJWT.getClaim("email").asString();
-        String userId = decodedJWT.getClaim("userId").asString();
-        String partnerId = decodedJWT.getClaim("partnerId").asString();
-        String username = decodedJWT.getClaim("username").asString();
-        String firstName = decodedJWT.getClaim("firstName").asString();
-        String lastName = decodedJWT.getClaim("lastName").asString();
-        String role = decodedJWT.getClaim("role").asString();
+        String email = decodedJWT.getClaim("email")
+                .asString();
+        String userId = decodedJWT.getClaim("userId")
+                .asString();
+        String partnerId = decodedJWT.getClaim("partnerId")
+                .asString();
+        String username = decodedJWT.getClaim("username")
+                .asString();
+        String firstName = decodedJWT.getClaim("firstName")
+                .asString();
+        String lastName = decodedJWT.getClaim("lastName")
+                .asString();
+        String role = decodedJWT.getClaim("role")
+                .asString();
+        String name = decodedJWT.getClaim("name")
+                .asString();
 
         switch (role) {
             case "user" -> {
-                SSOData ssoData = new SSOData(email, userId, username, firstName, lastName);
+                SSOData ssoData = new SSOData(email, userId, username, firstName, lastName, name);
                 userService.createUser(ssoData);
             }
             case "partner" -> {
-                SSOData ssoData = new SSOData(email, partnerId, username, firstName, lastName);
+                SSOData ssoData = new SSOData(email, partnerId, username, firstName, lastName,
+                        name);
                 partnerService.createPartner(ssoData);
             }
 
             default -> throw new IllegalStateException("Unexpected value: " + role);
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .build();
     }
 }

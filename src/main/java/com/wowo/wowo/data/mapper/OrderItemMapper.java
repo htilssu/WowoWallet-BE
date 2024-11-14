@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.OrderItemCreateDto;
-import com.wowo.wowo.mongo.documents.OrderItem;
+import com.wowo.wowo.models.OrderItem;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

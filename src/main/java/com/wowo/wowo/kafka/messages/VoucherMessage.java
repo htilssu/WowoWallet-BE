@@ -8,18 +8,23 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 10-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.kafka.messages;
 
-import com.wowo.wowo.mongo.documents.Voucher;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.wowo.wowo.models.PaymentStatus;
 
-import java.util.Collection;
+import java.util.Objects;
 
-public interface VoucherRepository extends MongoRepository<Voucher, String> {
+public record VoucherMessage(String voucherId, PaymentStatus status) {
 
-    Collection<Voucher> findByOrderId(Long orderId);
+    @Override
+    public String toString() {
+        return "VoucherMessage[" +
+                "voucherId=" + voucherId + ", " +
+                "status=" + status + ']';
+    }
+
 }

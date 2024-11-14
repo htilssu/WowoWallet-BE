@@ -68,9 +68,6 @@ public class TransferService {
 
         walletTransaction.getTransaction().setMessage(data.getMessage());
 
-        walletTransaction =
-                walletTransactionService.createWalletTransaction(walletTransaction);
-
         return walletTransaction;
     }
 

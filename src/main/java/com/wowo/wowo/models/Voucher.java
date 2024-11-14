@@ -8,37 +8,26 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 7-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.documents;
+package com.wowo.wowo.models;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.bson.types.ObjectId;
+import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Instant;
-
-@Document(value = "otp_claims")
-@Builder
-@Getter
-@Setter
+@Document
 @AllArgsConstructor
-public class OtpClaim {
+@Data
+public class Voucher {
 
     @Id
-    ObjectId id;
-    String claimant;
-    String otp;
-    Instant expiresAt;
-    Instant createdAt;
-
-    public boolean isExpired() {
-        return Instant.now().isAfter(expiresAt);
-    }
+    private String id;
+    private String voucherId;
+    private String name;
+    private String discount;
+    private Long orderId;
 }

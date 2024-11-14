@@ -8,19 +8,21 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 4-11-2024
+ *  * Created: 9-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.mongo.repositories;
+package com.wowo.wowo.repositories;
 
-import com.wowo.wowo.mongo.documents.TopUpRequest;
-import org.bson.types.ObjectId;
+import com.wowo.wowo.models.Equity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface TopUpRequestRepository extends MongoRepository<TopUpRequest, String> {
+public interface EquityRepository extends MongoRepository<Equity, String> {
 
-    Optional<TopUpRequest> findByOrderId(String id);
+    Optional<Equity> findByUser(String user);
+    Equity findByUserAndMonthAndYear(String user,
+            Integer month,
+            Integer year);
 }

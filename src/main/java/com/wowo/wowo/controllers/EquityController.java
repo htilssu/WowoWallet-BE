@@ -1,9 +1,9 @@
 package com.wowo.wowo.controllers;
 
-import com.wowo.wowo.mongo.documents.Equity;
-import com.wowo.wowo.mongo.documents.EquityDto;
-import com.wowo.wowo.mongo.documents.EquityMapper;
-import com.wowo.wowo.mongo.repositories.EquityRepository;
+import com.wowo.wowo.models.Equity;
+import com.wowo.wowo.models.EquityDto;
+import com.wowo.wowo.data.mapper.EquityMapper;
+import com.wowo.wowo.repositories.EquityRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

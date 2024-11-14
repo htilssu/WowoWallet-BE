@@ -97,6 +97,6 @@ jobs:
               sudo echo "${{secrets.ENV}}" > /env/.env.ewallet &&
               sudo docker pull ${{vars.DOCKER_IMAGE}} &&
               sudo docker rm -f ewallet || true &&
-              sudo docker run --restart always --env-file /env/.env.ewallet --name ewallet -d -p 8080:8080 ${{vars.DOCKER_IMAGE}}:latest &&
+              sudo docker run --log-opt max-size=10m --log-opt max-file=3 --restart always --env-file /env/.env.ewallet --name ewallet -d -p 8080:8080 ${{vars.DOCKER_IMAGE}}:latest &&
               sudo docker image prune -f
           EOF
