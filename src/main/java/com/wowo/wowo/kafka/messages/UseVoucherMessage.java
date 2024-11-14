@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.kafka.messages;
 
-public record UseVoucherMessage(String voucherId, String voucherName, String discount,
-                                String newMoney, Long orderId) {
+public record UseVoucherMessage(String VoucherID, String VoucherName, String Discount, Long OrderID,
+                                Long Price) {
 
 }

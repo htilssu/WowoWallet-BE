@@ -22,7 +22,7 @@ import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-@KafkaListener(topics = "useVoucher", groupId = "my-group")
+@KafkaListener(topics = "useVoucher", groupId = "my-consumer")
 @AllArgsConstructor
 @Component
 public class UseVoucherConsumer {
