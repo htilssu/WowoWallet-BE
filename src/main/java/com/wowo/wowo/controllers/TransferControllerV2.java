@@ -30,7 +30,7 @@ public class TransferControllerV2 {
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransferDto data,
             Authentication authentication) {
-        final WalletTransaction walletTransaction = transferService.transfer(data, authentication);
+        final WalletTransaction walletTransaction = transferService.transferWithLimit(data, authentication);
         transferProducer.sendTransferMessage(data);
         notifyProducer.pushNotifyMessage(walletTransaction);
         //        emailService.sendEmail();

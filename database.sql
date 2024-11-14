@@ -4,7 +4,9 @@ values ('MIN_TRANSFER', 'Số tiền tối thiểu cho mỗi giao dịch chuyể
        ('MIN_WITHDRAW', 'Số tiền tối thiểu khi rút tiền', 10000),
        ('MAX_WITHDRAW', 'Số tiền tối đa khi rút tiền', 1000000000),
        ('MIN_TOP_UP', 'Số tiền tối thiểu khi nạp tiền vào ví', 10000),
-       ('ORDER_TIMEOUT', 'Thời gian tối đa chờ cho giao dịch hoàn tất (secs)', 600);
+       ('ORDER_TIMEOUT', 'Thời gian tối đa chờ cho giao dịch hoàn tất (secs)', 600),
+       ('MAX_TOP_UP', 'Số tiền tối đa khi nạp tiền vào ví', 1000000000),
+       ('MAX_TRANSFER_PER_DAY', 'Số tiền tối đa cho mỗi giao dịch chuyển tiền trong ngày', 1000000000);
 
 
 
