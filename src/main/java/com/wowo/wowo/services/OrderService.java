@@ -149,9 +149,9 @@ public class OrderService {
     }
 
     public Order useVoucher(UseVoucherMessage message) {
-        final Order order = getOrderOrThrow(message.orderId());
-        Voucher voucher = new Voucher(null, message.voucherId(), message.voucherName(),
-                message.discount(), order.getId());
+        final Order order = getOrderOrThrow(message.OrderID());
+        Voucher voucher = new Voucher(null, message.VoucherID(), message.VoucherName(),
+                message.Discount(), order.getId());
         order.useVoucher(voucher);
         voucherService.save(voucher);
         return orderRepository.save(order);
