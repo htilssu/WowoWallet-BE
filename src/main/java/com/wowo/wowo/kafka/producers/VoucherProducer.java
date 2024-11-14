@@ -20,13 +20,13 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VoucherProducer extends KafkaTemplate<String, VoucherMessage> {
+public class VoucherProducer extends KafkaTemplate<String, String> {
 
-    public VoucherProducer(ProducerFactory<String, VoucherMessage> producerFactory) {
+    public VoucherProducer(ProducerFactory<String, String> producerFactory) {
         super(producerFactory);
     }
 
-    public void sendVoucherMessage(VoucherMessage message) {
-        this.send("useVoucher", message);
+    public void sendVoucherMessage(String message) {
+        this.send("voucher", message);
     }
 }
