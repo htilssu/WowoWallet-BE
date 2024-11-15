@@ -17,4 +17,5 @@ EXPOSE 8080
 COPY --from=build /build/build/libs/*SNAPSHOT.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 
-CMD ["java","-Xms256m -Xmx1024m", "-jar", "app.jar"]
+CMD ["java", "-Xms256m", "-Xmx1024m", "-jar", "app.jar"]
+
