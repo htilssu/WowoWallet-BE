@@ -15,14 +15,22 @@
 package com.wowo.wowo.kafka.consumers;
 
 import com.wowo.wowo.kafka.messages.UseVoucherMessage;
+import com.wowo.wowo.models.Order;
+import com.wowo.wowo.services.OrderService;
+import lombok.AllArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
-@KafkaListener(topics = "useVoucher", groupId = "my-group")
+@KafkaListener(topics = "useVoucher", groupId = "my-consumer")
+@AllArgsConstructor
+@Component
 public class UseVoucherConsumer {
 
-    @KafkaHandler
-    public void consume(UseVoucherMessage message) {
+    private final OrderService orderService;
 
+    @KafkaHandler
+    public void consumer(UseVoucherMessage message) {
+        orderService.useVoucher(message);
     }
 }

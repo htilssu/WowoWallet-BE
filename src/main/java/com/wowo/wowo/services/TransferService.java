@@ -1,11 +1,13 @@
 package com.wowo.wowo.services;
 
 import com.wowo.wowo.annotations.authorized.IsUser;
+import com.wowo.wowo.constants.Constant;
 import com.wowo.wowo.data.dto.TransferDto;
 import com.wowo.wowo.exceptions.BadRequest;
 import com.wowo.wowo.exceptions.InsufficientBalanceException;
 import com.wowo.wowo.exceptions.NotFoundException;
 import com.wowo.wowo.models.*;
+import com.wowo.wowo.repositories.ConstantRepository;
 import com.wowo.wowo.repositories.TransactionRepository;
 import com.wowo.wowo.repositories.WalletRepository;
 import com.wowo.wowo.util.AuthUtil;
@@ -25,6 +27,26 @@ public class TransferService {
     private final WalletTransactionService walletTransactionService;
     private final TransactionRepository transactionRepository;
     private final ReceiverService receiverService;
+    private final ConstantRepository constantRepository;
+
+    @Transactional
+    public WalletTransaction transferWithLimit(TransferDto data, Authentication authentication) {
+        var minTransfer = constantRepository.findById(Constant.MINIMUM_TRANSFER_AMOUNT)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy cài đặt"));
+
+        var maxTransfer = constantRepository.findById(Constant.MAXIMUM_TRANSFER_AMOUNT)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy cài đặt"));
+
+        if (data.getMoney() < minTransfer.getValue()) {
+            throw new BadRequest("Số tiền chuyển phải lớn hơn hoặc bằng" + minTransfer.getValue());
+        }
+        if (data.getMoney() > maxTransfer.getValue()) {
+            throw new BadRequest("Số tiền chuyển phải nhỏ hơn hoặc bằng" + maxTransfer.getValue());
+        }
+
+
+        return transfer(data, authentication);
+    }
 
     @IsUser
     @Transactional
@@ -63,10 +85,13 @@ public class TransferService {
         WalletTransaction walletTransaction = transferMoney(senderWallet, receiverWallet,
                 data.getMoney());
 
-        walletTransaction.getTransaction().setReceiverName(receiver.getFullName());
-        walletTransaction.getTransaction().setSenderName(user.getFullName());
+        walletTransaction.getTransaction()
+                .setReceiverName(receiver.getFullName());
+        walletTransaction.getTransaction()
+                .setSenderName(user.getFullName());
 
-        walletTransaction.getTransaction().setMessage(data.getMessage());
+        walletTransaction.getTransaction()
+                .setMessage(data.getMessage());
 
         return walletTransaction;
     }
@@ -90,7 +115,8 @@ public class TransferService {
                                                                                            InsufficientBalanceException {
 
 
-        if (source.getId().equals(destination.getId())) throw new BadRequest(
+        if (source.getId()
+                .equals(destination.getId())) throw new BadRequest(
                 "Không thể chuyển tiền từ ví này đến chính ví này");
         transfer(source, destination, amount);
 

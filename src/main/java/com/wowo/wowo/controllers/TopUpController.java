@@ -45,7 +45,7 @@ public class TopUpController {
                                                                                                    ApiException {
         switch (topUpRequestDto.getMethod()) {
             case ATM_CARD -> {
-                topUpService.topUp(topUpRequestDto.getTo(), topUpRequestDto.getAmount());
+                topUpService.topUpWithLimit(topUpRequestDto.getTo(), topUpRequestDto.getAmount());
             }
             case PAYPAL -> {
                 final Order order = paypalService.createTopUpOrder(topUpRequestDto);

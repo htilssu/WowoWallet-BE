@@ -29,18 +29,18 @@ public class TopUpService {
     private final TopUpRequestRepository topUpRequestRepository;
     private final WalletService walletService;
 
-    public Wallet topUp(Order order) {
-        return topUp(order.getId());
+    public Wallet topUpWithLimit(Order order) {
+        return topUpWithLimit(order.getId());
     }
 
-    public Wallet topUp(String orderId) {
+    public Wallet topUpWithLimit(String orderId) {
         final TopUpRequest order = topUpRequestRepository.findByOrderId(
                         orderId)
                 .orElseThrow(() -> new BadRequest("Order not found"));
         return walletService.plusBalance(order.getWalletId(), order.getAmount());
     }
 
-    public Wallet topUp(String walletId, long amount) {
+    public Wallet topUpWithLimit(String walletId, long amount) {
         return walletService.plusBalance(walletId, amount);
     }
 

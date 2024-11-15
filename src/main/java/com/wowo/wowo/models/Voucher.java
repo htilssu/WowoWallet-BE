@@ -15,13 +15,18 @@
 package com.wowo.wowo.models;
 
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
+@AllArgsConstructor
+@Data
 public class Voucher {
 
     @Id
     private String id;
+    private String voucherId;
     private String name;
     private String discount;
     private Long orderId;

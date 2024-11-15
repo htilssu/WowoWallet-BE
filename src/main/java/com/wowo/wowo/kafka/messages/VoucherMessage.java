@@ -8,13 +8,23 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 5-11-2024
+ *  * Created: 10-11-2024
  *  ******************************************************
  */
 
 package com.wowo.wowo.kafka.messages;
 
-public record UseVoucherMessage(String VoucherID, String VoucherName, String Discount, Long OrderID,
-                                Long Price) {
+import com.wowo.wowo.models.PaymentStatus;
+
+import java.util.Objects;
+
+public record VoucherMessage(String voucherId, PaymentStatus status) {
+
+    @Override
+    public String toString() {
+        return "VoucherMessage[" +
+                "voucherId=" + voucherId + ", " +
+                "status=" + status + ']';
+    }
 
 }

@@ -15,14 +15,14 @@ import com.wowo.wowo.services.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @RestController
 @AllArgsConstructor
@@ -63,6 +63,20 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/wallet/{userId}")
+    //@IsAdmin
+    @ApiResponse(responseCode = "200", description = "Lấy thông tin ví của người dùng thành công", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "403", description = "Không có quyền truy cập")
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy ví của người dùng")
+    public ResponseEntity<?> getWalletByUserId(@PathVariable String userId) {
+        Optional<Wallet> wallet = walletRepository.findByOwnerIdAndOwnerType(userId, WalletOwnerType.USER);
+        if (wallet.isPresent()) {
+            return ResponseEntity.ok(walletMapperImpl.toResponse(wallet.get()));
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
     @IsAdmin
     @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công",
@@ -80,6 +94,18 @@ public class UserController {
         return null;
     }
 
+    @GetMapping("/all")
+    //@IsAdmin
+    @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công",
+                 useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy thông tin")
+    @ApiResponse(responseCode = "403", description = "Không có quyền truy cập")
+    public Page<User> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return userService.getAllUsers(pageable);
+    }
 
     @GetMapping("/analysis")
     public MonthAnalysis analysis(Authentication authentication) {

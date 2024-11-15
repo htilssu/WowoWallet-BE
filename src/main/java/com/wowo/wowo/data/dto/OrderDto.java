@@ -42,6 +42,7 @@ public class OrderDto implements Serializable {
     Collection<Voucher> vouchers;
     private String checkoutUrl;
     private PartnerDto partner;
+    private Long discountMoney;
 
 
     /**
