@@ -26,7 +26,7 @@ public class User {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     @Size(max = 255)
     private String username;
 

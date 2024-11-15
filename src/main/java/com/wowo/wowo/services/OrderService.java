@@ -1,5 +1,6 @@
 package com.wowo.wowo.services;
 
+import com.wowo.wowo.CheckOrderTask;
 import com.wowo.wowo.data.dto.OrderCreateDto;
 import com.wowo.wowo.data.dto.OrderDto;
 import com.wowo.wowo.data.dto.OrderItemCreateDto;
@@ -24,6 +25,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +42,9 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final VoucherRepository voucherRepository;
     private final VoucherService voucherService;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+    private final ConstantService constantService;
 
     public OrderDto createOrder(Order order,
             Collection<OrderItemCreateDto> orderItemCreateDtos,
@@ -69,7 +76,13 @@ public class OrderService {
     public OrderDto createOrder(OrderCreateDto orderCreateDto, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreateDto);
         order.setDiscountMoney(order.getMoney());
+        createCheckOrderJob(order);
         return createOrder(order, orderCreateDto.items(), authentication);
+    }
+
+    private void createCheckOrderJob(Order order) {
+        scheduler.schedule(new CheckOrderTask(order, this), constantService.getOrderMaxLifeTime()
+                .longValue(), TimeUnit.MINUTES);
     }
 
     public Optional<Order> getById(Long id) {
@@ -155,5 +168,10 @@ public class OrderService {
         order.useVoucher(voucher);
         voucherService.save(voucher);
         return orderRepository.save(order);
+    }
+
+    public void cancelOrder(Order orderInDb) {
+        orderInDb.cancel();
+        orderRepository.save(orderInDb);
     }
 }

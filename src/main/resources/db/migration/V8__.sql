@@ -8,21 +8,16 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 10-11-2024
+ *  * Created: 15-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.kafka.messages;
+ALTER TABLE "order"
+DROP
+COLUMN status;
 
-import com.wowo.wowo.models.PaymentStatus;
+ALTER TABLE "order"
+    ADD status VARCHAR(255) NOT NULL;
 
-public record VoucherMessage(String orderId, PaymentStatus status) {
-
-    @Override
-    public String toString() {
-        return "VoucherMessage[" +
-                "orderId=" + orderId + ", " +
-                "status=" + status + ']';
-    }
-
-}
+ALTER TABLE partner
+    ALTER COLUMN status SET NOT NULL;

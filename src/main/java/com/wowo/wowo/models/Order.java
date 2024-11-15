@@ -35,6 +35,7 @@ public class Order {
 
     @NotNull
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -67,5 +68,11 @@ public class Order {
         }
         this.discountMoney = money - Long.parseLong(voucher.getDiscount());
         voucher.setOrderId(this.id);
+    }
+
+    public void cancel() {
+        if (this.status == PaymentStatus.PENDING) {
+            this.status = PaymentStatus.CANCELLED;
+        }
     }
 }

@@ -33,14 +33,7 @@ public class PaymentController {
     public OrderDto makePay(@PathVariable Long id, Authentication authentication) {
 
         paymentService.pay(id, authentication);
-        final OrderDto orderDetail = orderService.getOrderDetail(id);
-        orderDetail.getVouchers()
-                .stream()
-                .findFirst()
-                .ifPresent(_ -> {
-                    voucherProducer.sendVoucherMessage(PaymentStatus.SUCCESS.name());
-                });
 
-        return orderDetail;
+        return orderService.getOrderDetail(id);
     }
 }
