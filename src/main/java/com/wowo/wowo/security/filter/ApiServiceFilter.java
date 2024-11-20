@@ -1,7 +1,7 @@
 package com.wowo.wowo.security.filter;
 
-import com.wowo.wowo.models.Partner;
-import com.wowo.wowo.repositories.PartnerRepository;
+import com.wowo.wowo.model.Partner;
+import com.wowo.wowo.repository.PartnerRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

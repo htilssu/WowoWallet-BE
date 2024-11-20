@@ -1,7 +1,7 @@
 package com.wowo.wowo.security.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.wowo.wowo.services.JwtService;
+import com.wowo.wowo.service.JwtService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

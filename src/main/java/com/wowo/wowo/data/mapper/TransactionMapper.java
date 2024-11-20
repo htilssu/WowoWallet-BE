@@ -2,10 +2,8 @@ package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.dto.TransactionRequest;
-import com.wowo.wowo.models.Transaction;
+import com.wowo.wowo.model.Transaction;
 import org.mapstruct.*;
-
-import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TransactionMapper {

@@ -14,8 +14,8 @@
 
 package com.wowo.wowo;
 
-import com.wowo.wowo.models.Order;
-import com.wowo.wowo.models.PaymentStatus;
+import com.wowo.wowo.model.Order;
+import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.services.OrderService;
 import lombok.AllArgsConstructor;
 

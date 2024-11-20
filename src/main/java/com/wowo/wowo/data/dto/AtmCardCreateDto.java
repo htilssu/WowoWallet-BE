@@ -15,8 +15,8 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wowo.wowo.annotations.constraints.HumanNameNotSpecial;
-import com.wowo.wowo.models.AtmCard;
+import com.wowo.wowo.annotation.constraint.HumanNameNotSpecial;
+import com.wowo.wowo.model.AtmCard;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;

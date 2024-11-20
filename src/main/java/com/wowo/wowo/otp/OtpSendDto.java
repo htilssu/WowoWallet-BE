@@ -2,7 +2,7 @@ package com.wowo.wowo.otp;
 
 import java.util.Objects;
 
-import com.wowo.wowo.constants.Constant;
+import com.wowo.wowo.constant.Constant;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

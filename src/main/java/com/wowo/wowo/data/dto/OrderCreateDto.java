@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * DTO for {@link com.wowo.wowo.models.Order}
+ * DTO for {@link com.wowo.wowo.model.Order}
  */
 public record OrderCreateDto(@NotNull @PositiveOrZero(
         message = "Số tiền phải lớn hơn hoặc bằng 0") Long money,
