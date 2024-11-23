@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -17,7 +17,6 @@ import java.util.Objects;
         @Index(name = "search_unique_user", columnList = "id,username,email")
 })
 @NoArgsConstructor
-@ToString
 @AllArgsConstructor
 public class User {
 
@@ -61,29 +60,26 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    private Collection<Application> applications = new ArrayList<>();
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy
-                                   ? ((HibernateProxy) o).getHibernateLazyInitializer()
-                                           .getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy
-                                      ? ((HibernateProxy) this).getHibernateLazyInitializer()
-                                              .getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+    public void addApplication(Application application) {
+        if (application == null) {
+            return;
+        }
+        applications.add(application);
+        application.setOwner(this);
     }
 
-    @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy
-               ? ((HibernateProxy) this).getHibernateLazyInitializer()
-                       .getPersistentClass().hashCode() : getClass().hashCode();
+    public void removeApplication(Application application) {
+        if (application == null) {
+            return;
+        }
+        applications.remove(application);
+        application.setOwner(null);
     }
 }

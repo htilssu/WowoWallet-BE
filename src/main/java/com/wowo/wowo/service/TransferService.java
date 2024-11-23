@@ -76,7 +76,7 @@ public class TransferService {
         final User receiver = userService.getUserByIdOrUsernameOrEmail(
                 data.getReceiverId(), data.getReceiverId(),
                 data.getReceiverId());
-        final User user = userService.getUserById(senderWallet.getOwnerId());
+        final User user = userService.getUserByIdOrElseThrow(senderWallet.getOwnerId());
         var receiverWallet = walletRepository.findByOwnerId(receiver.getId())
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví người nhận"));

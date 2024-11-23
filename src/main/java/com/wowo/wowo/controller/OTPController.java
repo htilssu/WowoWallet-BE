@@ -2,8 +2,8 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.otp.OtpSendDto;
-import com.wowo.wowo.otp.OTPVerifyDto;
+import com.wowo.wowo.data.dto.OtpSendDto;
+import com.wowo.wowo.data.dto.OTPVerifyDto;
 import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.service.EmailService;
 import io.swagger.v3.oas.annotations.tags.Tag;

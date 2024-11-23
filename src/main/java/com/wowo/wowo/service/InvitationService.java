@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class InvitationService {
+
     private final InvitationRepository invitationRepository;
     private final GroupFundRepository groupFundRepository;
     private final FundMemberRepository fundMemberRepository;
@@ -41,7 +42,7 @@ public class InvitationService {
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
         // Kiểm tra xem quỹ có bị khóa không
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new IllegalStateException("Quỹ này đã bị khóa.");
         }
 
@@ -52,7 +53,8 @@ public class InvitationService {
                 .orElseThrow(() -> new UserNotFoundException("Người nhận không tồn tại"));
 
         // Kiểm tra nếu đã gửi lời mời cho người nhận này
-        if (invitationRepository.existsByGroupFundAndRecipientAndStatus(groupFund, recipient, InvitationStatus.PENDING)) {
+        if (invitationRepository.existsByGroupFundAndRecipientAndStatus(groupFund, recipient,
+                InvitationStatus.PENDING)) {
             String warningMessage = "Đã gửi lời mời trước đó và đang chờ xác nhận.";
             Map<String, Object> response = new HashMap<>();
             response.put("message", warningMessage);
@@ -72,10 +74,11 @@ public class InvitationService {
         groupFundInvitation.setSender(sender);
         groupFundInvitation.setRecipient(recipient);
         groupFundInvitation.setStatus(InvitationStatus.PENDING);
-        GroupFundInvitation savedGroupFundInvitation = invitationRepository.save(
+        invitationRepository.save(
                 groupFundInvitation);
 
-        String successMessage = String.format("Gửi lời mời thành công tới %s.", recipient.getUsername());
+        String successMessage = String.format("Gửi lời mời thành công tới %s.",
+                recipient.getUsername());
         Map<String, Object> response = new HashMap<>();
 
         response.put("message", successMessage);
@@ -100,20 +103,26 @@ public class InvitationService {
         User recipient = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
-        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipient(recipient);
+        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipient(
+                recipient);
 
         // Chuyển đổi sang DTO
         return mapToDtoList(groupFundInvitations);
     }
+
     // map entity list to DTO list
     private List<GroupFundInvitationDto> mapToDtoList(List<GroupFundInvitation> invitations) {
         return invitations.stream()
                 .map(invitation -> new GroupFundInvitationDto(
                         invitation.getId(),
-                        invitation.getGroupFund().getName(),
-                        invitation.getGroupFund().getDescription(),
-                        invitation.getSender().getUsername(),
-                        invitation.getSender().getEmail(),
+                        invitation.getGroupFund()
+                                .getName(),
+                        invitation.getGroupFund()
+                                .getDescription(),
+                        invitation.getSender()
+                                .getUsername(),
+                        invitation.getSender()
+                                .getEmail(),
                         invitation.getStatus(),
                         invitation.getCreatedAt()
                 ))
@@ -125,25 +134,31 @@ public class InvitationService {
         GroupFundInvitation groupFundInvitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new NotFoundException("Lời mời không tồn tại"));
 
-        GroupFund groupFund = groupFundRepository.findById(groupFundInvitation.getGroupFund().getId())
+        GroupFund groupFund = groupFundRepository.findById(groupFundInvitation.getGroupFund()
+                        .getId())
                 .orElseThrow(() -> new ReceiverNotFoundException("Quỹ nhóm không tồn tại"));
 
         // Kiểm tra xem quỹ có bị khóa không
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new IllegalStateException("Quỹ này đã bị khóa.");
         }
 
-        Optional<User> userOptional = userRepository.findById(groupFundInvitation.getRecipient().getId());
+        Optional<User> userOptional = userRepository.findById(groupFundInvitation.getRecipient()
+                .getId());
         User user = userOptional.orElseThrow(
                 () -> new UserNotFoundException("Người dùng không tồn tại"));
 
-        if (fundMemberRepository.existsByGroupIdAndMemberId(groupFundInvitation.getGroupFund().getId(), groupFundInvitation.getRecipient().getId())) {
+        if (fundMemberRepository.existsByGroupIdAndMemberId(groupFundInvitation.getGroupFund()
+                .getId(), groupFundInvitation.getRecipient()
+                .getId())) {
             throw new IllegalArgumentException("Thành viên đã tham gia quỹ này");
         }
 
         var fundMemberId = new FundMemberId();
-        fundMemberId.setGroupId(groupFundInvitation.getGroupFund().getId());
-        fundMemberId.setMemberId(groupFundInvitation.getRecipient().getId());
+        fundMemberId.setGroupId(groupFundInvitation.getGroupFund()
+                .getId());
+        fundMemberId.setMemberId(groupFundInvitation.getRecipient()
+                .getId());
 
         FundMember fundMember = new FundMember();
         fundMember.setId(fundMemberId);
@@ -153,8 +168,8 @@ public class InvitationService {
         fundMemberRepository.save(fundMember);
 
         // Cập nhật trạng thái lời mời
-//        invitation.setStatus(InvitationStatus.ACCEPTED);
-//        invitationRepository.save(invitation);
+        //        invitation.setStatus(InvitationStatus.ACCEPTED);
+        //        invitationRepository.save(invitation);
 
         // Xóa lời mời sau khi đã chấp nhận
         invitationRepository.delete(groupFundInvitation);
@@ -166,8 +181,8 @@ public class InvitationService {
                 .orElseThrow(() -> new NotFoundException("Lời mời không tồn tại"));
 
         // Cập nhật trạng thái lời mời
-//        invitation.setStatus(InvitationStatus.REJECTED);
-//        invitationRepository.save(invitation);
+        //        invitation.setStatus(InvitationStatus.REJECTED);
+        //        invitationRepository.save(invitation);
 
         // Xóa lời mời khỏi cơ sở dữ liệu
         invitationRepository.delete(groupFundInvitation);

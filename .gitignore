@@ -75,7 +75,7 @@ out/
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
@@ -162,7 +162,7 @@ replay_pid*
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
@@ -220,7 +220,7 @@ nbdist/
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
@@ -328,7 +328,7 @@ local.properties
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
@@ -397,7 +397,7 @@ gradle-app.setting
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
@@ -446,7 +446,7 @@ gradle-app.setting
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
-# .idea/jarRepositories.xml
+# .idea/jarrepository.xml
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules

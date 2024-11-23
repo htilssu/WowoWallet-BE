@@ -70,12 +70,4 @@ public class GroupFund {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "target_date", nullable = false)
     private LocalDate targetDate;
-
-    public boolean getIsLocked() {
-        return isLocked;
-    }
-
-    public void setIsLocked(boolean isLocked) {
-        this.isLocked = isLocked;
-    }
 }

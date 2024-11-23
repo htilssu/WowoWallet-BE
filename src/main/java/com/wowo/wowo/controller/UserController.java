@@ -50,7 +50,7 @@ public class UserController {
             return partnerService.getPartnerById(id).orElseThrow(
                     () -> new NotFoundException("Không tìm thấy thông tin"));
         }
-        return userService.getUserById(id);
+        return userService.getUserByIdOrElseThrow(id);
     }
 
     @GetMapping("wallet")
