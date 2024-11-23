@@ -55,7 +55,7 @@ public class TransactionService {
                 })
                 .toList();
         return transactions.stream()
-                .map(transactionMapper::toDTO)
+                .map(transactionMapper::toDto)
                 .toList();
     }
 
@@ -76,7 +76,7 @@ public class TransactionService {
                 .equals(userId)) {
             transaction.setType(FlowType.IN);
         }
-        return transactionMapper.toDTO(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
 }

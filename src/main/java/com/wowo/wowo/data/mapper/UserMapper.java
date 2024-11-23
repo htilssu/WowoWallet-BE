@@ -11,14 +11,14 @@ public interface UserMapper {
 
     User toEntity(UserDTO userDTO);
 
-    UserDTO toDTO(User user);
+    UserDTO toDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdateFromDTO(UserDTO userDTO, @MappingTarget User user);
 
 
 
-    CreateUserDTO toDTORequest(User user);
+    CreateUserDTO toDtoRequest(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdateFromCreateDTO(CreateUserDTO createUserDTO, @MappingTarget User user);

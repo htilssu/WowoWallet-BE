@@ -1,4 +1,4 @@
-package com.wowo.wowo.data.dto.request;
+package com.wowo.wowo.data.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Builder
 @Accessors(chain = true)
-public class CreateWalletDTO {
+public class WalletCreationDTO {
 
     @NotNull
     @Size(max = 20)

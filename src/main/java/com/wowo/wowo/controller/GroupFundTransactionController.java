@@ -28,7 +28,7 @@ public class GroupFundTransactionController {
     @PostMapping("/top-up")
     public GroupFundTransactionDTO topUp(@RequestBody @Validated TransferDTO transferDTO,
             Authentication authentication) {
-        return groupFundTransactionMapper.toDTO(
+        return groupFundTransactionMapper.toDto(
                 groupFundService.topUp(Long.valueOf(transferDTO.getReceiverId()),
                         ((String) authentication.getPrincipal()),
                         transferDTO.getMoney(), transferDTO.getMessage()));
@@ -41,6 +41,6 @@ public class GroupFundTransactionController {
                 withdrawRequestDTO.getGroupId(),
                 withdrawRequestDTO.getAmount(), withdrawRequestDTO.getDescription());
 
-        return ResponseEntity.ok(groupFundTransactionMapper.toDTO(groupFundTransaction));
+        return ResponseEntity.ok(groupFundTransactionMapper.toDto(groupFundTransaction));
     }
 }

@@ -13,7 +13,7 @@ public interface AtmCardMapper {
 
     AtmCard toEntity(AtmCardDTO atmCardDTO);
 
-    AtmCardDTO toDTO(AtmCard atmCard);
+    AtmCardDTO toDto(AtmCard atmCard);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     AtmCard partialUpdate(

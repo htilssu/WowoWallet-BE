@@ -23,7 +23,7 @@ import org.mapstruct.*;
 public interface EquityMapper {
 
     Equity toEntity(EquityDTO equityDTO);
-    EquityDTO toDTO(Equity equity);
+    EquityDTO toDto(Equity equity);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Equity partialUpdate(

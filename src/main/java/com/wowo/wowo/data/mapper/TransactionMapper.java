@@ -18,7 +18,7 @@ public interface TransactionMapper {
     Transaction toEntity(TransactionRequest transactionRequest);
 
     Transaction toEntity(TransactionDTO transactionDTO);
-    TransactionDTO toDTO(Transaction transaction);
+    TransactionDTO toDto(Transaction transaction);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Transaction partialUpdate(

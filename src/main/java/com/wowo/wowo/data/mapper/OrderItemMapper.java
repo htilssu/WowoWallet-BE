@@ -9,7 +9,7 @@ import org.mapstruct.*;
 public interface OrderItemMapper {
 
     OrderItem toEntity(OrderItemCreateDTO orderItemCreateDTO);
-    OrderItemCreateDTO toDTO(OrderItem orderItem);
+    OrderItemCreateDTO toDto(OrderItem orderItem);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     OrderItem partialUpdate(

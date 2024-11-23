@@ -42,13 +42,13 @@ public class OrderController {
     public ResponseEntity<OrderDTO> cancelOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(
-                orderMapperImpl.toDTO(orderService.cancelOrder(id, authentication)));
+                orderMapperImpl.toDto(orderService.cancelOrder(id, authentication)));
     }
 
     @PostMapping("{id}/refund")
     public ResponseEntity<OrderDTO> refundOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(
-                orderMapperImpl.toDTO(orderService.refundOrder(id, authentication)));
+                orderMapperImpl.toDto(orderService.refundOrder(id, authentication)));
     }
 }

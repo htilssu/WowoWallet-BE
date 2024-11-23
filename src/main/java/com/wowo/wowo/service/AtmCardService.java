@@ -63,7 +63,7 @@ public class AtmCardService {
                     throw new NotFoundException("Thẻ đã tồn tại");
                 });
 
-        return atmCardMapper.toDTO(atmCardRepository.save(atmCard));
+        return atmCardMapper.toDto(atmCardRepository.save(atmCard));
 
     }
 }

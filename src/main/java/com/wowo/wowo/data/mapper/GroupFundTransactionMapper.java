@@ -9,7 +9,7 @@ import org.mapstruct.*;
 public interface GroupFundTransactionMapper {
 
     GroupFundTransaction toEntity(GroupFundTransactionDTO groupFundTransactionDTO);
-    GroupFundTransactionDTO toDTO(GroupFundTransaction groupFundTransaction);
+    GroupFundTransactionDTO toDto(GroupFundTransaction groupFundTransaction);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     GroupFundTransaction partialUpdate(

@@ -53,7 +53,7 @@ public class PartnerController {
                     .header("Set-Cookie",
                             "token=" + token + "; Path=/; SameSite=None; Secure; Max-Age=9999999;")
                     .body(ObjectUtil.mergeObjects(
-                            ObjectUtil.wrapObject("partner", partnerMapperImpl.toDTO(savedEntity)),
+                            ObjectUtil.wrapObject("partner", partnerMapperImpl.toDto(savedEntity)),
                             new ResponseMessage("Đăng ký thành công"),
                             ObjectUtil.wrapObject("token", token)));
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class PartnerController {
     public ResponseEntity<?> getPartner(Authentication authentication,
             @PathVariable String service) {
         Partner partner = (Partner) authentication.getPrincipal();
-        return ResponseEntity.ok(partnerMapperImpl.toDTO(partner));
+        return ResponseEntity.ok(partnerMapperImpl.toDto(partner));
     }
 
     @GetMapping("/all")
@@ -74,7 +74,7 @@ public class PartnerController {
         final List<Partner> partnerList = partnerRepository.findAll();
         List<PartnerDTO> partnerDTOList = new ArrayList<>();
         for (Partner partner : partnerList) {
-            partnerDTOList.add(partnerMapperImpl.toDTO(partner));
+            partnerDTOList.add(partnerMapperImpl.toDto(partner));
         }
         return ResponseEntity.ok(partnerDTOList);
     }

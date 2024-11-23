@@ -13,7 +13,7 @@ public interface PartnerMapper {
     Partner toEntity(PartnerRequest partnerRequest);
 
     @Mapping(target = "created", ignore = true)
-    PartnerDTO toDTO(Partner partner);
+    PartnerDTO toDto(Partner partner);
 
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

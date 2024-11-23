@@ -27,7 +27,7 @@ public class EquityController {
         String userId = ((String) authentication.getPrincipal());
         final Optional<Equity> optionalEquity = equityRepository.findByUser(userId);
 
-        return optionalEquity.map(equityMapper::toDTO).orElse(null);
+        return optionalEquity.map(equityMapper::toDto).orElse(null);
     }
 
 }

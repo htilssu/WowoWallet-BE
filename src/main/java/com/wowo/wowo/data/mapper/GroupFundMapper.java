@@ -12,7 +12,7 @@ public interface GroupFundMapper {
     GroupFundTransactionDTO toTransactionDTO(GroupFundTransaction transaction);
 
     GroupFund toEntity(GroupFundDTO groupFundDTO);
-    GroupFundDTO toDTO(GroupFund groupFund);
+    GroupFundDTO toDto(GroupFund groupFund);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)GroupFund partialUpdate(
             GroupFundDTO groupFundDTO,

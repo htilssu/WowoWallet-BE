@@ -65,7 +65,7 @@ public class OrderService {
 
         orderItemRepository.saveAll(orderItems);
 
-        final OrderDTO orderDTO = orderMapper.toDTO(newOrder);
+        final OrderDTO orderDTO = orderMapper.toDto(newOrder);
         orderDTO.setItems(orderItemCreateDTOs);
         orderDTO.setVouchers(Collections.emptyList());
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
@@ -94,9 +94,9 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
         final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
         final Collection<Voucher> voucher = voucherRepository.findByOrderId(order.getId());
-        final OrderDTO orderDTO = orderMapperImpl.toDTO(order);
+        final OrderDTO orderDTO = orderMapperImpl.toDto(order);
         orderDTO.setItems(orderItems.stream()
-                .map(orderItemMapper::toDTO)
+                .map(orderItemMapper::toDto)
                 .toList());
         orderDTO.setVouchers(voucher);
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());

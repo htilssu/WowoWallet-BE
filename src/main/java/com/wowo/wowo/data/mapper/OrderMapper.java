@@ -10,7 +10,7 @@ import org.mapstruct.*;
 public interface OrderMapper {
 
     Order toEntity(OrderDTO orderDTO);
-    OrderDTO toDTO(Order order);
+    OrderDTO toDto(Order order);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Order partialUpdate(

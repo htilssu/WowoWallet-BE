@@ -165,7 +165,7 @@ public class GroupFundService {
                 .orElseThrow(
                         () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
-        return groupFundMapper.toDTO(groupFund);
+        return groupFundMapper.toDto(groupFund);
     }
 
     // Lấy danh sách các thành viên của một quỹ
@@ -179,7 +179,7 @@ public class GroupFundService {
 
         // Chuyển đổi danh sách FundMember sang danh sách UserDTO
         return members.stream()
-                .map(fundMember -> userMapper.toDTO(fundMember.getMember()))
+                .map(fundMember -> userMapper.toDto(fundMember.getMember()))
                 .toList();
     }
 
@@ -200,10 +200,10 @@ public class GroupFundService {
             var owner_id = groupFund.getOwner()
                     .getId();
             if (owner_id.equals(userId)) {
-                createdFunds.add(groupFundMapper.toDTO(groupFund));
+                createdFunds.add(groupFundMapper.toDto(groupFund));
             }
             else {
-                joinedFunds.add(groupFundMapper.toDTO(groupFund));
+                joinedFunds.add(groupFundMapper.toDto(groupFund));
             }
         });
 
@@ -251,7 +251,7 @@ public class GroupFundService {
         GroupFund updatedGroupFund = groupFundRepository.save(groupFund);
 
         // Chuyển đổi quỹ nhóm đã cập nhật sang DTO và trả về
-        return groupFundMapper.toDTO(updatedGroupFund);
+        return groupFundMapper.toDto(updatedGroupFund);
     }
 
     private void validateGroupFundData(GroupFundDTO groupFundDTO) {

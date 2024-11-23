@@ -88,7 +88,7 @@ public class UserController {
         if (id != null) {
             final Optional<User> byId = userRepository.findById(id);
             if (byId.isPresent()) {
-                return userMapperImpl.toDTO(byId.get());
+                return userMapperImpl.toDto(byId.get());
             }
         }
         return null;
