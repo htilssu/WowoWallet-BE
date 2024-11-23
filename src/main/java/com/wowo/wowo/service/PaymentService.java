@@ -1,6 +1,6 @@
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.PaymentDto;
+import com.wowo.wowo.data.dto.PaymentDTO;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
@@ -46,7 +46,7 @@ public class PaymentService {
      * Thực hiện thanh toán cho đơn hàng,
      * sử dụng ví nguồn thanh toán là nguồn tiền của người dùng hiện tại
      *
-     * @param paymentDto Thông tin thanh toán {@link PaymentDto}
+     * @param paymentDTO Thông tin thanh toán {@link PaymentDTO}
      *
      * @return Đơn hàng đã được thanh toán
      */

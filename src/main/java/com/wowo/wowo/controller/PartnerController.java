@@ -1,6 +1,6 @@
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.data.dto.PartnerDto;
+import com.wowo.wowo.data.dto.PartnerDTO;
 import com.wowo.wowo.data.dto.PartnerRequest;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.PartnerMapper;
@@ -53,7 +53,7 @@ public class PartnerController {
                     .header("Set-Cookie",
                             "token=" + token + "; Path=/; SameSite=None; Secure; Max-Age=9999999;")
                     .body(ObjectUtil.mergeObjects(
-                            ObjectUtil.wrapObject("partner", partnerMapperImpl.toDto(savedEntity)),
+                            ObjectUtil.wrapObject("partner", partnerMapperImpl.toDTO(savedEntity)),
                             new ResponseMessage("Đăng ký thành công"),
                             ObjectUtil.wrapObject("token", token)));
         } catch (Exception e) {
@@ -66,17 +66,17 @@ public class PartnerController {
     public ResponseEntity<?> getPartner(Authentication authentication,
             @PathVariable String service) {
         Partner partner = (Partner) authentication.getPrincipal();
-        return ResponseEntity.ok(partnerMapperImpl.toDto(partner));
+        return ResponseEntity.ok(partnerMapperImpl.toDTO(partner));
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPartner() {
         final List<Partner> partnerList = partnerRepository.findAll();
-        List<PartnerDto> partnerDtoList = new ArrayList<>();
+        List<PartnerDTO> partnerDTOList = new ArrayList<>();
         for (Partner partner : partnerList) {
-            partnerDtoList.add(partnerMapperImpl.toDto(partner));
+            partnerDTOList.add(partnerMapperImpl.toDTO(partner));
         }
-        return ResponseEntity.ok(partnerDtoList);
+        return ResponseEntity.ok(partnerDTOList);
     }
 
     //@IsAdmin

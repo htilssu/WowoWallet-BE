@@ -15,18 +15,18 @@
 package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.model.Equity;
-import com.wowo.wowo.model.EquityDto;
+import com.wowo.wowo.model.EquityDTO;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface EquityMapper {
 
-    Equity toEntity(EquityDto equityDto);
-    EquityDto toDto(Equity equity);
+    Equity toEntity(EquityDTO equityDTO);
+    EquityDTO toDTO(Equity equity);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Equity partialUpdate(
-            EquityDto equityDto,
+            EquityDTO equityDTO,
             @MappingTarget Equity equity);
 }

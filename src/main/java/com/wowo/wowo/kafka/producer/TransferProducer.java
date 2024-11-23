@@ -1,6 +1,6 @@
 package com.wowo.wowo.kafka.producer;
 
-import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.data.dto.TransferDTO;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class TransferProducer extends KafkaTemplate<String, Object> {
         super(producerFactory);
     }
 
-    public void sendTransferMessage(TransferDto message) {
+    public void sendTransferMessage(TransferDTO message) {
         this.send("tm", message);
     }
 }

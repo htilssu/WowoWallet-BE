@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.GroupFundTransactionDto;
+import com.wowo.wowo.data.dto.GroupFundTransactionDTO;
 import com.wowo.wowo.model.GroupFundTransaction;
 import org.mapstruct.*;
 
@@ -8,11 +8,11 @@ import org.mapstruct.*;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface GroupFundTransactionMapper {
 
-    GroupFundTransaction toEntity(GroupFundTransactionDto groupFundTransactionDto);
-    GroupFundTransactionDto toDto(GroupFundTransaction groupFundTransaction);
+    GroupFundTransaction toEntity(GroupFundTransactionDTO groupFundTransactionDTO);
+    GroupFundTransactionDTO toDTO(GroupFundTransaction groupFundTransaction);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     GroupFundTransaction partialUpdate(
-            GroupFundTransactionDto groupFundTransactionDto,
+            GroupFundTransactionDTO groupFundTransactionDTO,
             @MappingTarget GroupFundTransaction groupFundTransaction);
 }

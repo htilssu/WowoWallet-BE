@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.data.dto.GroupFundInvitationDto;
-import com.wowo.wowo.data.dto.InvitationDto;
+import com.wowo.wowo.data.dto.GroupFundInvitationDTO;
+import com.wowo.wowo.data.dto.InvitationDTO;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.service.InvitationService;
 import lombok.AllArgsConstructor;
@@ -21,12 +21,12 @@ public class InvitationController {
 
     // Gửi lời mời
     @PostMapping
-    public ResponseEntity<?> sendInvitation(@RequestBody InvitationDto invitationDto) {
+    public ResponseEntity<?> sendInvitation(@RequestBody InvitationDTO invitationDTO) {
         try {
             Map<String, Object> invitationResponse = invitationService.sendInvitation(
-                    invitationDto.getGroupId(),
-                    invitationDto.getSenderId(),
-                    invitationDto.getRecipientId()
+                    invitationDTO.getGroupId(),
+                    invitationDTO.getSenderId(),
+                    invitationDTO.getRecipientId()
             );
 
             return ResponseEntity.ok(invitationResponse);
@@ -71,7 +71,7 @@ public class InvitationController {
     @GetMapping("/sent")
     public ResponseEntity<?> getSentInvitations(Authentication authentication) {
         try {
-            List<GroupFundInvitationDto> groupFundInvitations = invitationService.getSentInvitations(authentication);
+            List<GroupFundInvitationDTO> groupFundInvitations = invitationService.getSentInvitations(authentication);
             return ResponseEntity.ok(groupFundInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -84,7 +84,7 @@ public class InvitationController {
     @GetMapping("/received")
     public ResponseEntity<?> getReceivedInvitations(Authentication authentication) {
         try {
-            List<GroupFundInvitationDto> receivedInvitations = invitationService.getReceivedInvitations(authentication);
+            List<GroupFundInvitationDTO> receivedInvitations = invitationService.getReceivedInvitations(authentication);
             return ResponseEntity.ok(receivedInvitations);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

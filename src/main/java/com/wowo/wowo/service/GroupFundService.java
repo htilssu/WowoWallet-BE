@@ -1,13 +1,12 @@
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.GroupFundDto;
-import com.wowo.wowo.data.dto.GroupFundTransactionDto;
-import com.wowo.wowo.data.dto.UserDto;
+import com.wowo.wowo.data.dto.GroupFundDTO;
+import com.wowo.wowo.data.dto.GroupFundTransactionDTO;
+import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.data.mapper.GroupFundMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.exception.UserNotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.*;
 import com.wowo.wowo.util.AuthUtil;
@@ -22,7 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -42,7 +44,7 @@ public class GroupFundService {
     private UserMapper userMapper;
 
     // Tạo quỹ nhóm
-    public GroupFund createGroupFund(GroupFundDto groupFundDto, Authentication authentication) {
+    public GroupFund createGroupFund(GroupFundDTO groupFundDTO, Authentication authentication) {
         String ownerId = (String) authentication.getPrincipal();
         User ownerUser = userService.getUserByIdOrElseThrow(ownerId);
 
@@ -57,16 +59,16 @@ public class GroupFundService {
             // Lưu ví vào cơ sở dữ liệu
 
             // Kiểm tra tính hợp lệ của các trường dữ liệu
-            validateGroupFundData(groupFundDto);
+            validateGroupFundData(groupFundDTO);
 
             // Liên kết ví với quỹ nhóm
             groupFund.setWallet(wallet);
-            groupFund.setName(groupFundDto.getName());
-            groupFund.setImage(groupFundDto.getImage());
-            groupFund.setType(groupFundDto.getType());
-            groupFund.setDescription(groupFundDto.getDescription());
-            groupFund.setTarget(groupFundDto.getTarget());
-            groupFund.setTargetDate(groupFundDto.getTargetDate());
+            groupFund.setName(groupFundDTO.getName());
+            groupFund.setImage(groupFundDTO.getImage());
+            groupFund.setType(groupFundDTO.getType());
+            groupFund.setDescription(groupFundDTO.getDescription());
+            groupFund.setTarget(groupFundDTO.getTarget());
+            groupFund.setTargetDate(groupFundDTO.getTargetDate());
             groupFund.setOwner(ownerUser);
 
             // Lưu quỹ nhóm vào cơ sở dữ liệu
@@ -158,16 +160,16 @@ public class GroupFundService {
     }
 
     // Lấy thông tin quỹ
-    public GroupFundDto getGroupFund(Long id) {
+    public GroupFundDTO getGroupFund(Long id) {
         GroupFund groupFund = groupFundRepository.findById(id)
                 .orElseThrow(
                         () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
-        return groupFundMapper.toDto(groupFund);
+        return groupFundMapper.toDTO(groupFund);
     }
 
     // Lấy danh sách các thành viên của một quỹ
-    public List<UserDto> getGroupMembers(Long groupId) {
+    public List<UserDTO> getGroupMembers(Long groupId) {
         GroupFund groupFund = groupFundRepository.findById(groupId)
                 .orElseThrow(
                         () -> new NotFoundException("Quỹ nhóm không tồn tại"));
@@ -175,22 +177,22 @@ public class GroupFundService {
         // Tìm tất cả các thành viên tham gia quỹ nhóm có groupId
         List<FundMember> members = fundMemberRepository.findByGroupId(groupId);
 
-        // Chuyển đổi danh sách FundMember sang danh sách UserDto
+        // Chuyển đổi danh sách FundMember sang danh sách UserDTO
         return members.stream()
-                .map(fundMember -> userMapper.toDto(fundMember.getMember()))
+                .map(fundMember -> userMapper.toDTO(fundMember.getMember()))
                 .toList();
     }
 
     // Lấy danh sách các quỹ nhóm mà một user đang tham gia
-    public Map<String, List<GroupFundDto>> getUserGroupFunds(Authentication authentication) {
+    public Map<String, List<GroupFundDTO>> getUserGroupFunds(Authentication authentication) {
 
         String userId = (String) authentication.getPrincipal();
         userService.getUserByIdOrElseThrow(userId);
 
         List<FundMember> fundMembers = fundMemberRepository.findByMemberId(userId);
 
-        List<GroupFundDto> createdFunds = new ArrayList<>();
-        List<GroupFundDto> joinedFunds = new ArrayList<>();
+        List<GroupFundDTO> createdFunds = new ArrayList<>();
+        List<GroupFundDTO> joinedFunds = new ArrayList<>();
 
         // Duyệt qua danh sách quỹ mà người dùng tham gia
         fundMembers.forEach(fundMember -> {
@@ -198,15 +200,15 @@ public class GroupFundService {
             var owner_id = groupFund.getOwner()
                     .getId();
             if (owner_id.equals(userId)) {
-                createdFunds.add(groupFundMapper.toDto(groupFund));
+                createdFunds.add(groupFundMapper.toDTO(groupFund));
             }
             else {
-                joinedFunds.add(groupFundMapper.toDto(groupFund));
+                joinedFunds.add(groupFundMapper.toDTO(groupFund));
             }
         });
 
         // Tạo một Map để trả về hai danh sách
-        Map<String, List<GroupFundDto>> result = new HashMap<>();
+        Map<String, List<GroupFundDTO>> result = new HashMap<>();
         result.put("createdFunds", createdFunds);
         result.put("joinedFunds", joinedFunds);
 
@@ -214,8 +216,8 @@ public class GroupFundService {
     }
 
     // Cập nhật quỹ nhóm
-    public GroupFundDto updateGroupFund(Long groupId,
-            GroupFundDto groupFundDto,
+    public GroupFundDTO updateGroupFund(Long groupId,
+            GroupFundDTO groupFundDTO,
             Authentication authentication) {
         String ownerId = (String) authentication.getPrincipal();
         GroupFund groupFund = groupFundRepository.findById(groupId)
@@ -235,40 +237,40 @@ public class GroupFundService {
         }
 
         // Kiểm tra tính hợp lệ của các trường dữ liệu
-        validateGroupFundData(groupFundDto);
+        validateGroupFundData(groupFundDTO);
 
         // Cập nhật thông tin quỹ nhóm
-        groupFund.setName(groupFundDto.getName());
-        groupFund.setImage(groupFundDto.getImage());
-        groupFund.setType(groupFundDto.getType());
-        groupFund.setDescription(groupFundDto.getDescription());
-        groupFund.setTarget(groupFundDto.getTarget());
-        groupFund.setTargetDate(groupFundDto.getTargetDate());
+        groupFund.setName(groupFundDTO.getName());
+        groupFund.setImage(groupFundDTO.getImage());
+        groupFund.setType(groupFundDTO.getType());
+        groupFund.setDescription(groupFundDTO.getDescription());
+        groupFund.setTarget(groupFundDTO.getTarget());
+        groupFund.setTargetDate(groupFundDTO.getTargetDate());
 
         // Lưu lại quỹ nhóm
         GroupFund updatedGroupFund = groupFundRepository.save(groupFund);
 
         // Chuyển đổi quỹ nhóm đã cập nhật sang DTO và trả về
-        return groupFundMapper.toDto(updatedGroupFund);
+        return groupFundMapper.toDTO(updatedGroupFund);
     }
 
-    private void validateGroupFundData(GroupFundDto groupFundDto) {
+    private void validateGroupFundData(GroupFundDTO groupFundDTO) {
         // Kiểm tra tên quỹ không để trống
-        if (groupFundDto.getName() == null ||
-                groupFundDto.getName()
+        if (groupFundDTO.getName() == null ||
+                groupFundDTO.getName()
                         .trim()
                         .isEmpty()) {
             throw new IllegalArgumentException("Tên quỹ không được để trống");
         }
 
         // Kiểm tra số tiền mục tiêu không âm
-        if (groupFundDto.getTarget() < 0) {
+        if (groupFundDTO.getTarget() < 0) {
             throw new IllegalArgumentException("Số tiền mục tiêu không được là số âm");
         }
 
         // Kiểm tra ngày hạn không phải là ngày quá khứ
-        if (groupFundDto.getTargetDate() != null &&
-                groupFundDto.getTargetDate()
+        if (groupFundDTO.getTargetDate() != null &&
+                groupFundDTO.getTargetDate()
                         .isBefore(
                                 LocalDate.now())) {
             throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
@@ -333,7 +335,7 @@ public class GroupFundService {
         return groupFundTransaction;
     }
 
-    public List<GroupFundTransactionDto> getTransactionHistory(Long groupId,
+    public List<GroupFundTransactionDTO> getTransactionHistory(Long groupId,
             @Min(0) @NotNull Integer offset,
             @Min(0) @NotNull Integer page) {
 
@@ -347,7 +349,7 @@ public class GroupFundService {
                                 .withPage(page));
 
         return transactions.stream()
-                .map(groupFundMapper::toTransactionDto)
+                .map(groupFundMapper::toTransactionDTO)
                 .toList();
     }
 

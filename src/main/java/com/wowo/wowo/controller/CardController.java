@@ -1,8 +1,8 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.AtmCardCreateDto;
-import com.wowo.wowo.data.dto.AtmCardDto;
+import com.wowo.wowo.data.dto.AtmCardCreateDTO;
+import com.wowo.wowo.data.dto.AtmCardDTO;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.exception.BadRequest;
@@ -38,17 +38,17 @@ public class CardController {
     private final AtmCardService atmCardService;
 
     @PostMapping
-    public AtmCardDto createCard(@RequestBody @NotNull @Validated AtmCardCreateDto atmCardDto,
+    public AtmCardDTO createCard(@RequestBody @NotNull @Validated AtmCardCreateDTO atmCardDTO,
             Authentication authentication) {
-        if (atmCardDto == null) {
+        if (atmCardDTO == null) {
             throw new BadRequest("Dữ liệu không hợp lệ");
         }
 
-        return atmCardService.createAtmCard(atmCardDto, authentication);
+        return atmCardService.createAtmCard(atmCardDTO, authentication);
     }
 
     @GetMapping
-    public List<AtmCardDto> getCard(Authentication authentication) {
+    public List<AtmCardDTO> getCard(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
 
         final User userFound = userRepository.findById(userId).orElse(null);

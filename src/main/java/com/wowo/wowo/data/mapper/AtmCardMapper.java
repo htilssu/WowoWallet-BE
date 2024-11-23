@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.AtmCardCreateDto;
-import com.wowo.wowo.data.dto.AtmCardDto;
+import com.wowo.wowo.data.dto.AtmCardCreateDTO;
+import com.wowo.wowo.data.dto.AtmCardDTO;
 import com.wowo.wowo.model.AtmCard;
 import org.mapstruct.*;
 
@@ -11,15 +11,15 @@ import java.util.List;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AtmCardMapper {
 
-    AtmCard toEntity(AtmCardDto atmCardDto);
+    AtmCard toEntity(AtmCardDTO atmCardDTO);
 
-    AtmCardDto toDto(AtmCard atmCard);
+    AtmCardDTO toDTO(AtmCard atmCard);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     AtmCard partialUpdate(
-            AtmCardDto atmCardDto,
+            AtmCardDTO atmCardDTO,
             @MappingTarget AtmCard atmCard);
 
-    List<AtmCardDto> usersToUserDTOs(List<AtmCard> users);
-    AtmCard toEntity(AtmCardCreateDto atmCardCreateDto);
+    List<AtmCardDTO> usersToUserDTOs(List<AtmCard> users);
+    AtmCard toEntity(AtmCardCreateDTO atmCardCreateDTO);
 }

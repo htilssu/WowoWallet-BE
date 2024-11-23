@@ -16,8 +16,8 @@ package com.wowo.wowo.controller;
 
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.models.Order;
-import com.wowo.wowo.data.dto.TopUpDto;
-import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.data.dto.TopUpDTO;
+import com.wowo.wowo.data.dto.TopUpRequestDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.service.PaypalService;
 import com.wowo.wowo.service.TopUpService;
@@ -40,16 +40,16 @@ public class TopUpController {
     private final TopUpService topUpService;
 
     @PostMapping
-    public ResponseEntity<TopUpDto> topUp(@RequestBody @Validated TopUpRequestDto topUpRequestDto) throws
+    public ResponseEntity<TopUpDTO> topUp(@RequestBody @Validated TopUpRequestDTO topUpRequestDTO) throws
                                                                                                    IOException,
                                                                                                    ApiException {
-        switch (topUpRequestDto.getMethod()) {
+        switch (topUpRequestDTO.getMethod()) {
             case ATM_CARD -> {
-                topUpService.topUpWithLimit(topUpRequestDto.getTo(), topUpRequestDto.getAmount());
+                topUpService.topUpWithLimit(topUpRequestDTO.getTo(), topUpRequestDTO.getAmount());
             }
             case PAYPAL -> {
-                final Order order = paypalService.createTopUpOrder(topUpRequestDto);
-                return ResponseEntity.ok(TopUpDto.builder()
+                final Order order = paypalService.createTopUpOrder(topUpRequestDTO);
+                return ResponseEntity.ok(TopUpDTO.builder()
                         .redirectTo(order.getLinks().stream().filter(linkDescription ->
                                         linkDescription.getRel().equals("approve")).findFirst()
                                 .orElseThrow(() -> new BadRequest("Bad request"))

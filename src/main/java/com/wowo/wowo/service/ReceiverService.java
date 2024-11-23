@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.ReceiverDto;
+import com.wowo.wowo.data.dto.ReceiverDTO;
 import com.wowo.wowo.model.GroupFund;
 import com.wowo.wowo.model.Transaction;
 import lombok.AllArgsConstructor;
@@ -26,17 +26,17 @@ public class ReceiverService {
 
     private final UserService userService;
 
-    public ReceiverDto getReceiver(Transaction transaction) {
+    public ReceiverDTO getReceiver(Transaction transaction) {
         switch (transaction.getVariant()) {
             case WALLET -> {
                 var receiver = userService.getUserByIdOrElseThrow(
                         transaction.getWalletTransaction().getReceiverWallet().getOwnerId());
-                return new ReceiverDto(receiver.getLastName() + " " + receiver.getFirstName(), null,
+                return new ReceiverDTO(receiver.getLastName() + " " + receiver.getFirstName(), null,
                         receiver.getEmail(), "USER");
             }
             case GROUP_FUND -> {
                 final GroupFund groupFund = transaction.getGroupFundTransaction().getGroup();
-                return new ReceiverDto(groupFund.getName(), groupFund.getImage(), null,
+                return new ReceiverDTO(groupFund.getName(), groupFund.getImage(), null,
                         "GROUP_FUND");
             }
             default -> throw new RuntimeException("Transaction target not found");

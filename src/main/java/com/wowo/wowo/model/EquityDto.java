@@ -25,12 +25,12 @@ import java.util.List;
  */
 @Value
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EquityDto implements Serializable {
+public class EquityDTO implements Serializable {
 
     String user;
     Integer month;
     Integer year;
-    List<EquityItemDto> equityItemList;
+    List<EquityItemDTO> equityItemList;
 
 
     /**
@@ -38,7 +38,7 @@ public class EquityDto implements Serializable {
      */
     @Value
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class EquityItemDto implements Serializable {
+    public static class EquityItemDTO implements Serializable {
 
         String date;
         double in;

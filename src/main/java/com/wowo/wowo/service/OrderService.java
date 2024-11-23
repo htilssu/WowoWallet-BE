@@ -1,9 +1,9 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.CheckOrderTask;
-import com.wowo.wowo.data.dto.OrderCreateDto;
-import com.wowo.wowo.data.dto.OrderDto;
-import com.wowo.wowo.data.dto.OrderItemCreateDto;
+import com.wowo.wowo.data.dto.OrderCreateDTO;
+import com.wowo.wowo.data.dto.OrderDTO;
+import com.wowo.wowo.data.dto.OrderItemCreateDTO;
 import com.wowo.wowo.data.mapper.OrderItemMapper;
 import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
@@ -46,8 +46,8 @@ public class OrderService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final ConstantService constantService;
 
-    public OrderDto createOrder(Order order,
-            Collection<OrderItemCreateDto> orderItemCreateDtos,
+    public OrderDTO createOrder(Order order,
+            Collection<OrderItemCreateDTO> orderItemCreateDTOs,
             Authentication authentication) {
         var partnerId = authentication.getPrincipal()
                 .toString();
@@ -56,7 +56,7 @@ public class OrderService {
 
         order.setPartner(partner);
         final Order newOrder = orderRepository.save(order);
-        var orderItems = orderItemCreateDtos.stream()
+        var orderItems = orderItemCreateDTOs.stream()
                 .map(orderItemMapper::toEntity)
                 .toList();
         orderItems = orderItems.stream()
@@ -65,19 +65,19 @@ public class OrderService {
 
         orderItemRepository.saveAll(orderItems);
 
-        final OrderDto orderDto = orderMapper.toDto(newOrder);
-        orderDto.setItems(orderItemCreateDtos);
-        orderDto.setVouchers(Collections.emptyList());
-        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
+        final OrderDTO orderDTO = orderMapper.toDTO(newOrder);
+        orderDTO.setItems(orderItemCreateDTOs);
+        orderDTO.setVouchers(Collections.emptyList());
+        orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
 
-        return orderDto;
+        return orderDTO;
     }
 
-    public OrderDto createOrder(OrderCreateDto orderCreateDto, Authentication authentication) {
-        Order order = orderMapperImpl.toEntity(orderCreateDto);
+    public OrderDTO createOrder(OrderCreateDTO orderCreateDTO, Authentication authentication) {
+        Order order = orderMapperImpl.toEntity(orderCreateDTO);
         order.setDiscountMoney(order.getMoney());
         createCheckOrderJob(order);
-        return createOrder(order, orderCreateDto.items(), authentication);
+        return createOrder(order, orderCreateDTO.items(), authentication);
     }
 
     private void createCheckOrderJob(Order order) {
@@ -89,18 +89,18 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    public OrderDto getOrderDetail(Long id) {
+    public OrderDTO getOrderDetail(Long id) {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
         final Collection<OrderItem> orderItems = orderItemRepository.findByOrderId(id);
         final Collection<Voucher> voucher = voucherRepository.findByOrderId(order.getId());
-        final OrderDto orderDto = orderMapperImpl.toDto(order);
-        orderDto.setItems(orderItems.stream()
-                .map(orderItemMapper::toDto)
+        final OrderDTO orderDTO = orderMapperImpl.toDTO(order);
+        orderDTO.setItems(orderItems.stream()
+                .map(orderItemMapper::toDTO)
                 .toList());
-        orderDto.setVouchers(voucher);
-        orderDto.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());
-        return orderDto;
+        orderDTO.setVouchers(voucher);
+        orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/orders/" + order.getId());
+        return orderDTO;
     }
 
     public Order cancelOrder(Long id, Authentication authentication) {

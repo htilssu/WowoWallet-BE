@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.PartnerDto;
+import com.wowo.wowo.data.dto.PartnerDTO;
 import com.wowo.wowo.data.dto.PartnerRequest;
 import com.wowo.wowo.model.Partner;
 import org.mapstruct.*;
@@ -9,16 +9,16 @@ import org.mapstruct.*;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PartnerMapper {
 
-    Partner toEntity(PartnerDto partnerDto);
+    Partner toEntity(PartnerDTO partnerDTO);
     Partner toEntity(PartnerRequest partnerRequest);
 
     @Mapping(target = "created", ignore = true)
-    PartnerDto toDto(Partner partner);
+    PartnerDTO toDTO(Partner partner);
 
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Partner partialUpdate(
-            PartnerDto partnerDto,
+            PartnerDTO partnerDTO,
             @MappingTarget Partner partner);
 
 }

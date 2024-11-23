@@ -1,6 +1,6 @@
 package com.wowo.wowo.kafka.consumer;
 
-import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.data.dto.TransferDTO;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class TransferMoneyListener {
 
     @KafkaHandler
-    public void handleTransferMoneyMessage(TransferDto message) {
+    public void handleTransferMoneyMessage(TransferDTO message) {
         System.out.println("Received transfer money message: " + message.toString());
     }
 }

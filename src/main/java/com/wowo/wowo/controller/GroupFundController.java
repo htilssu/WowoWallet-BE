@@ -31,10 +31,10 @@ public class GroupFundController {
 
     // Tạo quỹ nhóm
     @PostMapping
-    public ResponseEntity<?> createGroupFund(@RequestBody GroupFundDto groupFundDto,
+    public ResponseEntity<?> createGroupFund(@RequestBody GroupFundDTO groupFundDTO,
             Authentication authentication) {
         try {
-            GroupFund createdFund = groupFundService.createGroupFund(groupFundDto, authentication);
+            GroupFund createdFund = groupFundService.createGroupFund(groupFundDTO, authentication);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ResponseMessage("Tạo quỹ thành công!"));
         } catch (Exception e) {
@@ -45,10 +45,10 @@ public class GroupFundController {
 
     // Thêm thành viên vào quỹ
     @PostMapping("/members")
-    public ResponseEntity<?> addMemberToGroup(@RequestBody FundMemberDto memberDto) {
+    public ResponseEntity<?> addMemberToGroup(@RequestBody FundMemberDTO memberDTO) {
         try {
-            FundMember addedMember = groupFundService.addMemberToGroup(memberDto.getGroupId(),
-                    memberDto.getMemberId());
+            FundMember addedMember = groupFundService.addMemberToGroup(memberDTO.getGroupId(),
+                    memberDTO.getMemberId());
             return ResponseEntity.ok(new ResponseMessage("Thêm thành viên thành công!"));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -62,10 +62,10 @@ public class GroupFundController {
 
     // Rời khỏi quỹ
     @PostMapping("/members/leave")
-    public ResponseEntity<?> leaveGroup(@RequestBody FundMemberDto memberDto) {
+    public ResponseEntity<?> leaveGroup(@RequestBody FundMemberDTO memberDTO) {
         try {
-            Map<String, Object> message = groupFundService.leaveGroupFund(memberDto.getGroupId(),
-                    memberDto.getMemberId());
+            Map<String, Object> message = groupFundService.leaveGroupFund(memberDTO.getGroupId(),
+                    memberDTO.getMemberId());
             return ResponseEntity.ok(message);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // Thông báo lỗi
@@ -85,8 +85,8 @@ public class GroupFundController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getGroupFund(@PathVariable Long id) {
         try {
-            GroupFundDto groupFundDto = groupFundService.getGroupFund(id);
-            return ResponseEntity.ok(groupFundDto);
+            GroupFundDTO groupFundDTO = groupFundService.getGroupFund(id);
+            return ResponseEntity.ok(groupFundDTO);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseMessage("Quỹ không tìm thấy: " + e.getMessage()));
@@ -100,7 +100,7 @@ public class GroupFundController {
     @GetMapping("/{id}/members")
     public ResponseEntity<?> getGroupMembers(@PathVariable Long id) {
         try {
-            List<UserDto> members = groupFundService.getGroupMembers(id);
+            List<UserDTO> members = groupFundService.getGroupMembers(id);
             return ResponseEntity.ok(members);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -115,7 +115,7 @@ public class GroupFundController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserGroupFunds(Authentication authentication) {
         try {
-            Map<String, List<GroupFundDto>> userFunds = groupFundService.getUserGroupFunds(
+            Map<String, List<GroupFundDTO>> userFunds = groupFundService.getUserGroupFunds(
                     authentication);
             if (userFunds.get("createdFunds").isEmpty() && userFunds.get("joinedFunds").isEmpty()) {
                 return ResponseEntity.ok(
@@ -135,15 +135,15 @@ public class GroupFundController {
     @PostMapping("/{groupId}")
     public ResponseEntity<?> updateGroupFund(
             @PathVariable Long groupId,
-            @RequestBody GroupFundDto groupFundDto,
+            @RequestBody GroupFundDTO groupFundDTO,
             Authentication authentication) {
         try {
 
-            GroupFundDto updatedFundDto = groupFundService.updateGroupFund(groupId, groupFundDto,
+            GroupFundDTO updatedFundDTO = groupFundService.updateGroupFund(groupId, groupFundDTO,
                     authentication);
 
-            ApiResponse<GroupFundDto> response = new ApiResponse<>("Cập nhật quỹ thành công!",
-                    updatedFundDto);
+            ApiResponse<GroupFundDTO> response = new ApiResponse<>("Cập nhật quỹ thành công!",
+                    updatedFundDTO);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -154,8 +154,8 @@ public class GroupFundController {
     // Lấy danh sách lịch sử giao dịch quỹ
     @GetMapping("/{id}/transactions")
     public ResponseEntity<?> getTransactions(@PathVariable Long id,
-            @ModelAttribute @Validated PagingDto searchParams) {
-        List<GroupFundTransactionDto> transactions = groupFundService.getTransactionHistory(id,
+            @ModelAttribute @Validated PagingDTO searchParams) {
+        List<GroupFundTransactionDTO> transactions = groupFundService.getTransactionHistory(id,
                 searchParams.getOffset(), searchParams.getPage());
         return ResponseEntity.ok(transactions);
 

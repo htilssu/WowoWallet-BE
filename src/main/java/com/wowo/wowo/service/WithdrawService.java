@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.WithdrawDto;
+import com.wowo.wowo.data.dto.WithdrawDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +24,7 @@ public class WithdrawService {
 
     public WithdrawService(WalletService walletService) {this.walletService = walletService;}
 
-    public void withdraw(WithdrawDto withdrawDto) {
-        walletService.plusBalance(withdrawDto.getSourceId(), withdrawDto.getAmount() * -1);
+    public void withdraw(WithdrawDTO withdrawDTO) {
+        walletService.plusBalance(withdrawDTO.getSourceId(), withdrawDTO.getAmount() * -1);
     }
 }

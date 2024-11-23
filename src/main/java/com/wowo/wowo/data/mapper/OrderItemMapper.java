@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.OrderItemCreateDto;
+import com.wowo.wowo.data.dto.OrderItemCreateDTO;
 import com.wowo.wowo.model.OrderItem;
 import org.mapstruct.*;
 
@@ -8,11 +8,11 @@ import org.mapstruct.*;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface OrderItemMapper {
 
-    OrderItem toEntity(OrderItemCreateDto orderItemCreateDto);
-    OrderItemCreateDto toDto(OrderItem orderItem);
+    OrderItem toEntity(OrderItemCreateDTO orderItemCreateDTO);
+    OrderItemCreateDTO toDTO(OrderItem orderItem);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     OrderItem partialUpdate(
-            OrderItemCreateDto orderItemCreateDto,
+            OrderItemCreateDTO orderItemCreateDTO,
             @MappingTarget OrderItem orderItem);
 }

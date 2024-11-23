@@ -3,7 +3,7 @@ package com.wowo.wowo.controller;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.annotation.authorized.IsAdmin;
 import com.wowo.wowo.annotation.authorized.IsAuthenticated;
-import com.wowo.wowo.data.dto.UserDto;
+import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.exception.NotFoundException;
@@ -84,11 +84,11 @@ public class UserController {
     @ApiResponse(responseCode = "404", description = "Không tìm thấy thông tin")
     @ApiResponse(responseCode = "400", description = "Id không hợp lệ")
     @ApiResponse(responseCode = "403", description = "Không có quyền truy cập")
-    public UserDto getUserById(@PathVariable String id) {
+    public UserDTO getUserById(@PathVariable String id) {
         if (id != null) {
             final Optional<User> byId = userRepository.findById(id);
             if (byId.isPresent()) {
-                return userMapperImpl.toDto(byId.get());
+                return userMapperImpl.toDTO(byId.get());
             }
         }
         return null;
@@ -112,5 +112,10 @@ public class UserController {
         String userId = authentication.getPrincipal().toString();
 
         return userService.analysis(userId);
+    }
+
+    @GetMapping("/application")
+    public void getApplications(Authentication authentication){
+
     }
 }

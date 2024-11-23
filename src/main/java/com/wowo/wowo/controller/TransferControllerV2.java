@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.kafka.producer.NotifyProducer;
 import com.wowo.wowo.kafka.producer.TransferProducer;
 import com.wowo.wowo.model.WalletTransaction;
@@ -28,7 +28,7 @@ public class TransferControllerV2 {
     private final NotifyProducer notifyProducer;
 
     @PostMapping
-    public ResponseEntity<?> transfer(@Validated @RequestBody TransferDto data,
+    public ResponseEntity<?> transfer(@Validated @RequestBody TransferDTO data,
             Authentication authentication) {
         final WalletTransaction walletTransaction = transferService.transferWithLimit(data, authentication);
         transferProducer.sendTransferMessage(data);

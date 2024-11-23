@@ -1,9 +1,9 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.PagingDto;
-import com.wowo.wowo.data.dto.TransactionDto;
-import com.wowo.wowo.data.dto.TransactionHistoryResponseDto;
+import com.wowo.wowo.data.dto.PagingDTO;
+import com.wowo.wowo.data.dto.TransactionDTO;
+import com.wowo.wowo.data.dto.TransactionHistoryResponseDTO;
 import com.wowo.wowo.service.TransactionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -24,40 +24,40 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionDto> getTransaction(@PathVariable String id,
+    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable String id,
             Authentication authentication) {
-        final TransactionDto transactionDetail = transactionService.getTransactionDetail(id,
+        final TransactionDTO transactionDetail = transactionService.getTransactionDetail(id,
                 authentication);
         return ResponseEntity.ok(transactionDetail);
     }
 
     @GetMapping("/history")
-    public TransactionHistoryResponseDto getAllTransaction(@ModelAttribute @Validated PagingDto allParams,
+    public TransactionHistoryResponseDTO getAllTransaction(@ModelAttribute @Validated PagingDTO allParams,
             Authentication authentication) {
         return getTransactionHistory(allParams, authentication.getPrincipal().toString());
     }
 
-    private TransactionHistoryResponseDto getTransactionHistory(PagingDto allParams,
+    private TransactionHistoryResponseDTO getTransactionHistory(PagingDTO allParams,
             String userId) {
         int offset = allParams.getOffset();
         int page = allParams.getPage();
         offset = Math.min(30, Math.max(offset, 0));
 
-        final List<TransactionDto> recentTransactions = transactionService.getRecentTransactions(
+        final List<TransactionDTO> recentTransactions = transactionService.getRecentTransactions(
                 (userId),
                 offset,
                 page);
 
         long total = transactionService.getTotalTransactions(
                 (userId));
-        return new TransactionHistoryResponseDto(recentTransactions, total);
+        return new TransactionHistoryResponseDTO(recentTransactions, total);
     }
 
 
     //    @IsAdmin
     @GetMapping("/{userId}/history")
-    public TransactionHistoryResponseDto getAllTransactionsByUserId(
-            @ModelAttribute @Validated PagingDto allParams,
+    public TransactionHistoryResponseDTO getAllTransactionsByUserId(
+            @ModelAttribute @Validated PagingDTO allParams,
             @PathVariable String userId) {
 
         return getTransactionHistory(allParams, userId);

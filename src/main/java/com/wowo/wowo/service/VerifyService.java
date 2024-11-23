@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wowo.wowo.data.dto.VerifyDto;
+import com.wowo.wowo.data.dto.VerifyDTO;
 import com.wowo.wowo.exception.UserNotFoundException;
 import com.wowo.wowo.model.User;
 import com.wowo.wowo.model.Verify;
@@ -21,22 +21,22 @@ public class VerifyService {
     @Autowired
     private VerifyRepository verifyRepository;
 
-    public String validateVerifyData(VerifyDto verifyDto) {
-        if (verifyDto.getNumberCard() == null || String.valueOf(verifyDto.getNumberCard()).isEmpty()) {
+    public String validateVerifyData(VerifyDTO verifyDTO) {
+        if (verifyDTO.getNumberCard() == null || String.valueOf(verifyDTO.getNumberCard()).isEmpty()) {
             return "Số thẻ không được rỗng.";
         }
-        if (String.valueOf(verifyDto.getNumberCard()).length() > 12) {
+        if (String.valueOf(verifyDTO.getNumberCard()).length() > 12) {
             return "Số thẻ không được quá 12 số.";
         }
     
-        if (verifyDto.getType() == null || verifyDto.getType().trim().isEmpty()) {
+        if (verifyDTO.getType() == null || verifyDTO.getType().trim().isEmpty()) {
             return "Loại xác thực không được rỗng.";
         }
     
-        if (verifyDto.getOpenDay() == null || verifyDto.getCloseDay() == null) {
+        if (verifyDTO.getOpenDay() == null || verifyDTO.getCloseDay() == null) {
             return "Ngày mở và ngày đóng không được rỗng.";
         }
-        if (verifyDto.getCloseDay().isBefore(verifyDto.getOpenDay())) {
+        if (verifyDTO.getCloseDay().isBefore(verifyDTO.getOpenDay())) {
             return "Ngày đóng không được bé hơn ngày mở.";
         }
     
@@ -44,21 +44,21 @@ public class VerifyService {
     }
     
 
-    public void createVerify(VerifyDto verifyDto) {
-        String customerId = verifyDto.getCustomer().getId();
+    public void createVerify(VerifyDTO verifyDTO) {
+        String customerId = verifyDTO.getCustomer().getId();
 
         User user = userRepository.findById(customerId)
             .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
 
         Verify verify = new Verify();
         verify.setCustomer(user);
-        verify.setType(verifyDto.getType());
-        verify.setNumberCard(verifyDto.getNumberCard());
-        verify.setOpenDay(verifyDto.getOpenDay());
-        verify.setCloseDay(verifyDto.getCloseDay());
-        verify.setFontImage(verifyDto.getFontImage());
-        verify.setBehindImage(verifyDto.getBehindImage());
-        verify.setUserImage(verifyDto.getUserImage());
+        verify.setType(verifyDTO.getType());
+        verify.setNumberCard(verifyDTO.getNumberCard());
+        verify.setOpenDay(verifyDTO.getOpenDay());
+        verify.setCloseDay(verifyDTO.getCloseDay());
+        verify.setFontImage(verifyDTO.getFontImage());
+        verify.setBehindImage(verifyDTO.getBehindImage());
+        verify.setUserImage(verifyDTO.getUserImage());
 
         verifyRepository.save(verify);
     }

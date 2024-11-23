@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wowo.wowo.data.dto.SupportTicketDto;
+import com.wowo.wowo.data.dto.SupportTicketDTO;
 import com.wowo.wowo.exception.UserNotFoundException;
 import com.wowo.wowo.model.SupportTicket;
 import com.wowo.wowo.model.SupportTicketStatus;
@@ -22,16 +22,16 @@ public class SupportTicketService {
     @Autowired
     private UserRepository userRepository;
 
-    public void createTicket(SupportTicketDto supportTicketDto) {
-        String customerId = supportTicketDto.getCustomer().getId(); 
+    public void createTicket(SupportTicketDTO supportTicketDTO) {
+        String customerId = supportTicketDTO.getCustomer().getId(); 
 
         User user = userRepository.findById(customerId)
             .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng!"));
 
         SupportTicket ticket = new SupportTicket();
         ticket.setCustomer(user);
-        ticket.setTitle(supportTicketDto.getTitle());
-        ticket.setContent(supportTicketDto.getContent());
+        ticket.setTitle(supportTicketDTO.getTitle());
+        ticket.setContent(supportTicketDTO.getContent());
         ticket.setStatus(SupportTicketStatus.OPEN);
 
         supportTicketRepository.save(ticket);

@@ -2,7 +2,7 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.constant.Constant;
-import com.wowo.wowo.data.dto.TransferDto;
+import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
@@ -30,7 +30,7 @@ public class TransferService {
     private final ConstantRepository constantRepository;
 
     @Transactional
-    public WalletTransaction transferWithLimit(TransferDto data, Authentication authentication) {
+    public WalletTransaction transferWithLimit(TransferDTO data, Authentication authentication) {
         var minTransfer = constantRepository.findById(Constant.MINIMUM_TRANSFER_AMOUNT)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy cài đặt"));
 
@@ -50,7 +50,7 @@ public class TransferService {
 
     @IsUser
     @Transactional
-    public WalletTransaction transfer(TransferDto data, Authentication authentication) {
+    public WalletTransaction transfer(TransferDTO data, Authentication authentication) {
 
         var senderId = ((String) authentication.getPrincipal());
 

@@ -1,6 +1,6 @@
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.TransactionDto;
+import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.FlowType;
@@ -38,7 +38,7 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionDto> getRecentTransactions(String userId, int offset, int page) {
+    public List<TransactionDTO> getRecentTransactions(String userId, int offset, int page) {
         var transactions =
                 transactionRepository.findByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
                         userId, userId, Pageable.ofSize(offset)
@@ -55,7 +55,7 @@ public class TransactionService {
                 })
                 .toList();
         return transactions.stream()
-                .map(transactionMapper::toDto)
+                .map(transactionMapper::toDTO)
                 .toList();
     }
 
@@ -64,7 +64,7 @@ public class TransactionService {
                 userId, userId);
     }
 
-    public TransactionDto getTransactionDetail(String id, Authentication authentication) {
+    public TransactionDTO getTransactionDetail(String id, Authentication authentication) {
         String userId = authentication.getPrincipal()
                 .toString();
         final Transaction transaction = transactionRepository.findById(id)
@@ -76,7 +76,7 @@ public class TransactionService {
                 .equals(userId)) {
             transaction.setType(FlowType.IN);
         }
-        return transactionMapper.toDto(transaction);
+        return transactionMapper.toDTO(transaction);
     }
 
 }

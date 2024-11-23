@@ -8,8 +8,8 @@ import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.model.WalletOwnerType;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.data.dto.OTPVerifyDto;
-import com.wowo.wowo.data.dto.OtpSendDto;
+import com.wowo.wowo.data.dto.OTPVerifyDTO;
+import com.wowo.wowo.data.dto.OtpSendDTO;
 import com.wowo.wowo.repository.ConstantRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import com.wowo.wowo.service.EmailService;
@@ -103,7 +103,7 @@ public class TransferController {
 
     @PostMapping("/send-otp")
     @IsUser
-    public ResponseEntity<?> sendOtp(@RequestBody @Validated OtpSendDto data,
+    public ResponseEntity<?> sendOtp(@RequestBody @Validated OtpSendDTO data,
             Authentication authentication) {
         otpManager.send(emailService, data, authentication);
         return ResponseEntity.ok(new ResponseMessage("Gửi mã otp thành công"));
@@ -111,7 +111,7 @@ public class TransferController {
 
     @PostMapping("/verify-otp")
     @IsUser
-    public ResponseEntity<?> verifyOtp(@RequestBody @Validated OTPVerifyDto data,
+    public ResponseEntity<?> verifyOtp(@RequestBody @Validated OTPVerifyDTO data,
             Authentication authentication) {
         final boolean verified = otpManager.verify(((String) authentication.getPrincipal()), data);
         if (!verified) {

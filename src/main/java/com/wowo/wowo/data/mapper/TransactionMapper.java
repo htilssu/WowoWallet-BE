@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.TransactionDto;
+import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.dto.TransactionRequest;
 import com.wowo.wowo.model.Transaction;
 import org.mapstruct.*;
@@ -17,11 +17,11 @@ public interface TransactionMapper {
     })
     Transaction toEntity(TransactionRequest transactionRequest);
 
-    Transaction toEntity(TransactionDto transactionDto);
-    TransactionDto toDto(Transaction transaction);
+    Transaction toEntity(TransactionDTO transactionDTO);
+    TransactionDTO toDTO(Transaction transaction);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Transaction partialUpdate(
-            TransactionDto transactionDto,
+            TransactionDTO transactionDTO,
             @MappingTarget Transaction transaction);
 }
