@@ -12,11 +12,13 @@
  *  ******************************************************
  */
 
-package com.wowo.wowo.repository;
+ALTER TABLE application_api_key
+DROP
+CONSTRAINT fk_application_api_key_on_application;
 
-import com.wowo.wowo.model.Wallet;
-import org.springframework.data.jpa.repository.JpaRepository;
+ALTER TABLE application
+    ADD secret VARCHAR(255);
 
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+DROP TABLE application_api_key CASCADE;
 
-}
+DROP SEQUENCE application_api_key_id_seq CASCADE;

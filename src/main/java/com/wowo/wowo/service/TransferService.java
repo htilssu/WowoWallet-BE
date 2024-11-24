@@ -8,9 +8,8 @@ import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.ConstantRepository;
-import com.wowo.wowo.repository.TransactionRepository;
+import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
-import com.wowo.wowo.util.AuthUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -22,12 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 public class TransferService {
 
-    private final WalletRepository walletRepository;
+    private final UserWalletRepository userWalletRepository;
     private final UserService userService;
     private final WalletTransactionService walletTransactionService;
-    private final TransactionRepository transactionRepository;
-    private final ReceiverService receiverService;
     private final ConstantRepository constantRepository;
+    private final WalletRepository walletRepository;
+    private final WalletService walletService;
 
     @Transactional
     public WalletTransaction transferWithLimit(TransferDTO data, Authentication authentication) {
@@ -52,37 +51,19 @@ public class TransferService {
     @Transactional
     public WalletTransaction transfer(TransferDTO data, Authentication authentication) {
 
-        var senderId = ((String) authentication.getPrincipal());
+        Wallet senderWallet = walletRepository.findById(data.getSourceId())
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy ví"));
 
-        Wallet senderWallet;
-        var authid = AuthUtil.getId();
-        if (data.getSourceId() == null) {
-            if (!authid.equals(senderId)) {
-                throw new BadRequest("Không thể chuyển tiền từ ví không phải của bạn");
-            }
-            senderWallet = walletRepository.findByOwnerId(senderId)
-                    .orElseThrow(
-                            () -> new NotFoundException("Không tìm thấy ví"));
-        }
-        else {
-            senderWallet = walletRepository.findById(Long.valueOf(data.getSourceId()))
-                    .orElseThrow(
-                            () -> new NotFoundException("Không tìm thấy ví"));
-            var isOwner = authid.equals(senderWallet.getOwnerId());
-            if (!isOwner) {
-                throw new BadRequest("Không thể chuyển tiền từ ví không phải của bạn");
-            }
-        }
-        final User receiver = userService.getUserByIdOrUsernameOrEmail(
-                data.getReceiverId(), data.getReceiverId(),
-                data.getReceiverId());
+        //TODO: check owner of wallet
+
         final User user = userService.getUserByIdOrElseThrow(senderWallet.getOwnerId());
-        var receiverWallet = walletRepository.findByOwnerId(receiver.getId())
+        var receiveWallet = walletRepository.findById(data.getSourceId())
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví người nhận"));
 
 
-        WalletTransaction walletTransaction = transferMoney(senderWallet, receiverWallet,
+        WalletTransaction walletTransaction = transferMoney(senderWallet, receiveWallet,
                 data.getMoney());
 
         walletTransaction.getTransaction()
@@ -111,21 +92,21 @@ public class TransferService {
      * @see InsufficientBalanceException
      */
     @Transactional
-    public WalletTransaction transferMoney(Wallet source, Wallet destination, long amount) throws
-                                                                                           InsufficientBalanceException {
+    public WalletTransaction transferMoney(Wallet source,
+            Wallet destination,
+            long amount) throws
+                         InsufficientBalanceException {
 
 
         if (source.getId()
                 .equals(destination.getId())) throw new BadRequest(
                 "Không thể chuyển tiền từ ví này đến chính ví này");
-        transfer(source, destination, amount);
 
-        walletRepository.saveAll(List.of(source, destination));
-
+        transferWithNoFee(source, destination, amount);
 
         final var walletTransaction = new WalletTransaction();
-        walletTransaction.setSenderWallet(source);
-        walletTransaction.setReceiverWallet(destination);
+        walletTransaction.setSenderUserWallet(source);
+        walletTransaction.setReceiverUserWallet(destination);
         walletTransaction.setType(TransactionType.TRANSFER);
 
         Transaction transaction = new Transaction();
@@ -141,11 +122,40 @@ public class TransferService {
         return walletTransactionService.createWalletTransaction(walletTransaction);
     }
 
-    public void transfer(BalanceEntity source, BalanceEntity destination, long amount) {
+    public void transferWithNoFee(Wallet source, Wallet destination, long amount) {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
         source.setBalance(source.getBalance() - amount);
         destination.setBalance(destination.getBalance() + amount);
+        walletRepository.saveAll(List.of(source, destination));
+    }
+
+    public void transferWithFee(Wallet source, Wallet destination, long amount, long fee) {
+        transfer(source, destination, amount);
+        transferToRoot(source, fee);
+        walletService.save(source, destination);
+    }
+
+    public void transfer(Wallet source, Wallet destination, long amount) {
+        if (source.getBalance() < amount) {
+            throw new InsufficientBalanceException("Số dư không đủ");
+        }
+        source.setBalance(source.getBalance() - amount);
+        destination.setBalance(destination.getBalance() + amount);
+    }
+
+    public void transferToRoot(Wallet source, long amount) {
+        final var rootWallet = walletService.getRootWallet();
+        transfer(source, rootWallet, amount);
+        walletService.save(rootWallet);
+    }
+
+    public void transferWithTax(Wallet source, Wallet destination, long amount, long tax) {
+        tax = (amount * tax) / 100;
+        amount = amount - tax;
+        transfer(source, destination, amount);
+        transferToRoot(source, tax);
+        walletService.save(source, destination);
     }
 }

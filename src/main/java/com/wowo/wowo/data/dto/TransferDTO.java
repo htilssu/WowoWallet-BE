@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransferDTO {
 
-    private String sourceId;
+    @NotNull(message = "Nguồn chuyển không được để trống")
+    private Long sourceId;
     @NotNull(message = "Người nhận không được để trống")
     private String receiverId;
+    private Long targetId;
     @Min(value = 1000, message = "Số tiền phải lớn hơn 1000 VND")
     private Long money;
     private String message;

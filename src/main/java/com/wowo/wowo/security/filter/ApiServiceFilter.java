@@ -48,7 +48,7 @@ public class ApiServiceFilter implements Filter {
                 new UsernamePasswordAuthenticationToken(
                         partner.getId(),
                         apiKey,
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PARTNER")));
+                        Collections.singleton(new SimpleGrantedAuthority("ROLE_APPLICATION")));
         authenticationToken.setDetails(partner);
 
         context.setAuthentication(authenticationToken);

@@ -1,76 +1,96 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.exception.InsufficientBalanceException;
-import com.wowo.wowo.model.Partner;
-import com.wowo.wowo.model.User;
-import com.wowo.wowo.model.Wallet;
-import com.wowo.wowo.model.WalletOwnerType;
+import com.wowo.wowo.exception.NotFoundException;
+import com.wowo.wowo.model.*;
+import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class WalletService {
 
+    private final UserWalletRepository userWalletRepository;
     private final WalletRepository walletRepository;
 
-    public Wallet getWallet(int id) {
-        return walletRepository.findById((long) id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
-
-    }
-
-    public Wallet createWallet(Partner partner) {
-        Wallet wallet = new Wallet();
-        wallet.setOwnerId(partner.getId());
-        wallet.setOwnerType(WalletOwnerType.PARTNER);
+    public UserWallet createWallet(Partner partner) {
+        UserWallet userWallet = new UserWallet();
+        userWallet.setOwnerId(partner.getId());
+        userWallet.setOwnerType(WalletOwnerType.PARTNER);
 
         try {
-            return walletRepository.save(wallet);
+            return userWalletRepository.save(userWallet);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Wallet createWallet(User user) {
-        Wallet wallet = new Wallet();
-        wallet.setOwnerId(user.getId());
-        wallet.setOwnerType(WalletOwnerType.USER);
+    public UserWallet createWallet(User user) {
+        UserWallet userWallet = new UserWallet();
+        userWallet.setOwnerId(user.getId());
+        userWallet.setOwnerType(WalletOwnerType.USER);
 
         try {
-            return walletRepository.save(wallet);
+            return userWalletRepository.save(userWallet);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean isWalletOwner(String userId, int walletId) {
-        return walletRepository.existsByOwnerIdAndId(userId, (long) walletId);
+        return userWalletRepository.existsByOwnerIdAndId(userId, (long) walletId);
     }
 
     public boolean isWalletOwner(String userId, String walletId) {
         final long walletIdInt = Long.parseLong(walletId);
-        return walletRepository.existsByOwnerIdAndId(userId, walletIdInt);
+        return userWalletRepository.existsByOwnerIdAndId(userId, walletIdInt);
     }
 
-    public Optional<Wallet> getPartnerWallet(String partnerId) {
-        return walletRepository.findByOwnerIdAndOwnerType(partnerId,
+    public Optional<UserWallet> getPartnerWallet(String partnerId) {
+        return userWalletRepository.findByOwnerIdAndOwnerType(partnerId,
                 WalletOwnerType.PARTNER);
     }
 
-    public Optional<Wallet> getUserWallet(String ownerId) {
-        return walletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
+    public Optional<UserWallet> getUserWallet(String ownerId) {
+        return userWalletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
     }
 
-    public Wallet plusBalance(String walletId, Long amount) {
-        final Wallet wallet = getWallet(Integer.parseInt(walletId));
-        if (amount < 0 && wallet.getBalance() < Math.abs(amount)) {
+    public UserWallet plusBalance(String walletId, Long amount) {
+        final UserWallet userWallet = getWallet(Long.parseLong(walletId));
+        if (amount < 0 && userWallet.getBalance() < Math.abs(amount)) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
-        wallet.setBalance(wallet.getBalance() + amount);
-        return walletRepository.save(wallet);
+        userWallet.setBalance(userWallet.getBalance() + amount);
+        return userWalletRepository.save(userWallet);
+    }
+
+    public UserWallet getWallet(Long id) {
+        return userWalletRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
+
+    }
+
+    public UserWallet createWallet() {
+        final UserWallet userWallet = userWalletRepository.save(new UserWallet());
+        return userWallet;
+    }
+
+    public Wallet getRootWallet() {
+        return walletRepository.findById(-1L)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy ví"));
+    }
+
+    public void save(Wallet ...rootWallet) {
+       walletRepository.saveAll(Arrays.asList(rootWallet));
+    }
+
+    public Wallet getWallet(Authentication authentication) {
+
     }
 }

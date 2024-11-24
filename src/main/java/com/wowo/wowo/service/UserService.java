@@ -2,6 +2,7 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.SSOData;
 import com.wowo.wowo.exception.NotFoundException;
+import com.wowo.wowo.model.Application;
 import com.wowo.wowo.model.MonthAnalysis;
 import com.wowo.wowo.model.User;
 import com.wowo.wowo.model.YearAnalysis;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Service
 @AllArgsConstructor
@@ -72,5 +74,10 @@ public class UserService {
                 .getYear());
         return analysis.getCurrentMonthAnalysis()
                 .getCurrentMonthAnalysisFromFistToNow();
+    }
+
+    public Collection<Application> getApplications(String userId) {
+        final User user = getUserByIdOrElseThrow(userId);
+        return user.getApplications();
     }
 }

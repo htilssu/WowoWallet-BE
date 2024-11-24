@@ -18,8 +18,8 @@ public class RefundService {
 
         final WalletTransaction walletTransaction = order.getTransaction().getWalletTransaction();
 
-        var senderWallet = walletTransaction.getSenderWallet();
-        var receiverWallet = walletTransaction.getReceiverWallet();
+        var senderWallet = walletTransaction.getSenderUserWallet();
+        var receiverWallet = walletTransaction.getReceiverUserWallet();
 
         transferService.transfer(receiverWallet, senderWallet, order.getTransaction().getAmount());
 

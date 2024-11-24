@@ -12,11 +12,13 @@
  *  ******************************************************
  */
 
-package com.wowo.wowo.repository;
+package com.wowo.wowo.model;
 
-import com.wowo.wowo.model.Wallet;
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+@Entity
+@DiscriminatorValue("APPLICATION")
+public class ApplicationWallet extends Wallet {
 
 }

@@ -30,10 +30,10 @@ public class WalletTransaction {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_wallet", nullable = false)
-    private Wallet senderWallet;
+    private UserWallet senderUserWallet;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "receiver_wallet", nullable = false)
-    private Wallet receiverWallet;
+    private UserWallet receiverUserWallet;
 }

@@ -47,7 +47,7 @@ public class TransactionService {
         transactions = transactions.stream()
                 .peek(transaction -> {
                     if (transaction.getWalletTransaction()
-                            .getReceiverWallet()
+                            .getReceiverUserWallet()
                             .getOwnerId()
                             .equals(userId)) {
                         transaction.setType(FlowType.IN);
@@ -71,7 +71,7 @@ public class TransactionService {
                 .orElseThrow(() -> new NotFoundException("Giao dịch không tồn tại"));
 
         var walletTransaction = transaction.getWalletTransaction();
-        if (walletTransaction.getReceiverWallet()
+        if (walletTransaction.getReceiverUserWallet()
                 .getOwnerId()
                 .equals(userId)) {
             transaction.setType(FlowType.IN);

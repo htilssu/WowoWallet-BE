@@ -31,13 +31,15 @@ import java.util.Map;
 @AllArgsConstructor
 public class GroupFundService {
 
+    private final GroupFundWalletRepository groupFundWalletRepository;
+
     private final TransactionRepository transactionRepository;
 
     private final GroupFundRepository groupFundRepository;
     private final FundMemberRepository fundMemberRepository;
     private final GroupFundTransactionRepository groupFundTransactionRepository;
     private final GroupFundMapper groupFundMapper;
-    private final WalletRepository walletRepository;
+    private final UserWalletRepository userWalletRepository;
     private final TransferService transferService;
     private final WalletService walletService;
     private final UserService userService;
@@ -52,17 +54,15 @@ public class GroupFundService {
         GroupFund groupFund = new GroupFund();
 
         try {
-            Wallet wallet = new Wallet();
-            wallet.setOwnerType(WalletOwnerType.GROUP_FUND);
-            wallet.setBalance(0L);
-            wallet.setCurrency("VND");
-            // Lưu ví vào cơ sở dữ liệu
+            //TODO: move to a service
+            GroupFundWallet groupFundWallet = new GroupFundWallet();
+            groupFundWalletRepository.save(groupFundWallet);
 
             // Kiểm tra tính hợp lệ của các trường dữ liệu
             validateGroupFundData(groupFundDTO);
 
             // Liên kết ví với quỹ nhóm
-            groupFund.setWallet(wallet);
+            groupFund.setWallet(groupFundWallet);
             groupFund.setName(groupFundDTO.getName());
             groupFund.setImage(groupFundDTO.getImage());
             groupFund.setType(groupFundDTO.getType());
@@ -73,11 +73,6 @@ public class GroupFundService {
 
             // Lưu quỹ nhóm vào cơ sở dữ liệu
             GroupFund savedGroupFund = groupFundRepository.save(groupFund);
-            savedGroupFund.getWallet()
-                    .setOwnerId(savedGroupFund.getId()
-                            .toString());
-            walletRepository.save(savedGroupFund.getWallet());
-
 
             // Thêm người tạo vào danh sách thành viên của quỹ (FundMember)
             FundMember fundMember = new FundMember();
@@ -88,7 +83,6 @@ public class GroupFundService {
             fundMember.setId(fundMemberId);
             fundMember.setGroup(savedGroupFund);
             fundMember.setMember(ownerUser);
-            fundMember.setMoney(0L);
 
             fundMemberRepository.save(fundMember);
 
@@ -96,6 +90,29 @@ public class GroupFundService {
         } catch (Exception e) {
             throw new RuntimeException(
                     "Lỗi trong quá trình tạo quỹ nhóm hoặc ví: " + e.getMessage());
+        }
+    }
+
+    private void validateGroupFundData(GroupFundDTO groupFundDTO) {
+        // Kiểm tra tên quỹ không để trống
+        if (groupFundDTO.getName() == null ||
+                groupFundDTO.getName()
+                        .trim()
+                        .isEmpty()) {
+            throw new IllegalArgumentException("Tên quỹ không được để trống");
+        }
+
+        // Kiểm tra số tiền mục tiêu không âm
+        if (groupFundDTO.getTarget() < 0) {
+            throw new IllegalArgumentException("Số tiền mục tiêu không được là số âm");
+        }
+
+        // Kiểm tra ngày hạn không phải là ngày quá khứ
+        if (groupFundDTO.getTargetDate() != null &&
+                groupFundDTO.getTargetDate()
+                        .isBefore(
+                                LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
         }
     }
 
@@ -252,29 +269,6 @@ public class GroupFundService {
 
         // Chuyển đổi quỹ nhóm đã cập nhật sang DTO và trả về
         return groupFundMapper.toDto(updatedGroupFund);
-    }
-
-    private void validateGroupFundData(GroupFundDTO groupFundDTO) {
-        // Kiểm tra tên quỹ không để trống
-        if (groupFundDTO.getName() == null ||
-                groupFundDTO.getName()
-                        .trim()
-                        .isEmpty()) {
-            throw new IllegalArgumentException("Tên quỹ không được để trống");
-        }
-
-        // Kiểm tra số tiền mục tiêu không âm
-        if (groupFundDTO.getTarget() < 0) {
-            throw new IllegalArgumentException("Số tiền mục tiêu không được là số âm");
-        }
-
-        // Kiểm tra ngày hạn không phải là ngày quá khứ
-        if (groupFundDTO.getTargetDate() != null &&
-                groupFundDTO.getTargetDate()
-                        .isBefore(
-                                LocalDate.now())) {
-            throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
-        }
     }
 
     /**

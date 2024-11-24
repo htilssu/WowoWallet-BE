@@ -16,7 +16,7 @@ package com.wowo.wowo.service;
 
 import com.paypal.sdk.models.Order;
 import com.wowo.wowo.exception.BadRequest;
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.TopUpRequest;
 import com.wowo.wowo.repository.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
@@ -29,18 +29,18 @@ public class TopUpService {
     private final TopUpRequestRepository topUpRequestRepository;
     private final WalletService walletService;
 
-    public Wallet topUpWithLimit(Order order) {
+    public UserWallet topUpWithLimit(Order order) {
         return topUpWithLimit(order.getId());
     }
 
-    public Wallet topUpWithLimit(String orderId) {
+    public UserWallet topUpWithLimit(String orderId) {
         final TopUpRequest order = topUpRequestRepository.findByOrderId(
                         orderId)
                 .orElseThrow(() -> new BadRequest("Order not found"));
         return walletService.plusBalance(order.getWalletId(), order.getAmount());
     }
 
-    public Wallet topUpWithLimit(String walletId, long amount) {
+    public UserWallet topUpWithLimit(String walletId, long amount) {
         return walletService.plusBalance(walletId, amount);
     }
 

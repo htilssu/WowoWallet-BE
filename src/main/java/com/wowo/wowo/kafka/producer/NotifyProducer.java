@@ -20,7 +20,7 @@ public class NotifyProducer extends KafkaTemplate<String, NotifyDTO> {
 
     public void pushNotifyMessage(WalletTransaction walletTransaction) {
         NotifyDTO notifyDTO = NotifyDTO.builder()
-                .receiverId(walletTransaction.getReceiverWallet().getOwnerId())
+                .receiverId(walletTransaction.getReceiverUserWallet().getOwnerId())
                 .message(
                         "Bạn vừa nhận được " + walletTransaction.getTransaction()
                                 .getAmount() + " VND")

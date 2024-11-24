@@ -14,14 +14,20 @@
 
 package com.wowo.wowo.data.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Null;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * DTO for {@link Application}
  */
 @Data
-public class ApplicationCreationDTO {
+@AllArgsConstructor
+public class ApplicationUserCreationDTO {
 
+    @NotEmpty(message = "Name is required")
     private String name;
+    @Null(message = "Owner Id must be null")
     private String ownerId;
 }

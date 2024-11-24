@@ -6,7 +6,7 @@ import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
 import com.wowo.wowo.data.dto.TopUpRequestDTO;
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.TopUpRequest;
 import com.wowo.wowo.repository.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
@@ -70,7 +70,7 @@ public class PaypalService {
         return null;
     }
 
-    public Wallet captureOrder(String orderId) throws IOException, ApiException {
+    public UserWallet captureOrder(String orderId) throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
                 new OrdersCaptureInput.Builder(orderId, null)

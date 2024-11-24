@@ -5,13 +5,13 @@ import com.wowo.wowo.constant.Constant;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.TransactionRequest;
 import com.wowo.wowo.exception.BadRequest;
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.WalletOwnerType;
 import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.data.dto.OTPVerifyDTO;
 import com.wowo.wowo.data.dto.OtpSendDTO;
 import com.wowo.wowo.repository.ConstantRepository;
-import com.wowo.wowo.repository.WalletRepository;
+import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.service.EmailService;
 import com.wowo.wowo.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +33,7 @@ public class TransferController {
     private final OTPManager otpManager;
     private final UserService userService;
     private final EmailService emailService;
-    WalletRepository walletRepository;
+    UserWalletRepository userWalletRepository;
 
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransactionRequest data,
@@ -76,7 +76,7 @@ public class TransferController {
         }
 
 
-        Optional<Wallet> optionalSenderWallet = walletRepository.findByOwnerIdAndOwnerType(senderId,
+        Optional<UserWallet> optionalSenderWallet = userWalletRepository.findByOwnerIdAndOwnerType(senderId,
                 WalletOwnerType.USER);
 
         if (optionalSenderWallet.isEmpty()) {
@@ -84,9 +84,9 @@ public class TransferController {
                     .body(new ResponseMessage("Không tìm thấy ví của người gửi"));
         }
 
-        Wallet senderWallet = optionalSenderWallet.get();
+        UserWallet senderUserWallet = optionalSenderWallet.get();
 
-        if (senderWallet.getBalance() < data.getMoney() || senderWallet.getBalance()
+        if (senderUserWallet.getBalance() < data.getMoney() || senderUserWallet.getBalance()
                 <= 0) {
             return ResponseEntity.badRequest()
                     .body(new ResponseMessage("Số dư không đủ"));

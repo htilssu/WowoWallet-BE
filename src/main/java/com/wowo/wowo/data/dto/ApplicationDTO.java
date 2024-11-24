@@ -12,11 +12,14 @@
  *  ******************************************************
  */
 
-package com.wowo.wowo.repository;
+package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.model.Wallet;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.io.Serializable;
 
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+/**
+ * DTO for {@link com.wowo.wowo.model.Application}
+ */
+public record ApplicationDTO(Long id, String name, String secret)
+        implements Serializable {
 
 }

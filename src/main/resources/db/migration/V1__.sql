@@ -220,7 +220,7 @@ CREATE TABLE "user"
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
 
-CREATE TABLE wallet
+CREATE TABLE userWallet
 (
     id         BIGINT                   NOT NULL,
     balance    BIGINT     DEFAULT 0     NOT NULL,
@@ -256,9 +256,9 @@ ALTER TABLE "user"
 
 CREATE INDEX search_unique_user ON "user" (id, username, email);
 
-CREATE INDEX wallet_owner_id_index ON wallet (owner_id);
+CREATE INDEX wallet_owner_id_index ON userWallet (owner_id);
 
-CREATE INDEX wallet_owner_id_owner_type_index ON wallet (owner_id, owner_type);
+CREATE INDEX wallet_owner_id_owner_type_index ON userWallet (owner_id, owner_type);
 
 ALTER TABLE atm_card
     ADD CONSTRAINT FK_ATM_CARD_ON_BANK FOREIGN KEY (bank_id) REFERENCES banks (id);
@@ -297,7 +297,7 @@ ALTER TABLE group_fund
     ADD CONSTRAINT FK_GROUP_FUND_ON_OWNER FOREIGN KEY (owner_id) REFERENCES "user" (id);
 
 ALTER TABLE group_fund
-    ADD CONSTRAINT FK_GROUP_FUND_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES wallet (id);
+    ADD CONSTRAINT FK_GROUP_FUND_ON_WALLET FOREIGN KEY (wallet_id) REFERENCES userWallet (id);
 
 ALTER TABLE group_fund_transaction
     ADD CONSTRAINT FK_GROUP_FUND_TRANSACTION_ON_GROUP FOREIGN KEY (group_id) REFERENCES group_fund (id);
@@ -324,11 +324,11 @@ ALTER TABLE wallet_transaction
     ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_ID FOREIGN KEY (id) REFERENCES transaction (id);
 
 ALTER TABLE wallet_transaction
-    ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_RECEIVER_WALLET FOREIGN KEY (receiver_wallet) REFERENCES wallet (id);
+    ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_RECEIVER_WALLET FOREIGN KEY (receiver_wallet) REFERENCES userWallet (id);
 
 CREATE INDEX wallet_transaction_receiver_wallet_id_index ON wallet_transaction (receiver_wallet);
 
 ALTER TABLE wallet_transaction
-    ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_SENDER_WALLET FOREIGN KEY (sender_wallet) REFERENCES wallet (id);
+    ADD CONSTRAINT FK_WALLET_TRANSACTION_ON_SENDER_WALLET FOREIGN KEY (sender_wallet) REFERENCES userWallet (id);
 
 CREATE INDEX wallet_transaction_sender_wallet_id_index ON wallet_transaction (sender_wallet);

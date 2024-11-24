@@ -14,16 +14,18 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.ApplicationCreationDTO;
+import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.model.Application;
+import com.wowo.wowo.model.UserWallet;
 
 import java.util.Optional;
 
 public interface ApplicationService {
 
-    void createApplication(ApplicationCreationDTO applicationCreationDTO);
+    Application createApplication(ApplicationUserCreationDTO applicationUserCreationDTO);
     void deleteApplication(String applicationId);
-    Optional<Application> getApplication(String applicationId);
+    Optional<Application> getApplication(Long applicationId);
     Application getApplicationByUserId(String userId);
-    Application getApplicationOrElseThrow(String applicationId);
+    Application getApplicationOrElseThrow(Long applicationId);
+    UserWallet createWallet(Long applicationId);
 }

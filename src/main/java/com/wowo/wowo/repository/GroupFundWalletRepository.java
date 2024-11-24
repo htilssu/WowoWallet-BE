@@ -14,9 +14,9 @@
 
 package com.wowo.wowo.repository;
 
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.model.GroupFundWallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+public interface GroupFundWalletRepository extends JpaRepository<GroupFundWallet, Long> {
 
 }

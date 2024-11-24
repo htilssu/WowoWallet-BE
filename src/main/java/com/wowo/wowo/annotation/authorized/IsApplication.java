@@ -12,11 +12,18 @@
  *  ******************************************************
  */
 
-package com.wowo.wowo.repository;
+package com.wowo.wowo.annotation.authorized;
 
-import com.wowo.wowo.model.Wallet;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 
-public interface WalletRepository extends JpaRepository<Wallet, Long> {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@PreAuthorize("hasRole('APPLICATION')")
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface IsApplication {
 
 }

@@ -14,19 +14,62 @@
 
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.data.dto.ApplicationCreationDTO;
+import com.wowo.wowo.annotation.authorized.IsApplication;
+import com.wowo.wowo.annotation.authorized.IsUser;
+import com.wowo.wowo.data.dto.ApplicationDTO;
+import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
+import com.wowo.wowo.data.dto.WalletDTO;
+import com.wowo.wowo.data.mapper.ApplicationMapper;
+import com.wowo.wowo.data.mapper.WalletMapper;
+import com.wowo.wowo.model.UserWallet;
+import com.wowo.wowo.service.ApplicationServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/application")
+@IsUser
+@Slf4j
 @AllArgsConstructor
 public class ApplicationController {
 
-    @PostMapping
-    public void createApplication(ApplicationCreationDTO applicationCreationDTO) {
+    private final WalletMapper walletMapper;
 
+    private final ApplicationServiceImpl applicationServiceImpl;
+    private final ApplicationMapper applicationMapper;
+
+    @PostMapping
+    public ApplicationDTO createApplication(@RequestBody @Validated ApplicationUserCreationDTO applicationUserCreationDTO,
+            Authentication authentication) {
+        log.info("creating application with name {} for user {}",
+                applicationUserCreationDTO.getName(),
+                authentication.getPrincipal()
+                        .toString());
+
+        applicationUserCreationDTO.setOwnerId(authentication.getPrincipal()
+                .toString());
+
+        return applicationMapper.toDto(
+                applicationServiceImpl.createApplication(applicationUserCreationDTO));
+    }
+
+    @GetMapping("/{id}")
+    public ApplicationDTO getApplication(@PathVariable Long id, Authentication authentication) {
+        log.info("user with id {} requested application with id {}", authentication.getPrincipal()
+                .toString(), id);
+        return applicationMapper.toDto(applicationServiceImpl.getApplicationOrElseThrow(
+                id));
+    }
+
+    @PostMapping("/wallet")
+    @IsApplication
+    public WalletDTO createWallet(Authentication authentication) {
+        final UserWallet userWallet = applicationServiceImpl.createWallet(
+                Long.valueOf(authentication.getPrincipal()
+                        .toString()));
+        return walletMapper.toDto(userWallet);
     }
 }

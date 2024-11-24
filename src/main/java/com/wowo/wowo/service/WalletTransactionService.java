@@ -20,12 +20,12 @@ public class WalletTransactionService {
             throw new RuntimeException("Không thể tạo giao dịch mà không có thông tin giao dịch");
         }
 
-        yearAnalysisService.updateAnalysis(walletTransaction.getSenderWallet()
+        yearAnalysisService.updateAnalysis(walletTransaction.getSenderUserWallet()
                         .getOwnerId(),
                 0,
                 walletTransaction.getTransaction()
                         .getAmount());
-        yearAnalysisService.updateAnalysis(walletTransaction.getReceiverWallet()
+        yearAnalysisService.updateAnalysis(walletTransaction.getReceiverUserWallet()
                         .getOwnerId(),
                 walletTransaction.getTransaction()
                         .getAmount(),
