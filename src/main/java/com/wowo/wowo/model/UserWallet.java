@@ -1,6 +1,7 @@
 package com.wowo.wowo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,10 +17,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @DiscriminatorValue("USER")
 public class UserWallet extends Wallet {
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @ToString.Exclude
-    private User user;
 
     @Override
     public final int hashCode() {
