@@ -1,9 +1,9 @@
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.repositories.GroupFundRepository;
-import com.wowo.wowo.repositories.PartnerRepository;
-import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.repositories.WalletRepository;
+import com.wowo.wowo.repository.GroupFundRepository;
+import com.wowo.wowo.repository.PartnerRepository;
+import com.wowo.wowo.repository.UserRepository;
+import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
