@@ -13,7 +13,6 @@ public interface TransactionMapper {
                              "id", ignore = true),
             @Mapping(target = "created", ignore = true),
             @Mapping(target = "updated", ignore = true),
-            @Mapping(target = "status", ignore = true)
     })
     Transaction toEntity(TransactionRequest transactionRequest);
 

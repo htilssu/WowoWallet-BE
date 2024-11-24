@@ -16,7 +16,7 @@ package com.wowo.wowo.kafka.message;
 
 import com.wowo.wowo.model.PaymentStatus;
 
-public record VoucherMessage(String orderId, PaymentStatus status) {
+public record VoucherMessage(Long orderId, PaymentStatus status) {
 
     @Override
     public String toString() {

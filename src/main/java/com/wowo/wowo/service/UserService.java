@@ -2,10 +2,7 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.SSOData;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.Application;
-import com.wowo.wowo.model.MonthAnalysis;
-import com.wowo.wowo.model.User;
-import com.wowo.wowo.model.YearAnalysis;
+import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,12 +21,6 @@ public class UserService {
     private final WalletService walletService;
     private final YearAnalysisService yearAnalysisService;
 
-    public User getUserByIdOrElseThrow(String id) {
-        return userRepository.findById(id)
-                .orElseThrow(
-                        () -> new NotFoundException("Người dùng không tồn tại"));
-    }
-
     @NotNull
     public User getUserByIdOrUsernameOrEmail(String id, String username, String email) {
         return userRepository.findFirstByIdOrEmailOrUsername(id, username, email)
@@ -37,10 +28,10 @@ public class UserService {
                         () -> new NotFoundException("Người dùng không tồn tại"));
     }
 
-    public void createUser(SSOData ssoData) {
+    public User createUser(SSOData ssoData) {
 
         var user = userRepository.findById(ssoData.getId());
-        if (user.isPresent()) return;
+        if (user.isPresent()) return user.get();
 
         var newUser = new User();
         newUser.setId(ssoData.getId());
@@ -50,8 +41,9 @@ public class UserService {
         newUser.setLastName(ssoData.getLastName());
 
         try {
-            userRepository.save(newUser);
-            walletService.createWallet(newUser);
+            final UserWallet wallet = walletService.createWallet();
+            newUser.setWallet(wallet);
+            return userRepository.save(newUser);
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");
         }
@@ -79,5 +71,11 @@ public class UserService {
     public Collection<Application> getApplications(String userId) {
         final User user = getUserByIdOrElseThrow(userId);
         return user.getApplications();
+    }
+
+    public User getUserByIdOrElseThrow(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(
+                        () -> new NotFoundException("Người dùng không tồn tại"));
     }
 }

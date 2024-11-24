@@ -32,7 +32,7 @@ public class PartnerService {
         newPartner.setName(ssoData.getName());
         try {
             newPartner = partnerRepository.save(newPartner);
-            walletService.createWallet(newPartner);
+            walletService.createWallet();
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo đối tác");
         }

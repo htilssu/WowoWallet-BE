@@ -58,9 +58,6 @@ public class GroupFund {
     @OneToMany(mappedBy = "group")
     private Set<FundMember> fundMembers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "group")
-    private Set<GroupFundTransaction> groupFundTransactions = new LinkedHashSet<>();
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -68,4 +65,10 @@ public class GroupFund {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "target_date", nullable = false)
     private LocalDate targetDate;
+
+    public boolean isMember(User user) {
+        return getFundMembers().stream()
+                .anyMatch(member -> member.getMember()
+                        .equals(user));
+    }
 }

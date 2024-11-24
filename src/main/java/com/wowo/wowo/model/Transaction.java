@@ -35,7 +35,7 @@ public class Transaction {
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private FlowType type = FlowType.OUT;
+    private FlowType flowType = FlowType.OUT;
 
     @Column(length = 300)
     private String message;

@@ -1,7 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.GroupFundTransactionDTO;
-import com.wowo.wowo.model.GroupFundTransaction;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

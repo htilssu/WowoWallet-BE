@@ -54,7 +54,7 @@ public class OrderService {
         var partner = partnerService.getPartnerById(partnerId)
                 .orElseThrow(() -> new BadRequest("Không tìm thấy đối tác"));
 
-        order.setPartner(partner);
+        order.setApplication(partner);
         final Order newOrder = orderRepository.save(order);
         var orderItems = orderItemCreationDTOS.stream()
                 .map(orderItemMapper::toEntity)
@@ -107,7 +107,7 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner()
+        if (!order.getApplication()
                 .getId()
                 .equals(authentication.getPrincipal()
                         .toString())) {
@@ -135,7 +135,7 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner()
+        if (!order.getApplication()
                 .getId()
                 .equals(authentication.getPrincipal()
                         .toString())) {

@@ -1,6 +1,7 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -21,16 +22,9 @@ public class WalletDTO implements Serializable {
 
     private Long id;
 
-    @Size(max = 20)
+    @Min(message = "Số dư không được nhỏ hơn 0", value = 0)
+    private Long balance = 0L;
     @NotNull
-    private String ownerType;
-
-    @NotNull
-    private String currency;
-
-    @Size(max = 10)
-    private String ownerId;
-
-    @NotNull
-    private Double balance;
+    @Size(max = 5)
+    private String currency = "VND";
 }

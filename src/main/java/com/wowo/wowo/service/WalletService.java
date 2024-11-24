@@ -2,15 +2,16 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.*;
+import com.wowo.wowo.model.UserWallet;
+import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,47 +19,11 @@ public class WalletService {
 
     private final UserWalletRepository userWalletRepository;
     private final WalletRepository walletRepository;
+    private final UserService userService;
 
-    public UserWallet createWallet(Partner partner) {
-        UserWallet userWallet = new UserWallet();
-        userWallet.setOwnerId(partner.getId());
-        userWallet.setOwnerType(WalletOwnerType.PARTNER);
-
-        try {
-            return userWalletRepository.save(userWallet);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public UserWallet createWallet(User user) {
-        UserWallet userWallet = new UserWallet();
-        userWallet.setOwnerId(user.getId());
-        userWallet.setOwnerType(WalletOwnerType.USER);
-
-        try {
-            return userWalletRepository.save(userWallet);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isWalletOwner(String userId, int walletId) {
-        return userWalletRepository.existsByOwnerIdAndId(userId, (long) walletId);
-    }
-
-    public boolean isWalletOwner(String userId, String walletId) {
-        final long walletIdInt = Long.parseLong(walletId);
-        return userWalletRepository.existsByOwnerIdAndId(userId, walletIdInt);
-    }
-
-    public Optional<UserWallet> getPartnerWallet(String partnerId) {
-        return userWalletRepository.findByOwnerIdAndOwnerType(partnerId,
-                WalletOwnerType.PARTNER);
-    }
-
-    public Optional<UserWallet> getUserWallet(String ownerId) {
-        return userWalletRepository.findByOwnerIdAndOwnerType(ownerId, WalletOwnerType.USER);
+    public UserWallet getUserWallet(String userId) {
+        return userService.getUserByIdOrElseThrow(userId)
+                .getWallet();
     }
 
     public UserWallet plusBalance(String walletId, Long amount) {
@@ -77,8 +42,7 @@ public class WalletService {
     }
 
     public UserWallet createWallet() {
-        final UserWallet userWallet = userWalletRepository.save(new UserWallet());
-        return userWallet;
+        return userWalletRepository.save(new UserWallet());
     }
 
     public Wallet getRootWallet() {
@@ -86,11 +50,12 @@ public class WalletService {
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy ví"));
     }
 
-    public void save(Wallet ...rootWallet) {
-       walletRepository.saveAll(Arrays.asList(rootWallet));
+    public void save(Wallet... rootWallet) {
+        walletRepository.saveAll(Arrays.asList(rootWallet));
     }
 
     public Wallet getWallet(Authentication authentication) {
-
+//        TODO: implement
+        throw new NotImplementedException("Chưa implement");
     }
 }

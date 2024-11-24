@@ -1,14 +1,13 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.GroupFundTransactionDTO;
+import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.data.dto.WithdrawRequestDTO;
 import com.wowo.wowo.data.mapper.GroupFundTransactionMapper;
-import com.wowo.wowo.model.GroupFundTransaction;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.service.GroupFundService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,23 +23,22 @@ public class GroupFundTransactionController {
 
     private final GroupFundService groupFundService;
     private final GroupFundTransactionMapper groupFundTransactionMapper;
+    private final TransactionMapper transactionMapper;
 
     @PostMapping("/top-up")
-    public GroupFundTransactionDTO topUp(@RequestBody @Validated TransferDTO transferDTO,
+    public TransactionDTO topUp(@RequestBody @Validated TransferDTO transferDTO,
             Authentication authentication) {
-        return groupFundTransactionMapper.toDto(
+        return transactionMapper.toDto(
                 groupFundService.topUp(Long.valueOf(transferDTO.getReceiverId()),
                         ((String) authentication.getPrincipal()),
                         transferDTO.getMoney(), transferDTO.getMessage()));
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<GroupFundTransactionDTO> withdraw(@RequestBody @Validated WithdrawRequestDTO withdrawRequestDTO) {
+    public TransactionDTO withdraw(@RequestBody @Validated WithdrawRequestDTO withdrawRequestDTO) {
 
-        final GroupFundTransaction groupFundTransaction = groupFundService.withdraw(
+        return transactionMapper.toDto(groupFundService.withdraw(
                 withdrawRequestDTO.getGroupId(),
-                withdrawRequestDTO.getAmount(), withdrawRequestDTO.getDescription());
-
-        return ResponseEntity.ok(groupFundTransactionMapper.toDto(groupFundTransaction));
+                withdrawRequestDTO.getAmount(), withdrawRequestDTO.getDescription()));
     }
 }

@@ -24,7 +24,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Application partner;
+    private Application application;
 
     @NotNull
     @Column(name = "money", nullable = false)
@@ -37,7 +37,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Transaction transaction;
 
     @Size(max = 300)

@@ -5,7 +5,6 @@ import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Transaction;
-import com.wowo.wowo.model.TransactionVariant;
 import com.wowo.wowo.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +68,7 @@ public class TransactionService {
         if (walletTransaction.getReceiverUserWallet()
                 .getOwnerId()
                 .equals(userId)) {
-            transaction.setType(FlowType.IN);
+            transaction.setFlowType(FlowType.IN);
         }
         return transactionMapper.toDto(transaction);
     }
