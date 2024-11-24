@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.constants.Constant;
+import com.wowo.wowo.constant.Constant;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

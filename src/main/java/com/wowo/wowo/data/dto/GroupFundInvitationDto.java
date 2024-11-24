@@ -1,7 +1,7 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.wowo.wowo.models.InvitationStatus;
+import com.wowo.wowo.model.InvitationStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

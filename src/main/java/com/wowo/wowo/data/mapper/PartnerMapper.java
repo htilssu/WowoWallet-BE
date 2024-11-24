@@ -2,7 +2,7 @@ package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.PartnerDto;
 import com.wowo.wowo.data.dto.PartnerRequest;
-import com.wowo.wowo.models.Partner;
+import com.wowo.wowo.model.Partner;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

@@ -14,8 +14,8 @@
 
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.models.Equity;
-import com.wowo.wowo.models.EquityDto;
+import com.wowo.wowo.model.Equity;
+import com.wowo.wowo.model.EquityDto;
 import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,

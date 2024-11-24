@@ -1,11 +1,11 @@
 package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.wowo.wowo.exceptions.NotFoundException;
-import com.wowo.wowo.models.OtpClaim;
-import com.wowo.wowo.repositories.OtpClaimRepository;
-import com.wowo.wowo.repositories.UserRepository;
-import com.wowo.wowo.services.EmailService;
+import com.wowo.wowo.exception.NotFoundException;
+import com.wowo.wowo.model.OtpClaim;
+import com.wowo.wowo.repository.OtpClaimRepository;
+import com.wowo.wowo.repository.UserRepository;
+import com.wowo.wowo.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
