@@ -6,7 +6,9 @@ import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.*;
+import com.wowo.wowo.model.FlowType;
+import com.wowo.wowo.model.Transaction;
+import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.ConstantRepository;
 import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
@@ -15,21 +17,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class TransferService {
 
-    private final UserWalletRepository userWalletRepository;
-    private final UserService userService;
-    private final WalletTransactionService walletTransactionService;
     private final ConstantRepository constantRepository;
     private final WalletRepository walletRepository;
     private final WalletService walletService;
+    private final TransactionService transactionService;
 
     @Transactional
-    public WalletTransaction transferWithLimit(TransferDTO data, Authentication authentication) {
+    public Transaction transferWithLimit(TransferDTO data, Authentication authentication) {
         var minTransfer = constantRepository.findById(Constant.MINIMUM_TRANSFER_AMOUNT)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy cài đặt"));
 
@@ -49,7 +50,7 @@ public class TransferService {
 
     @IsUser
     @Transactional
-    public WalletTransaction transfer(TransferDTO data, Authentication authentication) {
+    public Transaction transfer(TransferDTO data, Authentication authentication) {
 
         Wallet senderWallet = walletRepository.findById(data.getSourceId())
                 .orElseThrow(
@@ -57,24 +58,19 @@ public class TransferService {
 
         //TODO: check owner of wallet
 
-        final User user = userService.getUserByIdOrElseThrow(senderWallet.getOwnerId());
         var receiveWallet = walletRepository.findById(data.getSourceId())
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví người nhận"));
 
 
-        WalletTransaction walletTransaction = transferMoney(senderWallet, receiveWallet,
+        Transaction transaction = transferMoney(senderWallet, receiveWallet,
                 data.getMoney());
 
-        walletTransaction.getTransaction()
-                .setReceiverName(receiver.getFullName());
-        walletTransaction.getTransaction()
-                .setSenderName(user.getFullName());
+        //        TODO: set receiver name and sender name
 
-        walletTransaction.getTransaction()
-                .setMessage(data.getMessage());
+        transaction.setMessage(data.getMessage());
 
-        return walletTransaction;
+        return transaction;
     }
 
     /**
@@ -86,13 +82,13 @@ public class TransferService {
      * @param destination ví đích
      * @param amount      số tiền chuyển
      *
-     * @return {@link WalletTransaction} chứa thông tin giao dịch
+     * @return {@link Transaction} chứa thông tin giao dịch
      *
      * @throws InsufficientBalanceException nếu số dư của ví nguồn nhỏ hơn số tiền chuyển
      * @see InsufficientBalanceException
      */
     @Transactional
-    public WalletTransaction transferMoney(Wallet source,
+    public Transaction transferMoney(Wallet source,
             Wallet destination,
             long amount) throws
                          InsufficientBalanceException {
@@ -104,22 +100,17 @@ public class TransferService {
 
         transferWithNoFee(source, destination, amount);
 
-        final var walletTransaction = new WalletTransaction();
-        walletTransaction.setSenderUserWallet(source);
-        walletTransaction.setReceiverUserWallet(destination);
-        walletTransaction.setType(TransactionType.TRANSFER);
+        final var transaction = Transaction.builder()
+                .amount(amount)
+                .receiveWallet(destination)
+                .senderWallet(source)
+                .message("Chuyển tiền")
+                .type(FlowType.OUT)
+                .created(Instant.now())
+                .updated(Instant.now())
+                .build();
 
-        Transaction transaction = new Transaction();
-
-        transaction.setVariant(TransactionVariant.WALLET);
-        transaction.setAmount(amount);
-        transaction.setStatus(PaymentStatus.SUCCESS);
-        transaction.setType(FlowType.OUT);
-        transaction.setMessage("Chuyển tiền");
-
-        walletTransaction.setTransaction(transaction);
-
-        return walletTransactionService.createWalletTransaction(walletTransaction);
+        return transactionService.save(transaction);
     }
 
     public void transferWithNoFee(Wallet source, Wallet destination, long amount) {

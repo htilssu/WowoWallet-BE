@@ -3,10 +3,7 @@ package com.wowo.wowo.model;
 import com.wowo.wowo.annotation.id_generator.TransactionIdSequence;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -17,7 +14,10 @@ import java.time.Instant;
 @Entity
 @Table(name = "transaction")
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction {
 
     @Id
@@ -32,18 +32,10 @@ public class Transaction {
     private String receiverName;
     private String senderName;
 
-    @NotNull
-    @Column(name = "status", nullable = false)
-    private PaymentStatus status = PaymentStatus.PENDING;
-
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
     private FlowType type = FlowType.OUT;
-
-    @Column(name = "variant", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TransactionVariant variant = TransactionVariant.WALLET;
 
     @Column(length = 300)
     private String message;
@@ -56,9 +48,13 @@ public class Transaction {
     @LastModifiedDate
     private Instant updated = Instant.now();
 
-    @OneToOne(mappedBy = "transaction")
-    private WalletTransaction walletTransaction;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "source_wallet", nullable = false)
+    private Wallet senderWallet;
 
-    @OneToOne(mappedBy = "transaction")
-    private GroupFundTransaction groupFundTransaction;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "receive_wallet", nullable = false)
+    private Wallet receiveWallet;
 }

@@ -22,15 +22,10 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
 
     public void refund(Transaction transaction) {
-        if (transaction.getVariant() == TransactionVariant.WALLET) {
-            //Todo: implement refund
-        }
-        else {
-            throw new RuntimeException("Transaction target not found");
-        }
+       //TODO: implement refund
     }
 
-    public Transaction createTransaction(Transaction transaction) {
+    public Transaction save(Transaction transaction) {
         try {
             return transactionRepository.save(transaction);
         } catch (Exception e) {
@@ -40,13 +35,13 @@ public class TransactionService {
 
     public List<TransactionDTO> getRecentTransactions(String userId, int offset, int page) {
         var transactions =
-                transactionRepository.findByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
+                transactionRepository.findByTransaction_SenderWallet_OwnerIdOrTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
                         userId, userId, Pageable.ofSize(offset)
                                 .withPage(page));
 
         transactions = transactions.stream()
                 .peek(transaction -> {
-                    if (transaction.getWalletTransaction()
+                    if (transaction.getTransaction()
                             .getReceiverUserWallet()
                             .getOwnerId()
                             .equals(userId)) {
@@ -60,7 +55,7 @@ public class TransactionService {
     }
 
     public long getTotalTransactions(String userId) {
-        return transactionRepository.countByWalletTransaction_SenderWallet_OwnerIdOrWalletTransaction_ReceiverWallet_OwnerId(
+        return transactionRepository.countByTransaction_SenderWallet_OwnerIdOrTransaction_ReceiverWallet_OwnerId(
                 userId, userId);
     }
 
@@ -70,7 +65,7 @@ public class TransactionService {
         final Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Giao dịch không tồn tại"));
 
-        var walletTransaction = transaction.getWalletTransaction();
+        var walletTransaction = transaction.getTransaction();
         if (walletTransaction.getReceiverUserWallet()
                 .getOwnerId()
                 .equals(userId)) {

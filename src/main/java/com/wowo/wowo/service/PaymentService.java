@@ -5,7 +5,6 @@ import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.model.UserWallet;
-import com.wowo.wowo.model.WalletTransaction;
 import com.wowo.wowo.repository.OrderRepository;
 import com.wowo.wowo.util.AuthUtil;
 import com.wowo.wowo.util.RequestUtil;
@@ -61,7 +60,7 @@ public class PaymentService {
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví nguồn thanh toán"));
 
-        final WalletTransaction walletTransaction = transferService.transferMoney(userWallet,
+        final Transaction walletTransaction = transferService.transferMoney(userWallet,
                 partnerUserWallet, order.getDiscountMoney());
 
         walletTransaction.getTransaction()
@@ -100,7 +99,7 @@ public class PaymentService {
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví đối tác"));
 
-        final WalletTransaction walletTransaction = transferService.transferMoney(wallet,
+        final Transaction walletTransaction = transferService.transferMoney(wallet,
                 partnerWallet, order.getMoney());
         order.setTransaction(walletTransaction.getTransaction());
         return order;

@@ -4,7 +4,6 @@ import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.kafka.producer.NotifyProducer;
 import com.wowo.wowo.kafka.producer.TransferProducer;
-import com.wowo.wowo.model.WalletTransaction;
 import com.wowo.wowo.service.TransferService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -30,7 +29,7 @@ public class TransferControllerV2 {
     @PostMapping
     public ResponseEntity<?> transfer(@Validated @RequestBody TransferDTO data,
             Authentication authentication) {
-        final WalletTransaction walletTransaction = transferService.transferWithLimit(data, authentication);
+        final Transaction walletTransaction = transferService.transferWithLimit(data, authentication);
         transferProducer.sendTransferMessage(data);
         notifyProducer.pushNotifyMessage(walletTransaction);
         //        emailService.sendEmail();

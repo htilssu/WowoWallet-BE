@@ -2,7 +2,7 @@ package com.wowo.wowo.kafka.producer;
 
 import com.wowo.wowo.data.dto.MessageType;
 import com.wowo.wowo.data.dto.NotifyDTO;
-import com.wowo.wowo.model.WalletTransaction;
+import com.wowo.wowo.model.Transaction;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ public class NotifyProducer extends KafkaTemplate<String, NotifyDTO> {
         this.send("notify", message);
     }
 
-    public void pushNotifyMessage(WalletTransaction walletTransaction) {
+    public void pushNotifyMessage(Transaction transaction) {
         NotifyDTO notifyDTO = NotifyDTO.builder()
-                .receiverId(walletTransaction.getReceiverUserWallet().getOwnerId())
+                .receiverId(transaction.getReceiverUserWallet().getOwnerId())
                 .message(
-                        "Bạn vừa nhận được " + walletTransaction.getTransaction()
+                        "Bạn vừa nhận được " + transaction.getTransaction()
                                 .getAmount() + " VND")
                 .type(MessageType.RECEIVED_TRANSFER)
                 .build();

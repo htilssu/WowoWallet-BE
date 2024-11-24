@@ -306,7 +306,7 @@ public class GroupFundService {
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví"));
 
-        final WalletTransaction walletTransaction = transferService.transferMoney(userWallet,
+        final Transaction walletTransaction = transferService.transferMoney(userWallet,
                 groupFund.getWallet(), amount);
 
         walletTransaction.getTransaction()
@@ -364,7 +364,7 @@ public class GroupFundService {
                         () -> new NotFoundException("Không tìm thấy ví"));
 
 
-        final WalletTransaction walletTransaction = transferService.transferMoney(
+        final Transaction walletTransaction = transferService.transferMoney(
                 groupFund.getWallet(), ownerWallet, amount);
         GroupFundTransaction groupFundTransaction = new GroupFundTransaction();
         groupFundTransaction.setGroup(groupFund);

@@ -30,7 +30,7 @@ public class ReceiverService {
         switch (transaction.getVariant()) {
             case WALLET -> {
                 var receiver = userService.getUserByIdOrElseThrow(
-                        transaction.getWalletTransaction().getReceiverUserWallet().getOwnerId());
+                        transaction.getTransaction().getReceiverUserWallet().getOwnerId());
                 return new ReceiverDTO(receiver.getLastName() + " " + receiver.getFirstName(), null,
                         receiver.getEmail(), "USER");
             }

@@ -23,9 +23,8 @@ public class Order {
     @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partner_id")
-    private Partner partner;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Application partner;
 
     @NotNull
     @Column(name = "money", nullable = false)
@@ -39,7 +38,6 @@ public class Order {
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
     @Size(max = 300)

@@ -9,16 +9,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "group_fund_transaction")
-public class GroupFundTransaction {
-
-    @Id
-    @Column(name = "transaction_id", nullable = false)
-    private String transaction_id;
-
-    @MapsId
-    @JoinColumn(name = "transaction_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Transaction transaction;
+@DiscriminatorValue("GROUP_FUND")
+public class GroupFundTransaction extends Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
@@ -27,12 +19,4 @@ public class GroupFundTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private User member;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private TransactionType type = TransactionType.TOP_UP;
-
-    @Column(name = "description", nullable = false)
-    private String description;
 }
