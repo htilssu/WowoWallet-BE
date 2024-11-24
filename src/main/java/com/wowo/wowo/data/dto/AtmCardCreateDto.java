@@ -15,12 +15,14 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.wowo.wowo.models.AtmCard;
+import com.wowo.wowo.annotation.constraint.HumanNameNotSpecial;
+import com.wowo.wowo.model.AtmCard;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.CreditCardNumber;
 
 /**
  * DTO for {@link AtmCard}
@@ -32,13 +34,14 @@ import lombok.experimental.Accessors;
 public class AtmCardCreateDto {
 
     @NotNull
-    @Size(max = 16)
+    @CreditCardNumber
     private String cardNumber;
     private String atmId;
     @Size(max = 3)
     private String ccv;
     @NotNull
     @Size(max = 60)
+    @HumanNameNotSpecial
     private String holderName;
     @NotNull
     private Integer month;

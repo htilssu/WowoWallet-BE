@@ -1,6 +1,6 @@
 package com.wowo.wowo.validator;
 
-import com.wowo.wowo.models.Partner;
+import com.wowo.wowo.model.Partner;
 
 public class PartnerValidator {
 

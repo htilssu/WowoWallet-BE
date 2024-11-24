@@ -2,7 +2,7 @@ package com.wowo.wowo.data.mapper;
 
 import com.wowo.wowo.data.dto.AtmCardCreateDto;
 import com.wowo.wowo.data.dto.AtmCardDto;
-import com.wowo.wowo.models.AtmCard;
+import com.wowo.wowo.model.AtmCard;
 import org.mapstruct.*;
 
 import java.util.List;

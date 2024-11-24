@@ -1,9 +1,9 @@
 package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.models.FlowType;
-import com.wowo.wowo.models.PaymentStatus;
-import com.wowo.wowo.models.Transaction;
-import com.wowo.wowo.models.TransactionVariant;
+import com.wowo.wowo.model.FlowType;
+import com.wowo.wowo.model.PaymentStatus;
+import com.wowo.wowo.model.Transaction;
+import com.wowo.wowo.model.TransactionVariant;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

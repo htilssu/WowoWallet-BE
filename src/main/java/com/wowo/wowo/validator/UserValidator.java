@@ -1,11 +1,9 @@
 package com.wowo.wowo.validator;
 
-import com.wowo.wowo.models.User;
+import com.wowo.wowo.model.User;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 public class UserValidator {
 
