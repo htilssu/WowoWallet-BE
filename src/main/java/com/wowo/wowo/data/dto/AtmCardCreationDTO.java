@@ -31,7 +31,7 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AtmCardCreateDTO {
+public class AtmCardCreationDTO {
 
     @NotNull
     @CreditCardNumber(message = "Card Number không hợp lệ")

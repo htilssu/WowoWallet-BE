@@ -2,7 +2,7 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsAuthenticated;
 import com.wowo.wowo.annotation.authorized.IsPartner;
-import com.wowo.wowo.data.dto.OrderCreateDTO;
+import com.wowo.wowo.data.dto.OrderCreationDTO;
 import com.wowo.wowo.data.dto.OrderDTO;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.service.OrderService;
@@ -32,10 +32,10 @@ public class OrderController {
 
     @PostMapping("create")
     @IsPartner
-    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreateDTO orderCreateDTO,
+    public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreationDTO orderCreationDTO,
             Authentication authentication) {
         return ResponseEntity.status(201).body(
-                orderService.createOrder(orderCreateDTO, authentication));
+                orderService.createOrder(orderCreationDTO, authentication));
     }
 
     @PostMapping("{id}/cancel")

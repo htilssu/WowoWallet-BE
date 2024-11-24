@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.AtmCardCreateDTO;
+import com.wowo.wowo.data.dto.AtmCardCreationDTO;
 import com.wowo.wowo.data.dto.AtmCardDTO;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
@@ -38,7 +38,7 @@ public class CardController {
     private final AtmCardService atmCardService;
 
     @PostMapping
-    public AtmCardDTO createCard(@RequestBody @NotNull @Validated AtmCardCreateDTO atmCardDTO,
+    public AtmCardDTO createCard(@RequestBody @NotNull @Validated AtmCardCreationDTO atmCardDTO,
             Authentication authentication) {
         if (atmCardDTO == null) {
             throw new BadRequest("Dữ liệu không hợp lệ");

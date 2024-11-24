@@ -38,7 +38,7 @@ public class OrderDTO implements Serializable {
     private String updated;
     @Size(max = 100)
     private String serviceName;
-    Collection<OrderItemCreateDTO> items;
+    Collection<OrderItemCreationDTO> items;
     Collection<Voucher> vouchers;
     private String checkoutUrl;
     private PartnerDTO partner;

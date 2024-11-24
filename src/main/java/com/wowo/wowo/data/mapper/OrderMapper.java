@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.OrderCreateDTO;
+import com.wowo.wowo.data.dto.OrderCreationDTO;
 import com.wowo.wowo.data.dto.OrderDTO;
 import com.wowo.wowo.model.Order;
 import org.mapstruct.*;
@@ -16,11 +16,11 @@ public interface OrderMapper {
     Order partialUpdate(
             OrderDTO orderDTO,
             @MappingTarget Order order);
-    Order toEntity(OrderCreateDTO orderCreateDTO);
-    OrderCreateDTO toCreateDTO(Order order);
+    Order toEntity(OrderCreationDTO orderCreationDTO);
+    OrderCreationDTO toCreateDTO(Order order);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Order partialUpdate(
-            OrderCreateDTO orderCreateDTO,
+            OrderCreationDTO orderCreationDTO,
             @MappingTarget Order order);
 }

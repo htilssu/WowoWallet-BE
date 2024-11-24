@@ -1,9 +1,9 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.CheckOrderTask;
-import com.wowo.wowo.data.dto.OrderCreateDTO;
+import com.wowo.wowo.data.dto.OrderCreationDTO;
 import com.wowo.wowo.data.dto.OrderDTO;
-import com.wowo.wowo.data.dto.OrderItemCreateDTO;
+import com.wowo.wowo.data.dto.OrderItemCreationDTO;
 import com.wowo.wowo.data.mapper.OrderItemMapper;
 import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
@@ -47,7 +47,7 @@ public class OrderService {
     private final ConstantService constantService;
 
     public OrderDTO createOrder(Order order,
-            Collection<OrderItemCreateDTO> orderItemCreateDTOs,
+            Collection<OrderItemCreationDTO> orderItemCreationDTOS,
             Authentication authentication) {
         var partnerId = authentication.getPrincipal()
                 .toString();
@@ -56,7 +56,7 @@ public class OrderService {
 
         order.setPartner(partner);
         final Order newOrder = orderRepository.save(order);
-        var orderItems = orderItemCreateDTOs.stream()
+        var orderItems = orderItemCreationDTOS.stream()
                 .map(orderItemMapper::toEntity)
                 .toList();
         orderItems = orderItems.stream()
@@ -66,18 +66,18 @@ public class OrderService {
         orderItemRepository.saveAll(orderItems);
 
         final OrderDTO orderDTO = orderMapper.toDto(newOrder);
-        orderDTO.setItems(orderItemCreateDTOs);
+        orderDTO.setItems(orderItemCreationDTOS);
         orderDTO.setVouchers(Collections.emptyList());
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
 
         return orderDTO;
     }
 
-    public OrderDTO createOrder(OrderCreateDTO orderCreateDTO, Authentication authentication) {
-        Order order = orderMapperImpl.toEntity(orderCreateDTO);
+    public OrderDTO createOrder(OrderCreationDTO orderCreationDTO, Authentication authentication) {
+        Order order = orderMapperImpl.toEntity(orderCreationDTO);
         order.setDiscountMoney(order.getMoney());
         createCheckOrderJob(order);
-        return createOrder(order, orderCreateDTO.items(), authentication);
+        return createOrder(order, orderCreationDTO.items(), authentication);
     }
 
     private void createCheckOrderJob(Order order) {

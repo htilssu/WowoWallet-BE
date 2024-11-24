@@ -1,6 +1,6 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.AtmCardCreateDTO;
+import com.wowo.wowo.data.dto.AtmCardCreationDTO;
 import com.wowo.wowo.data.dto.AtmCardDTO;
 import com.wowo.wowo.model.AtmCard;
 import org.mapstruct.*;
@@ -21,5 +21,5 @@ public interface AtmCardMapper {
             @MappingTarget AtmCard atmCard);
 
     List<AtmCardDTO> usersToUserDTOs(List<AtmCard> users);
-    AtmCard toEntity(AtmCardCreateDTO atmCardCreateDTO);
+    AtmCard toEntity(AtmCardCreationDTO atmCardCreationDTO);
 }

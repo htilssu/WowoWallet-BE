@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.AtmCardCreateDTO;
+import com.wowo.wowo.data.dto.AtmCardCreationDTO;
 import com.wowo.wowo.data.dto.AtmCardDTO;
 import com.wowo.wowo.data.mapper.AtmCardMapper;
 import com.wowo.wowo.data.mapper.AtmCardMapperImpl;
@@ -40,10 +40,10 @@ public class AtmCardService {
     private final AtmCardRepository atmCardRepository;
     private final AtmCardMapper atmCardMapper;
 
-    public AtmCardDTO createAtmCard(AtmCardCreateDTO atmCardCreateDTO,
+    public AtmCardDTO createAtmCard(AtmCardCreationDTO atmCardCreationDTO,
             Authentication authentication) {
         var currentDate = LocalDate.now();
-        var cardDate = LocalDate.of(2000 + atmCardCreateDTO.getYear(), atmCardCreateDTO.getMonth(),
+        var cardDate = LocalDate.of(2000 + atmCardCreationDTO.getYear(), atmCardCreationDTO.getMonth(),
                 1);
         cardDate = cardDate.withDayOfMonth(cardDate.lengthOfMonth());
         if (cardDate.isBefore(currentDate)) {
@@ -55,7 +55,7 @@ public class AtmCardService {
         }
         String userId = (String) authentication.getPrincipal();
         User user = userRepository.findById(userId).orElse(null);
-        final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardCreateDTO);
+        final AtmCard atmCard = atmCardMapperImpl.toEntity(atmCardCreationDTO);
         atmCard.setOwner(user);
 
         atmCardRepository.findByCardNumber(atmCard.getCardNumber())

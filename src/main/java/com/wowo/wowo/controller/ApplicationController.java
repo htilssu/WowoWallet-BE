@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.data.dto.ApplicationCreateDTO;
+import com.wowo.wowo.data.dto.ApplicationCreationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApplicationController {
 
     @PostMapping
-    public void createApplication(ApplicationCreateDTO applicationCreateDTO) {
+    public void createApplication(ApplicationCreationDTO applicationCreationDTO) {
 
     }
 }
