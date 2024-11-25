@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.wowo.wowo.model.Partner;
 import com.wowo.wowo.model.User;
 import com.wowo.wowo.util.ObjectUtil;
 import com.wowo.wowo.util.RSAUtil;
@@ -71,15 +70,5 @@ public class JwtService {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public static String generateToken(Partner newPartner) {
-
-        return JWT.create()
-                .withSubject(newPartner.getId())
-                .withPayload(ObjectUtil.parseJson(newPartner))
-                .withExpiresAt(Date.from(Instant.now()
-                        .plus(expire, ChronoUnit.MINUTES)))
-                .sign(algorithm);
     }
 }

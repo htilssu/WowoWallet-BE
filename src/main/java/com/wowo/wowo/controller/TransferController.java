@@ -1,17 +1,13 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.constant.Constant;
-import com.wowo.wowo.data.dto.ResponseMessage;
-import com.wowo.wowo.data.dto.TransactionRequest;
-import com.wowo.wowo.exception.BadRequest;
-import com.wowo.wowo.model.UserWallet;
-import com.wowo.wowo.model.WalletOwnerType;
-import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.data.dto.OTPVerifyDTO;
 import com.wowo.wowo.data.dto.OtpSendDTO;
-import com.wowo.wowo.repository.ConstantRepository;
-import com.wowo.wowo.repository.UserWalletRepository;
+import com.wowo.wowo.data.dto.ResponseMessage;
+import com.wowo.wowo.data.dto.UserDTO;
+import com.wowo.wowo.data.mapper.UserMapper;
+import com.wowo.wowo.exception.BadRequest;
+import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.service.EmailService;
 import com.wowo.wowo.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,84 +17,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "v1/transfer", produces = "application/json; charset=UTF-8")
 @Tag(name = "Transfer", description = "Chuyển tiền")
 public class TransferController {
 
-    private final ConstantRepository constantRepository;
     private final OTPManager otpManager;
     private final UserService userService;
     private final EmailService emailService;
-    UserWalletRepository userWalletRepository;
-
-    @PostMapping
-    public ResponseEntity<?> transfer(@Validated @RequestBody TransactionRequest data,
-            Authentication authentication) {
-
-        String senderId = authentication.getName();
-        return handleTransfer(senderId, data);
-    }
-
-    private ResponseEntity<?> handleTransfer(String senderId, TransactionRequest data) {
-        return switch (data.getTransactionTarget()) {
-            case "wallet" -> transferToWallet(senderId, data);
-            case "fund" -> ResponseEntity.ok()
-                    .body(new ResponseMessage(
-                            "Chức năng chuyển tiền vào quỹ chưa được hỗ trợ"));
-            //                return transferToEmail(senderId, data);
-            default -> ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Loại ví không hợp lệ"));
-        };
-    }
-
-    private ResponseEntity<?> transferToWallet(String senderId, TransactionRequest data) {
-        final com.wowo.wowo.model.Constant minimumTransferConstant =
-                constantRepository.findById(
-                        Constant.MINIMUM_TRANSFER_AMOUNT).orElseThrow();
-
-        final com.wowo.wowo.model.Constant maximumTransferConstant = constantRepository.findById(
-                Constant.MAXIMUM_TRANSFER_AMOUNT).orElseThrow();
-
-        if (data.getMoney() < minimumTransferConstant.getValue()) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Số tiền chuyển phải lớn hơn "
-                            + minimumTransferConstant.getValue()));
-        }
-
-        if (data.getMoney() > maximumTransferConstant.getValue()) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Số tiền chuyển phải nhỏ hơn "
-                            + minimumTransferConstant.getValue()));
-        }
-
-
-        Optional<UserWallet> optionalSenderWallet = userWalletRepository.findByOwnerIdAndOwnerType(senderId,
-                WalletOwnerType.USER);
-
-        if (optionalSenderWallet.isEmpty()) {
-            return ResponseEntity.ok()
-                    .body(new ResponseMessage("Không tìm thấy ví của người gửi"));
-        }
-
-        UserWallet senderUserWallet = optionalSenderWallet.get();
-
-        if (senderUserWallet.getBalance() < data.getMoney() || senderUserWallet.getBalance()
-                <= 0) {
-            return ResponseEntity.badRequest()
-                    .body(new ResponseMessage("Số dư không đủ"));
-        }
-
-
-        return ResponseEntity.ok().build();
-    }
+    private final UserMapper userMapper;
 
     @GetMapping("/check/{id}")
-    public ResponseEntity<?> checkUser(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserByIdOrUsernameOrEmail(id, id, id));
+    public UserDTO checkUser(@PathVariable String id) {
+        return userMapper.toDto(
+                userService.getUserByIdOrUsernameOrEmail(id, id, id));
     }
 
     @PostMapping("/send-otp")

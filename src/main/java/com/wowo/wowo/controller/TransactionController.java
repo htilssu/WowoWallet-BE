@@ -7,6 +7,7 @@ import com.wowo.wowo.data.dto.TransactionHistoryResponseDTO;
 import com.wowo.wowo.service.TransactionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "v1/transaction", produces = "application/json; charset=UTF-8")
@@ -26,6 +28,8 @@ public class TransactionController {
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDTO> getTransaction(@PathVariable String id,
             Authentication authentication) {
+        log.info("User with id {} is getting transaction with id {}", authentication.getPrincipal(),
+                id);
         final TransactionDTO transactionDetail = transactionService.getTransactionDetail(id,
                 authentication);
         return ResponseEntity.ok(transactionDetail);
@@ -34,7 +38,8 @@ public class TransactionController {
     @GetMapping("/history")
     public TransactionHistoryResponseDTO getAllTransaction(@ModelAttribute @Validated PagingDTO allParams,
             Authentication authentication) {
-        return getTransactionHistory(allParams, authentication.getPrincipal().toString());
+        return getTransactionHistory(allParams, authentication.getPrincipal()
+                .toString());
     }
 
     private TransactionHistoryResponseDTO getTransactionHistory(PagingDTO allParams,
@@ -44,7 +49,7 @@ public class TransactionController {
         offset = Math.min(30, Math.max(offset, 0));
 
         final List<TransactionDTO> recentTransactions = transactionService.getRecentTransactions(
-                (userId),
+                userId,
                 offset,
                 page);
 
@@ -52,7 +57,6 @@ public class TransactionController {
                 (userId));
         return new TransactionHistoryResponseDTO(recentTransactions, total);
     }
-
 
     //    @IsAdmin
     @GetMapping("/{userId}/history")
@@ -66,7 +70,8 @@ public class TransactionController {
     @PostMapping("{id}/refund")
     public ResponseEntity<?> refundTransaction(@PathVariable String id) {
         //TODO: Implement refundTransaction
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .build();
     }
 
 }

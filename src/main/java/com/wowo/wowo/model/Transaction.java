@@ -12,7 +12,6 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "transaction")
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
@@ -32,13 +31,16 @@ public class Transaction {
     private String receiverName;
     private String senderName;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "flow_type", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private FlowType flowType = FlowType.OUT;
+    private FlowType flowType = FlowType.TRANSFER_MONEY;
 
     @Column(length = 300)
     private String message;
+
+    @Column(name = "type", insertable = false, updatable = false)
+    private String type;
 
     @CreatedDate
     @Column(name = "created", nullable = false)

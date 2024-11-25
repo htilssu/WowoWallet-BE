@@ -49,7 +49,7 @@ public class GroupFund {
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "groupFund", cascade = CascadeType.ALL)
     private GroupFundWallet wallet;
 
     @Column(name = "is_locked", nullable = false, columnDefinition = "boolean default false")

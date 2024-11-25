@@ -4,7 +4,6 @@ import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.data.dto.WithdrawRequestDTO;
-import com.wowo.wowo.data.mapper.GroupFundTransactionMapper;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.service.GroupFundService;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupFundTransactionController {
 
     private final GroupFundService groupFundService;
-    private final GroupFundTransactionMapper groupFundTransactionMapper;
     private final TransactionMapper transactionMapper;
 
     @PostMapping("/top-up")

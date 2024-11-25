@@ -36,7 +36,7 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserWallet wallet;
 
     @Column(name = "last_name")

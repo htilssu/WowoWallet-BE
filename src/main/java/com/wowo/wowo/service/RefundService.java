@@ -2,6 +2,7 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
+import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,13 @@ public class RefundService {
 
     public Order refund(Order order) {
 
-        final Transaction walletTransaction = order.getTransaction().getTransaction();
+        final Transaction walletTransaction = order.getTransaction();
 
-        var senderWallet = walletTransaction.getSenderUserWallet();
-        var receiverWallet = walletTransaction.getReceiverUserWallet();
+        var senderWallet = walletTransaction.getSenderWallet();
+        var receiverWallet = walletTransaction.getReceiveWallet();
 
-        transferService.transfer(receiverWallet, senderWallet, order.getTransaction().getAmount());
+        transferService.transferWithNoFee(senderWallet, receiverWallet,
+                walletTransaction.getAmount());
 
         order.setStatus(PaymentStatus.REFUNDED);
         return orderRepository.save(order);

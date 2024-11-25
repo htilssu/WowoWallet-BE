@@ -24,10 +24,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
@@ -48,9 +51,40 @@ public class Wallet {
     @ColumnDefault("'VND'")
     @Column(name = "currency", nullable = false, length = 5)
     private String currency = "VND";
-
     @Version
     private Long version;
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy
+               ? ((HibernateProxy) this).getHibernateLazyInitializer()
+                       .getPersistentClass()
+                       .hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy
+                                   ? ((HibernateProxy) o).getHibernateLazyInitializer()
+                                           .getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy
+                                      ? ((HibernateProxy) this).getHibernateLazyInitializer()
+                                              .getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Wallet wallet = (Wallet) o;
+        return getId() != null && Objects.equals(getId(), wallet.getId());
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "balance = " + balance + ", " +
+                "currency = " + currency + ", " +
+                "version = " + version + ")";
+    }
 
     public boolean hasEnoughBalance(Long amount) {
         return balance >= amount;

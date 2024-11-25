@@ -6,6 +6,8 @@ import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.repository.TransactionRepository;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -19,9 +21,10 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
+    private final UserService userService;
 
     public void refund(Transaction transaction) {
-       //TODO: implement refund
+        //TODO: implement refund
     }
 
     public Transaction save(Transaction transaction) {
@@ -33,18 +36,18 @@ public class TransactionService {
     }
 
     public List<TransactionDTO> getRecentTransactions(String userId, int offset, int page) {
+        var user = userService.getUserByIdOrElseThrow(userId);
         var transactions =
-                transactionRepository.findByTransaction_SenderWallet_OwnerIdOrTransaction_ReceiverWallet_OwnerIdOrderByUpdatedDesc(
-                        userId, userId, Pageable.ofSize(offset)
+                transactionRepository.findTransactionsByReceiveWalletOrSenderWallet(
+                        user.getWallet(), user.getWallet(), Pageable.ofSize(offset)
                                 .withPage(page));
 
         transactions = transactions.stream()
                 .peek(transaction -> {
-                    if (transaction.getTransaction()
-                            .getReceiverUserWallet()
-                            .getOwnerId()
-                            .equals(userId)) {
-                        transaction.setType(FlowType.IN);
+                    if (transaction
+                            .getReceiveWallet()
+                            .equals(user.getWallet())) {
+                        transaction.setFlowType(FlowType.RECEIVE_MONEY);
                     }
                 })
                 .toList();
@@ -54,23 +57,30 @@ public class TransactionService {
     }
 
     public long getTotalTransactions(String userId) {
-        return transactionRepository.countByTransaction_SenderWallet_OwnerIdOrTransaction_ReceiverWallet_OwnerId(
-                userId, userId);
+        var user = userService.getUserByIdOrElseThrow(userId);
+        return transactionRepository.countTransactionBySenderWalletOrReceiveWallet(
+                user.getWallet(), user.getWallet());
     }
 
     public TransactionDTO getTransactionDetail(String id, Authentication authentication) {
         String userId = authentication.getPrincipal()
                 .toString();
+        var user = userService.getUserByIdOrElseThrow(userId);
         final Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Giao dịch không tồn tại"));
 
-        var walletTransaction = transaction.getTransaction();
-        if (walletTransaction.getReceiverUserWallet()
-                .getOwnerId()
-                .equals(userId)) {
-            transaction.setFlowType(FlowType.IN);
+        if (transaction.getReceiveWallet()
+                .equals(user.getWallet())) {
+            transaction.setFlowType(FlowType.RECEIVE_MONEY);
         }
         return transactionMapper.toDto(transaction);
     }
 
+    public List<Transaction> getGroupFundTransaction(Long groupId,
+            @Min(0) @NotNull Integer offset,
+            @Min(0) @NotNull Integer page) {
+
+        return transactionRepository.getGroupFundTransaction(groupId, Pageable.ofSize(offset)
+                .withPage(page));
+    }
 }

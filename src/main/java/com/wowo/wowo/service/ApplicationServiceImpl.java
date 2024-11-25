@@ -18,7 +18,7 @@ import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.Application;
-import com.wowo.wowo.model.UserWallet;
+import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.repository.ApplicationRepository;
 import com.wowo.wowo.util.ApiKeyUtil;
 import lombok.AllArgsConstructor;
@@ -73,12 +73,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public UserWallet createWallet(Long applicationId) {
+    public ApplicationPartnerWallet createWallet(Long applicationId) {
         final Application application = getApplicationOrElseThrow(applicationId);
-        final UserWallet userWallet = walletService.createWallet();
-        application.getUserWallets()
-                .add(userWallet);
+        final ApplicationPartnerWallet applicationPartnerWallet = new ApplicationPartnerWallet();
+        application.getPartnerWallets()
+                .add(applicationPartnerWallet);
 
-        return userWallet;
+        return applicationPartnerWallet;
+    }
+
+    @Override
+    public Optional<Application> getApplicationBySecretKey(String apiKey) {
+       return applicationRepository.findFirstBySecret(apiKey);
     }
 }

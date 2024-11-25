@@ -8,9 +8,9 @@ import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Transaction;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.ConstantRepository;
-import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -28,6 +28,7 @@ public class TransferService {
     private final WalletRepository walletRepository;
     private final WalletService walletService;
     private final TransactionService transactionService;
+    private final UserService userService;
 
     @Transactional
     public Transaction transferWithLimit(TransferDTO data, Authentication authentication) {
@@ -55,18 +56,30 @@ public class TransferService {
         Wallet senderWallet = walletRepository.findById(data.getSourceId())
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy ví"));
+        String senderName = "";
+        if (senderWallet instanceof UserWallet userWallet) {
+            if (!userWallet.getUser()
+                    .getUsername()
+                    .equals(authentication.getName())) {
 
-        //TODO: check owner of wallet
+                throw new BadRequest("Không thể chuyển tiền từ ví này");
+            }
+            senderName = userWallet.getUser()
+                    .getFullName();
+        }
 
-        var receiveWallet = walletRepository.findById(data.getSourceId())
-                .orElseThrow(
-                        () -> new NotFoundException("Không tìm thấy ví người nhận"));
+        var user = userService.getUserByIdOrUsernameOrEmail(data.getReceiverId(),
+                data.getReceiverId(),
+                data.getReceiverId());
+
+        var receiveWallet = user.getWallet();
 
 
         Transaction transaction = transferMoney(senderWallet, receiveWallet,
                 data.getMoney());
 
-        //        TODO: set receiver name and sender name
+        transaction.setSenderName(senderName);
+        transaction.setReceiverName(user.getFullName());
 
         transaction.setMessage(data.getMessage());
 
@@ -105,7 +118,7 @@ public class TransferService {
                 .receiveWallet(destination)
                 .senderWallet(source)
                 .message("Chuyển tiền")
-                .type(FlowType.OUT)
+                .flowType(FlowType.TRANSFER_MONEY)
                 .created(Instant.now())
                 .updated(Instant.now())
                 .build();

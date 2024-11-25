@@ -19,29 +19,27 @@ public class WalletService {
 
     private final UserWalletRepository userWalletRepository;
     private final WalletRepository walletRepository;
-    private final UserService userService;
 
     public UserWallet getUserWallet(String userId) {
-        return userService.getUserByIdOrElseThrow(userId)
-                .getWallet();
+        return userWalletRepository.findUserWalletByUser_Id(userId);
     }
 
-    public UserWallet plusBalance(String walletId, Long amount) {
-        final UserWallet userWallet = getWallet(Long.parseLong(walletId));
+    public Wallet plusBalance(String walletId, Long amount) {
+        final Wallet userWallet = getWallet(Long.parseLong(walletId));
         if (amount < 0 && userWallet.getBalance() < Math.abs(amount)) {
             throw new InsufficientBalanceException("Số dư không đủ");
         }
         userWallet.setBalance(userWallet.getBalance() + amount);
-        return userWalletRepository.save(userWallet);
+        return walletRepository.save(userWallet);
     }
 
-    public UserWallet getWallet(Long id) {
-        return userWalletRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy ví"));
+    public Wallet getWallet(Long id) {
+        return walletRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy ví"));
 
     }
 
-    public UserWallet createWallet() {
+    public Wallet createWallet() {
         return userWalletRepository.save(new UserWallet());
     }
 

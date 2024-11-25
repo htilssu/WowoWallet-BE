@@ -19,11 +19,11 @@ public class NotifyProducer extends KafkaTemplate<String, NotifyDTO> {
     }
 
     public void pushNotifyMessage(Transaction transaction) {
+        //TODO: send to user by id
         NotifyDTO notifyDTO = NotifyDTO.builder()
-                .receiverId(transaction.getReceiverUserWallet().getOwnerId())
+                .receiverId("")
                 .message(
-                        "Bạn vừa nhận được " + transaction.getTransaction()
-                                .getAmount() + " VND")
+                        "Bạn vừa nhận được " + transaction.getAmount() + " VND")
                 .type(MessageType.RECEIVED_TRANSFER)
                 .build();
         this.send("notify", notifyDTO);

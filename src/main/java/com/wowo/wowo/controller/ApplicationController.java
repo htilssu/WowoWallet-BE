@@ -21,8 +21,9 @@ import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.data.dto.WalletDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
-import com.wowo.wowo.model.UserWallet;
+import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.service.ApplicationServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @IsUser
 @Slf4j
 @AllArgsConstructor
+@Tag(name = "Application", description = "APIs for managing applications")
 public class ApplicationController {
 
     private final WalletMapper walletMapper;
@@ -67,9 +69,9 @@ public class ApplicationController {
     @PostMapping("/wallet")
     @IsApplication
     public WalletDTO createWallet(Authentication authentication) {
-        final UserWallet userWallet = applicationServiceImpl.createWallet(
+        final ApplicationPartnerWallet wallet = applicationServiceImpl.createWallet(
                 Long.valueOf(authentication.getPrincipal()
                         .toString()));
-        return walletMapper.toDto(userWallet);
+        return walletMapper.toDto(wallet);
     }
 }

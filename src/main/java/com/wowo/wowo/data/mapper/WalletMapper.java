@@ -14,9 +14,9 @@ public interface WalletMapper {
 
     Wallet toEntity(WalletCreationDTO walletCreationDTO);
 
-    WalletDTO toDto(UserWallet userWallet);
+    WalletDTO toDto(Wallet userWallet);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    UserWallet partialUpdate(WalletCreationDTO walletCreationDTO,
-            @MappingTarget UserWallet userWallet);
+    Wallet partialUpdate(WalletCreationDTO walletCreationDTO,
+            @MappingTarget Wallet userWallet);
 }

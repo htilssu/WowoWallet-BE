@@ -41,8 +41,9 @@ public class UserService {
         newUser.setLastName(ssoData.getLastName());
 
         try {
-            final UserWallet wallet = walletService.createWallet();
+            final UserWallet wallet = new UserWallet();
             newUser.setWallet(wallet);
+            wallet.setUser(newUser);
             return userRepository.save(newUser);
         } catch (Exception e) {
             throw new RuntimeException("Không thể tạo người dùng");

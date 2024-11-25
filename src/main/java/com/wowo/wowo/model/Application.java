@@ -36,12 +36,13 @@ public class Application {
 
     private String name;
 
+    @Column(unique = true)
     private String secret;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User owner;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "application", cascade = CascadeType.ALL)
     private ApplicationWallet wallet;
 
     @OneToMany(mappedBy = "application", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

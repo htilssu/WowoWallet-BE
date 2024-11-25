@@ -1,9 +1,10 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.GroupFundDTO;
-import com.wowo.wowo.data.dto.GroupFundTransactionDTO;
+import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.data.mapper.GroupFundMapper;
+import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
@@ -28,17 +29,14 @@ import java.util.*;
 public class GroupFundService {
 
     private final GroupFundWalletRepository groupFundWalletRepository;
-
-    private final TransactionRepository transactionRepository;
-
     private final GroupFundRepository groupFundRepository;
     private final FundMemberRepository fundMemberRepository;
-    private final GroupFundTransactionRepository groupFundTransactionRepository;
     private final GroupFundMapper groupFundMapper;
     private final TransferService transferService;
     private final WalletService walletService;
     private final UserService userService;
     private final TransactionService transactionService;
+    private final TransactionMapper transactionMapper;
     private UserMapper userMapper;
 
     public GroupFund createGroupFund(GroupFundDTO groupFundDTO, Authentication authentication) {
@@ -48,12 +46,9 @@ public class GroupFundService {
         GroupFund groupFund = new GroupFund();
 
         try {
-            //TODO: move to a service
             GroupFundWallet groupFundWallet = new GroupFundWallet();
-            groupFundWalletRepository.save(groupFundWallet);
-
             validateGroupFundData(groupFundDTO);
-
+            groupFundWallet.setGroupFund(groupFund);
             groupFund.setWallet(groupFundWallet);
             groupFund.setName(groupFundDTO.getName());
             groupFund.setImage(groupFundDTO.getImage());
@@ -244,7 +239,7 @@ public class GroupFundService {
      * @param memberId id của thành viên
      * @param amount   số tiền nạp
      *
-     * @return {@link GroupFundTransaction} chứa thông tin giao dịch
+     * @return {@link Transaction} chứa thông tin giao dịch
      */
     public Transaction topUp(Long groupId,
             String memberId,
@@ -280,6 +275,7 @@ public class GroupFundService {
         final Transaction transaction = transferService.transferMoney(userWallet,
                 groupFund.getWallet(), amount);
 
+        transaction.setSenderName(user.getFullName());
         transaction.setReceiverName(groupFund.getName());
         transaction.setMessage(message);
 
@@ -294,7 +290,7 @@ public class GroupFundService {
         return transaction;
     }
 
-    public List<GroupFundTransactionDTO> getTransactionHistory(Long groupId,
+    public List<TransactionDTO> getTransactionHistory(Long groupId,
             @Min(0) @NotNull Integer offset,
             @Min(0) @NotNull Integer page) {
 
@@ -303,10 +299,10 @@ public class GroupFundService {
                         () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         List<Transaction> transactions =
-                transactionService.
+                transactionService.getGroupFundTransaction(groupId, offset, page);
 
         return transactions.stream()
-                .map(groupFundMapper::toTransactionDTO)
+                .map(transactionMapper::toDto)
                 .toList();
     }
 
@@ -327,6 +323,9 @@ public class GroupFundService {
 
         final Transaction transaction = transferService.transferMoney(
                 groupFund.getWallet(), ownerWallet, amount);
+
+        transaction.setReceiverName(ownerWallet.getUser().getFullName());
+        transaction.setSenderName(groupFund.getName());
 
         return transactionService.save(transaction);
     }

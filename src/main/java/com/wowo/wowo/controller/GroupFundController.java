@@ -155,10 +155,9 @@ public class GroupFundController {
     @GetMapping("/{id}/transactions")
     public ResponseEntity<?> getTransactions(@PathVariable Long id,
             @ModelAttribute @Validated PagingDTO searchParams) {
-        List<GroupFundTransactionDTO> transactions = groupFundService.getTransactionHistory(id,
+        List<TransactionDTO> transactions = groupFundService.getTransactionHistory(id,
                 searchParams.getOffset(), searchParams.getPage());
         return ResponseEntity.ok(transactions);
-
     }
 
     //  khóa quỹ
