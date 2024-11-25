@@ -278,6 +278,7 @@ public class GroupFundService {
         transaction.setSenderName(user.getFullName());
         transaction.setReceiverName(groupFund.getName());
         transaction.setMessage(message);
+        transaction.setFlowType(FlowType.TOP_UP_GROUP_FUND);
 
         transactionService.save(transaction);
 
@@ -326,6 +327,7 @@ public class GroupFundService {
 
         transaction.setReceiverName(ownerWallet.getUser().getFullName());
         transaction.setSenderName(groupFund.getName());
+        transaction.setFlowType(FlowType.WITHDRAW_GROUP_FUND);
 
         return transactionService.save(transaction);
     }

@@ -70,9 +70,6 @@ public class TokenFilter implements Filter {
         context.setAuthentication(authenticationToken);
         contextHolder.setContext(context);
 
-        // Debug logging
-        System.out.println("TokenFilter set SecurityContext: " + context.getAuthentication());
-
         chain.doFilter(request, response);
     }
 }
