@@ -4,7 +4,7 @@ import com.paypal.sdk.PaypalServerSDKClient;
 import com.paypal.sdk.controllers.OrdersController;
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
-import com.paypal.sdk.model.*;
+import com.paypal.sdk.models.*;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
 import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.model.TopUpRequest;

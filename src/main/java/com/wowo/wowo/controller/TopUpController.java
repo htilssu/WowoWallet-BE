@@ -15,7 +15,7 @@
 package com.wowo.wowo.controller;
 
 import com.paypal.sdk.exceptions.ApiException;
-import com.paypal.sdk.model.Order;
+import com.paypal.sdk.models.Order;
 import com.wowo.wowo.data.dto.TopUpDto;
 import com.wowo.wowo.data.dto.TopUpRequestDto;
 import com.wowo.wowo.exception.BadRequest;

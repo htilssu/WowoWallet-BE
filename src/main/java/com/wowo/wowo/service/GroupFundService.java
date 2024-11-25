@@ -5,7 +5,6 @@ import com.wowo.wowo.data.dto.GroupFundTransactionDto;
 import com.wowo.wowo.data.dto.UserDto;
 import com.wowo.wowo.data.mapper.GroupFundMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
-import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.exception.UserNotFoundException;
@@ -36,21 +35,16 @@ public class GroupFundService {
     private final FundMemberRepository fundMemberRepository;
     private final GroupFundTransactionRepository groupFundTransactionRepository;
     private final GroupFundMapper groupFundMapper;
-    private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final TransferService transferService;
     private final WalletService walletService;
+    private final UserService userService;
     private UserMapper userMapper;
-    private WalletMapper walletMapper;
 
     // Tạo quỹ nhóm
     public GroupFund createGroupFund(GroupFundDto groupFundDto, Authentication authentication) {
         String ownerId = (String) authentication.getPrincipal();
-        Optional<User> userOptional = userRepository.findById(ownerId);
-
-        // Kiểm tra người dùng có tồn tại không
-        User ownerUser = userOptional.orElseThrow(
-                () -> new UserNotFoundException("Người dùng không tồn tại"));
+        User ownerUser = userService.getUserByIdOrElseThrow(ownerId);
 
         // Tạo quỹ nhóm mới
         GroupFund groupFund = new GroupFund();
@@ -77,7 +71,9 @@ public class GroupFundService {
 
             // Lưu quỹ nhóm vào cơ sở dữ liệu
             GroupFund savedGroupFund = groupFundRepository.save(groupFund);
-            savedGroupFund.getWallet().setOwnerId(savedGroupFund.getId().toString());
+            savedGroupFund.getWallet()
+                    .setOwnerId(savedGroupFund.getId()
+                            .toString());
             walletRepository.save(savedGroupFund.getWallet());
 
 
@@ -103,17 +99,16 @@ public class GroupFundService {
 
     // Thêm thành viên vào quỹ
     public FundMember addMemberToGroup(Long groupId, String memberId) {
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         // Kiểm tra xem quỹ có bị khóa không
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new IllegalStateException("Quỹ này đã bị khóa.");
         }
 
-        Optional<User> userOptional = userRepository.findById(memberId);
-        User member = userOptional.orElseThrow(
-                () -> new UserNotFoundException("Người dùng không tồn tại"));
+        User member = userService.getUserByIdOrElseThrow(memberId);
 
         //Kiểm tra xem thành viên đã có trong nhóm chưa
         if (fundMemberRepository.existsByGroupIdAndMemberId(groupId, memberId)) {
@@ -137,21 +132,21 @@ public class GroupFundService {
     /// Rời khỏi quỹ
     public Map<String, Object> leaveGroupFund(Long groupId, String memberId) {
         // Kiểm tra quỹ có tồn tại không
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
-        // Kiểm tra xem người dùng có tồn tại không
-        Optional<User> userOptional = userRepository.findById(memberId);
-        User member = userOptional.orElseThrow(
-                () -> new UserNotFoundException("Người dùng không tồn tại"));
+        userService.getUserByIdOrElseThrow(memberId);
 
         // Kiểm tra xem thành viên có trong quỹ không
         FundMemberId fundMemberId = new FundMemberId();
         fundMemberId.setGroupId(groupId);
         fundMemberId.setMemberId(memberId);
 
-        FundMember fundMember = fundMemberRepository.findById(fundMemberId).orElseThrow(
-                () -> new IllegalArgumentException("Thành viên không tồn tại trong quỹ này"));
+        FundMember fundMember = fundMemberRepository.findById(fundMemberId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                "Thành viên không tồn tại trong quỹ này"));
 
         // Xóa thành viên khỏi quỹ
         fundMemberRepository.delete(fundMember);
@@ -164,22 +159,25 @@ public class GroupFundService {
 
     // Lấy thông tin quỹ
     public GroupFundDto getGroupFund(Long id) {
-        GroupFund groupFund = groupFundRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(id)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         return groupFundMapper.toDto(groupFund);
     }
 
     // Lấy danh sách các thành viên của một quỹ
     public List<UserDto> getGroupMembers(Long groupId) {
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         // Tìm tất cả các thành viên tham gia quỹ nhóm có groupId
         List<FundMember> members = fundMemberRepository.findByGroupId(groupId);
 
         // Chuyển đổi danh sách FundMember sang danh sách UserDto
-        return members.stream().map(fundMember -> userMapper.toDto(fundMember.getMember()))
+        return members.stream()
+                .map(fundMember -> userMapper.toDto(fundMember.getMember()))
                 .toList();
     }
 
@@ -187,11 +185,7 @@ public class GroupFundService {
     public Map<String, List<GroupFundDto>> getUserGroupFunds(Authentication authentication) {
 
         String userId = (String) authentication.getPrincipal();
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        // Kiểm tra người dùng có tồn tại không
-        User owner = userOptional.orElseThrow(
-                () -> new UserNotFoundException("Người dùng không tồn tại"));
+        userService.getUserByIdOrElseThrow(userId);
 
         List<FundMember> fundMembers = fundMemberRepository.findByMemberId(userId);
 
@@ -201,7 +195,8 @@ public class GroupFundService {
         // Duyệt qua danh sách quỹ mà người dùng tham gia
         fundMembers.forEach(fundMember -> {
             GroupFund groupFund = fundMember.getGroup();
-            var owner_id = groupFund.getOwner().getId();
+            var owner_id = groupFund.getOwner()
+                    .getId();
             if (owner_id.equals(userId)) {
                 createdFunds.add(groupFundMapper.toDto(groupFund));
             }
@@ -223,16 +218,19 @@ public class GroupFundService {
             GroupFundDto groupFundDto,
             Authentication authentication) {
         String ownerId = (String) authentication.getPrincipal();
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new ResourceNotFoundException("Quỹ nhóm không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Quỹ nhóm không tồn tại"));
 
         // Kiểm tra xem quỹ có bị khóa không
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new IllegalStateException("Quỹ này đã bị khóa.");
         }
 
         // Kiểm tra quyền sở hữu
-        if (!groupFund.getOwner().getId().equals(ownerId)) {
+        if (!groupFund.getOwner()
+                .getId()
+                .equals(ownerId)) {
             throw new AccessDeniedException("Bạn không có quyền cập nhật quỹ nhóm này");
         }
 
@@ -256,7 +254,10 @@ public class GroupFundService {
 
     private void validateGroupFundData(GroupFundDto groupFundDto) {
         // Kiểm tra tên quỹ không để trống
-        if (groupFundDto.getName() == null || groupFundDto.getName().trim().isEmpty()) {
+        if (groupFundDto.getName() == null ||
+                groupFundDto.getName()
+                        .trim()
+                        .isEmpty()) {
             throw new IllegalArgumentException("Tên quỹ không được để trống");
         }
 
@@ -266,8 +267,10 @@ public class GroupFundService {
         }
 
         // Kiểm tra ngày hạn không phải là ngày quá khứ
-        if (groupFundDto.getTargetDate() != null && groupFundDto.getTargetDate().isBefore(
-                LocalDate.now())) {
+        if (groupFundDto.getTargetDate() != null &&
+                groupFundDto.getTargetDate()
+                        .isBefore(
+                                LocalDate.now())) {
             throw new IllegalArgumentException("Ngày hạn không được là ngày trong quá khứ");
         }
     }
@@ -285,28 +288,35 @@ public class GroupFundService {
             String memberId,
             Long amount,
             String description) {
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         // Kiểm tra xem quỹ có bị khóa không
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new IllegalStateException("Quỹ này đã bị khóa.");
         }
 
-        User user = userRepository.findById(memberId).orElseThrow(
-                () -> new UserNotFoundException("Thành viên không tồn tại"));
+        User user = userService.getUserByIdOrElseThrow(memberId);
 
-        var fundMember = groupFund.getFundMembers().stream().filter(f -> f.getMember().equals(user))
-                .findFirst().orElseThrow(() -> new BadRequest("Thành viên không tham gia quỹ"));
+        var fundMember = groupFund.getFundMembers()
+                .stream()
+                .filter(f -> f.getMember()
+                        .equals(user))
+                .findFirst()
+                .orElseThrow(() -> new BadRequest("Thành viên không tham gia quỹ"));
 
-        var userWallet = walletService.getUserWallet(user.getId()).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy ví"));
+        var userWallet = walletService.getUserWallet(user.getId())
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy ví"));
 
         final WalletTransaction walletTransaction = transferService.transferMoney(userWallet,
                 groupFund.getWallet(), amount);
 
-        walletTransaction.getTransaction().setVariant(TransactionVariant.GROUP_FUND);
-        walletTransaction.getTransaction().setReceiverName(groupFund.getName());
+        walletTransaction.getTransaction()
+                .setVariant(TransactionVariant.GROUP_FUND);
+        walletTransaction.getTransaction()
+                .setReceiverName(groupFund.getName());
 
         transactionRepository.save(walletTransaction.getTransaction());
         fundMember.setMoney(fundMember.getMoney() + amount);
@@ -327,27 +337,35 @@ public class GroupFundService {
             @Min(0) @NotNull Integer offset,
             @Min(0) @NotNull Integer page) {
 
-        groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ nhóm không tồn tại"));
+        groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ nhóm không tồn tại"));
 
         List<GroupFundTransaction> transactions =
                 groupFundTransactionRepository.findByGroup_IdOrderByTransaction_CreatedDesc(groupId,
-                        Pageable.ofSize(offset).withPage(page));
+                        Pageable.ofSize(offset)
+                                .withPage(page));
 
-        return transactions.stream().map(groupFundMapper::toTransactionDto).toList();
+        return transactions.stream()
+                .map(groupFundMapper::toTransactionDto)
+                .toList();
     }
 
     public GroupFundTransaction withdraw(Long groupFundId, Long amount, String description) {
-        final GroupFund groupFund = groupFundRepository.findById(groupFundId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy quỹ"));
+        final GroupFund groupFund = groupFundRepository.findById(groupFundId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy quỹ"));
 
         var authId = AuthUtil.getId();
-        if (!groupFund.getOwner().getId().equals(authId)) {
+        if (!groupFund.getOwner()
+                .getId()
+                .equals(authId)) {
             throw new AccessDeniedException("Bạn không có quyền rút tiền từ quỹ này");
         }
 
-        var ownerWallet = walletService.getUserWallet(authId).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy ví"));
+        var ownerWallet = walletService.getUserWallet(authId)
+                .orElseThrow(
+                        () -> new NotFoundException("Không tìm thấy ví"));
 
 
         final WalletTransaction walletTransaction = transferService.transferMoney(
@@ -364,21 +382,24 @@ public class GroupFundService {
     //Khóa quỹ
     public GroupFund lockGroupFund(Long groupId, Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ không tồn tại"));
 
         // Kiểm tra quyền sở hữu quỹ
-        if (!groupFund.getOwner().getId().equals(userId)) {
+        if (!groupFund.getOwner()
+                .getId()
+                .equals(userId)) {
             throw new AccessDeniedException("Bạn không có quyền khóa quỹ này");
         }
 
         // Kiểm tra nếu quỹ đã bị khóa rồi
-        if (groupFund.getIsLocked()) {
+        if (groupFund.isLocked()) {
             throw new BadRequest("Quỹ đã bị khóa trước đó");
         }
 
         // Cập nhật trạng thái quỹ và thời gian khóa
-        groupFund.setIsLocked(true);
+        groupFund.setLocked(true);
 
         // Lưu thay đổi vào cơ sở dữ liệu
         return groupFundRepository.save(groupFund);
@@ -387,21 +408,24 @@ public class GroupFundService {
     // Mở quỹ
     public GroupFund unlockGroupFund(Long groupId, Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
-        GroupFund groupFund = groupFundRepository.findById(groupId).orElseThrow(
-                () -> new NotFoundException("Quỹ không tồn tại"));
+        GroupFund groupFund = groupFundRepository.findById(groupId)
+                .orElseThrow(
+                        () -> new NotFoundException("Quỹ không tồn tại"));
 
         // Kiểm tra quyền sở hữu quỹ
-        if (!groupFund.getOwner().getId().equals(userId)) {
+        if (!groupFund.getOwner()
+                .getId()
+                .equals(userId)) {
             throw new AccessDeniedException("Bạn không có quyền mở quỹ này");
         }
 
         // Kiểm tra nếu quỹ chưa bị khóa
-        if (!groupFund.getIsLocked()) {
+        if (!groupFund.isLocked()) {
             throw new BadRequest("Quỹ chưa bị khóa");
         }
 
         // Cập nhật trạng thái quỹ
-        groupFund.setIsLocked(false);
+        groupFund.setLocked(false);
 
         // Lưu thay đổi vào cơ sở dữ liệu
         return groupFundRepository.save(groupFund);

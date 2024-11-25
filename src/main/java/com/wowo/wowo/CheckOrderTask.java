@@ -16,7 +16,7 @@ package com.wowo.wowo;
 
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
-import com.wowo.wowo.services.OrderService;
+import com.wowo.wowo.service.OrderService;
 import lombok.AllArgsConstructor;
 
 import java.util.concurrent.Callable;

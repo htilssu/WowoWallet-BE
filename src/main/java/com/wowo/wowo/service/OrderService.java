@@ -1,4 +1,4 @@
-package com.wowo.wowo.services;
+package com.wowo.wowo.service;
 
 import com.wowo.wowo.CheckOrderTask;
 import com.wowo.wowo.data.dto.OrderCreateDto;
@@ -7,16 +7,16 @@ import com.wowo.wowo.data.dto.OrderItemCreateDto;
 import com.wowo.wowo.data.mapper.OrderItemMapper;
 import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.OrderMapperImpl;
-import com.wowo.wowo.exceptions.BadRequest;
-import com.wowo.wowo.exceptions.NotFoundException;
+import com.wowo.wowo.exception.BadRequest;
+import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.kafka.message.UseVoucherMessage;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.OrderItem;
 import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.model.Voucher;
-import com.wowo.wowo.repositories.OrderItemRepository;
-import com.wowo.wowo.repositories.OrderRepository;
-import com.wowo.wowo.repositories.VoucherRepository;
+import com.wowo.wowo.repository.OrderItemRepository;
+import com.wowo.wowo.repository.OrderRepository;
+import com.wowo.wowo.repository.VoucherRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

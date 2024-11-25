@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.service;
 
-import com.paypal.sdk.model.Order;
+import com.paypal.sdk.models.Order;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.model.TopUpRequest;

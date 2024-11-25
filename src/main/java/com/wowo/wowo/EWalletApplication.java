@@ -31,7 +31,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebSecurity
 @EnableMethodSecurity
 @EnableCaching
-@EnableJpaRepositories
+@EnableJpaRepositories(value = "com.wowo.wowo.repository")
 @EnableJpaAuditing
 @EnableMongoRepositories
 @EnableRetry

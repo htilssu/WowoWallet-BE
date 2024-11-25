@@ -22,7 +22,7 @@ public class UserService {
     private final WalletService walletService;
     private final YearAnalysisService yearAnalysisService;
 
-    public User getUserById(String id) {
+    public User getUserByIdOrElseThrow(String id) {
         return userRepository.findById(id)
                 .orElseThrow(
                         () -> new NotFoundException("Người dùng không tồn tại"));

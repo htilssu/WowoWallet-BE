@@ -1,6 +1,7 @@
 package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.wowo.wowo.data.dto.OtpSendDto;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.OtpClaim;
 import com.wowo.wowo.repository.OtpClaimRepository;
