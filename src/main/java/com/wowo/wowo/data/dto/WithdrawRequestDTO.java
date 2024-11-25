@@ -12,5 +12,5 @@ public class WithdrawRequestDTO {
     @Min(0)
     @NotNull
     private Long amount;
-    private String description;
+    private String message;
 }

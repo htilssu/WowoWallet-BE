@@ -37,6 +37,6 @@ public class GroupFundTransactionController {
 
         return transactionMapper.toDto(groupFundService.withdraw(
                 withdrawRequestDTO.getGroupId(),
-                withdrawRequestDTO.getAmount(), withdrawRequestDTO.getDescription()));
+                withdrawRequestDTO.getAmount(), withdrawRequestDTO.getMessage()));
     }
 }

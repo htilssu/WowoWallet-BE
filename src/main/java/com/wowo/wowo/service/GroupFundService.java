@@ -307,7 +307,7 @@ public class GroupFundService {
                 .toList();
     }
 
-    public Transaction withdraw(Long groupFundId, Long amount, String description) {
+    public Transaction withdraw(Long groupFundId, Long amount, String message) {
         final GroupFund groupFund = groupFundRepository.findById(groupFundId)
                 .orElseThrow(
                         () -> new NotFoundException("Không tìm thấy quỹ"));
@@ -328,6 +328,7 @@ public class GroupFundService {
         transaction.setReceiverName(ownerWallet.getUser().getFullName());
         transaction.setSenderName(groupFund.getName());
         transaction.setFlowType(FlowType.WITHDRAW_GROUP_FUND);
+        transaction.setMessage(message);
 
         return transactionService.save(transaction);
     }
