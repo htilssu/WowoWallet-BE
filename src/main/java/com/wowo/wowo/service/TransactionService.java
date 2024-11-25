@@ -4,6 +4,7 @@ import com.wowo.wowo.data.dto.TransactionDto;
 import com.wowo.wowo.data.mapper.TransactionMapper;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.FlowType;
+import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.model.TransactionVariant;
 import com.wowo.wowo.repository.TransactionRepository;
@@ -12,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +81,22 @@ public class TransactionService {
             transaction.setType(FlowType.IN);
         }
         return transactionMapper.toDto(transaction);
+    }
+
+    //Thống kê
+    public List<Map<String, Object>> getTransactionStats() {
+        List<Object[]> stats = transactionRepository.getTransactionStats();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] row : stats) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("totalTransactions", row[0]);
+            data.put("totalAmount", row[1]);
+            data.put("status", row[2]);
+            results.add(data);
+        }
+
+        return results;
     }
 
 }
