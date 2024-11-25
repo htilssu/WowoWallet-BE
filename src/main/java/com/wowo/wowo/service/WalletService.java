@@ -2,8 +2,10 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
+import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.repository.ApplicationPartnerWalletRepository;
 import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ public class WalletService {
 
     private final UserWalletRepository userWalletRepository;
     private final WalletRepository walletRepository;
+    private final ApplicationPartnerWalletRepository applicationPartnerWalletRepository;
 
     public UserWallet getUserWallet(String userId) {
         return userWalletRepository.findUserWalletByUser_Id(userId);
@@ -40,7 +43,7 @@ public class WalletService {
     }
 
     public Wallet createWallet() {
-        return userWalletRepository.save(new UserWallet());
+        return walletRepository.save(new Wallet());
     }
 
     public Wallet getRootWallet() {
@@ -53,7 +56,7 @@ public class WalletService {
     }
 
     public Wallet getWallet(Authentication authentication) {
-//        TODO: implement
+        //        TODO: implement
         throw new NotImplementedException("Chưa implement");
     }
 }

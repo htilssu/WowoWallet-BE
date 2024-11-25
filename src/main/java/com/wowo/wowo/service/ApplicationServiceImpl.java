@@ -81,10 +81,26 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationPartnerWallet createWallet(Long applicationId) {
         final Application application = getApplicationOrElseThrow(applicationId);
         final ApplicationPartnerWallet applicationPartnerWallet = new ApplicationPartnerWallet();
+        applicationPartnerWallet.setApplication(application);
         application.getPartnerWallets()
                 .add(applicationPartnerWallet);
 
-        return applicationPartnerWallet;
+        final Application app = save(application);
+        var partnerWalletSize = app.getPartnerWallets()
+                .size();
+        return app.getPartnerWallets()
+                .stream()
+                .toList()
+                .get(partnerWalletSize - 1);
+    }
+
+    private Application save(Application application) {
+        try {
+            return applicationRepository.save(application);
+        } catch (Exception e) {
+            log.error("Error saving application {}: {}", application.toString(), e.getMessage());
+        }
+        return application;
     }
 
     @Override

@@ -24,9 +24,9 @@ import org.mapstruct.*;
 public interface ApplicationMapper {
 
     Application toEntity(ApplicationUserCreationDTO applicationUserCreationDTO);
-    @Mapping(source = "walletBalance", target = "wallet.balance")
+    @Mapping(source = "balance", target = "wallet.balance")
     Application toEntity(ApplicationDTO applicationDTO);
-    @Mapping(source = "wallet.balance", target = "walletBalance")
+    @Mapping(source = "wallet.balance", target = "balance")
     ApplicationDTO toDto(Application application);
     @BeanMapping(
             nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
