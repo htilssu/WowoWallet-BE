@@ -25,7 +25,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity(name = "application")
-public class Application {
+public class Application extends BaseEntity {
 
     @Id
     @SequenceGenerator(name = "application_id_seq", sequenceName = "application_id_seq",

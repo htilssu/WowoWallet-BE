@@ -44,13 +44,15 @@ public class TransactionService {
 
         transactions = transactions.stream()
                 .peek(transaction -> {
-                    if (transaction
+                    if (transaction.getFlowType() == FlowType.TRANSFER_MONEY && transaction
                             .getReceiveWallet()
                             .equals(user.getWallet())) {
                         transaction.setFlowType(FlowType.RECEIVE_MONEY);
                     }
                 })
                 .toList();
+
+
         return transactions.stream()
                 .map(transactionMapper::toDto)
                 .toList();

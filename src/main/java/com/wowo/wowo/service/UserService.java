@@ -18,7 +18,6 @@ import java.util.Collection;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final WalletService walletService;
     private final YearAnalysisService yearAnalysisService;
 
     @NotNull
@@ -29,7 +28,6 @@ public class UserService {
     }
 
     public User createUser(SSOData ssoData) {
-
         var user = userRepository.findById(ssoData.getId());
         if (user.isPresent()) return user.get();
 

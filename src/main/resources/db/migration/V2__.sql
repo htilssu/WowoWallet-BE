@@ -8,19 +8,12 @@
  *  * prohibited without prior written permission from the author.
  *  *
  *  * Author: htilssu
- *  * Created: 24-11-2024
+ *  * Created: 25-11-2024
  *  ******************************************************
  */
 
-package com.wowo.wowo.data.dto;
+ALTER TABLE application
+    ADD created_at TIMESTAMP WITHOUT TIME ZONE;
 
-import java.io.Serializable;
-
-/**
- * DTO for {@link com.wowo.wowo.model.Application}
- */
-public record ApplicationDTO(Long id, String name, String secret, String createdAt,
-                             String updatedAt, Long walletBalance)
-        implements Serializable {
-
-}
+ALTER TABLE application
+    ADD updated_at TIMESTAMP WITHOUT TIME ZONE;
