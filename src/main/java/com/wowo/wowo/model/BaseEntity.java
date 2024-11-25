@@ -15,12 +15,17 @@
 package com.wowo.wowo.model;
 
 import jakarta.persistence.MappedSuperclass;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
 @MappedSuperclass
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class BaseEntity {
 
     @CreationTimestamp

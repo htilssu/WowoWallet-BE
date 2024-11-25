@@ -17,8 +17,12 @@ package com.wowo.wowo.model;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
 @DiscriminatorValue("APPLICATION")
 public class ApplicationWallet extends Wallet {
 
