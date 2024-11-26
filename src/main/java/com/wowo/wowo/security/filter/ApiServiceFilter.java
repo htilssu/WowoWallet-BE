@@ -56,9 +56,6 @@ public class ApiServiceFilter implements Filter {
         context.setAuthentication(authenticationToken);
         contextHolderStrategy.setContext(context);
 
-        // Debug logging
-        System.out.println("ApiServiceFilter set SecurityContext: " + context.getAuthentication());
-
         chain.doFilter(request, response);
     }
 }

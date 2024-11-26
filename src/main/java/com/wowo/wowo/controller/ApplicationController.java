@@ -18,17 +18,25 @@ import com.wowo.wowo.annotation.authorized.IsApplication;
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.ApplicationDTO;
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
+import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.dto.WalletDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
+import com.wowo.wowo.repository.ApplicationPartnerWalletRepository;
 import com.wowo.wowo.service.ApplicationServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/application")
@@ -42,6 +50,7 @@ public class ApplicationController {
 
     private final ApplicationServiceImpl applicationServiceImpl;
     private final ApplicationMapper applicationMapper;
+    private final ApplicationPartnerWalletRepository applicationPartnerWalletRepository;
 
     @PostMapping
     public ApplicationDTO createApplication(@RequestBody @Validated ApplicationUserCreationDTO applicationUserCreationDTO,
@@ -69,9 +78,60 @@ public class ApplicationController {
     @PostMapping("/wallet")
     @IsApplication
     public WalletDTO createWallet(Authentication authentication) {
+        log.info("creating wallet for application with id {}", authentication.getPrincipal()
+                .toString());
+
         final ApplicationPartnerWallet wallet = applicationServiceImpl.createWallet(
                 Long.valueOf(authentication.getPrincipal()
                         .toString()));
         return walletMapper.toDto(wallet);
+    }
+
+    @GetMapping("/wallet")
+    @IsApplication
+    public Collection<WalletDTO> getWallet(Authentication authentication, PagingDTO pagingDTO) {
+        final Long applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        log.info("getting wallet for application with id {}", applicationId);
+
+        final List<ApplicationPartnerWallet> wallet =
+                applicationPartnerWalletRepository.findByApplication_IdOrderByIdAsc(applicationId,
+                        Pageable.ofSize(
+                                        pagingDTO.getOffset())
+                                .withPage(pagingDTO.getPage()));
+
+        return wallet.stream()
+                .map(walletMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}/wallet")
+    public @NotNull Collection<WalletDTO> getWallet(@PathVariable Long id, PagingDTO pagingDTO) {
+        log.info("getting wallet for application with id {}", id);
+
+        final List<ApplicationPartnerWallet> wallet =
+                applicationPartnerWalletRepository.findByApplication_IdOrderByIdAsc(id,
+                        Pageable.ofSize(
+                                        pagingDTO.getOffset())
+                                .withPage(pagingDTO.getPage()));
+
+        return wallet.stream()
+                .map(walletMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/wallet/{id}")
+    @IsApplication
+    public void deleteWallet(@PathVariable String id, Authentication authentication) {
+        log.info("deleting wallet with id {}", id);
+
+        applicationServiceImpl.deleteWallet(authentication, id);
+    }
+
+    @GetMapping("/wallet/{id}")
+    @IsApplication
+    public WalletDTO getWallet(@PathVariable String id, Authentication authentication) {
+        log.info("getting wallet with id {}", id);
+        return walletMapper.toDto(applicationServiceImpl.getWallet(authentication,Long.valueOf(id)));
     }
 }

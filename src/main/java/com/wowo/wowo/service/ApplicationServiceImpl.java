@@ -20,10 +20,12 @@ import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.Application;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.model.ApplicationWallet;
+import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.ApplicationRepository;
 import com.wowo.wowo.util.ApiKeyUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -106,5 +108,28 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Optional<Application> getApplicationBySecretKey(String apiKey) {
         return applicationRepository.findFirstBySecret(apiKey);
+    }
+
+    public void deleteWallet(Authentication authentication, String id) {
+        var applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        var application = getApplicationOrElseThrow(applicationId);
+        application.getPartnerWallets()
+                .removeIf(wallet -> wallet.getId()
+                        .equals(Long.valueOf(id)));
+        walletService.deleteWallet(Long.valueOf(id));
+        applicationRepository.save(application);
+    }
+
+    public Wallet getWallet(Authentication authentication, Long aLong) {
+        var applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        var application = getApplicationOrElseThrow(applicationId);
+        return application.getPartnerWallets()
+                .stream()
+                .filter(wallet -> wallet.getId()
+                        .equals(aLong))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Wallet not found"));
     }
 }

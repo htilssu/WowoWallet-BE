@@ -14,14 +14,18 @@
 
 package com.wowo.wowo.data.dto;
 
+import com.wowo.wowo.model.PaymentStatus;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Set;
 
 /**
  * DTO for {@link com.wowo.wowo.model.Application}
  */
 public record ApplicationDTO(Long id, String name, String secret, String createdAt,
-                             String updatedAt, Long balance, Set<WalletDTO> partnerWallets)
+                             String updatedAt, Long balance)
         implements Serializable {
-
 }

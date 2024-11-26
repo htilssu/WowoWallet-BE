@@ -40,4 +40,13 @@ public class OrderDTO implements Serializable {
     private String serviceName;
     private Long discountMoney;
     private String checkoutUrl;
+    private ApplicationDto application;
+
+
+    /**
+     * DTO for {@link com.wowo.wowo.model.Application}
+     */
+    public record ApplicationDto(Long id, String name) implements Serializable {
+
+    }
 }

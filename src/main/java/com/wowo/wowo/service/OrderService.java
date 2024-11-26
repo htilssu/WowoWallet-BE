@@ -48,7 +48,6 @@ public class OrderService {
     public OrderDTO createOrder(OrderCreationDTO orderCreationDTO, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreationDTO);
         order.setDiscountMoney(order.getMoney());
-        createCheckOrderJob(order);
         return createOrder(order, orderCreationDTO.items(), authentication);
     }
 
@@ -79,7 +78,7 @@ public class OrderService {
         orderDTO.setItems(orderItemCreationDTOS);
         orderDTO.setVouchers(Collections.emptyList());
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
-
+        createCheckOrderJob(newOrder);
         return orderDTO;
     }
 

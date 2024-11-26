@@ -42,6 +42,9 @@ public class Application extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User owner;
 
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Order> orders;
+
     @OneToOne(mappedBy = "application", cascade = CascadeType.ALL)
     private ApplicationWallet wallet;
 

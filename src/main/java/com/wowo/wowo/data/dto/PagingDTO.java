@@ -9,8 +9,8 @@ public class PagingDTO {
 
     @Min(0)
     @NotNull
-    private Integer offset;
+    private Integer offset = 20;
     @Min(0)
     @NotNull
-    private Integer page;
+    private Integer page = 0;
 }

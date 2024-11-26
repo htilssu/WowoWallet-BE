@@ -2,7 +2,6 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.ApplicationPartnerWalletRepository;
@@ -58,5 +57,9 @@ public class WalletService {
     public Wallet getWallet(Authentication authentication) {
         //        TODO: implement
         throw new NotImplementedException("Chưa implement");
+    }
+
+    public void deleteWallet(Long id) {
+        walletRepository.deleteById(id);
     }
 }
