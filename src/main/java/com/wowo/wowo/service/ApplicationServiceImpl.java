@@ -15,19 +15,20 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
+import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.Application;
-import com.wowo.wowo.model.ApplicationPartnerWallet;
-import com.wowo.wowo.model.ApplicationWallet;
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.ApplicationRepository;
+import com.wowo.wowo.repository.OrderRepository;
 import com.wowo.wowo.util.ApiKeyUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationMapper applicationMapper;
     private final UserService userService;
     private final WalletService walletService;
+    private final OrderRepository orderRepository;
 
     @Override
     public Application createApplication(ApplicationUserCreationDTO applicationUserCreationDTO) {
@@ -131,5 +133,12 @@ public class ApplicationServiceImpl implements ApplicationService {
                         .equals(aLong))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Wallet not found"));
+    }
+
+    public List<Order> getPageOrder(Long aLong, PagingDTO pagingDTO) {
+        var application = getApplicationOrElseThrow(aLong);
+      return  orderRepository.findByApplication_IdOrderByUpdatedDesc(aLong,
+                Pageable.ofSize(pagingDTO.getOffset())
+                        .withPage(pagingDTO.getPage())).stream().toList();
     }
 }

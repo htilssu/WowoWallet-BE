@@ -14,13 +14,12 @@
 
 package com.wowo.wowo.controller;
 
+import com.wowo.wowo.annotation.authorized.IsAdmin;
 import com.wowo.wowo.annotation.authorized.IsApplication;
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.ApplicationDTO;
-import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
-import com.wowo.wowo.data.dto.PagingDTO;
-import com.wowo.wowo.data.dto.WalletDTO;
+import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
+import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.repository.ApplicationPartnerWalletRepository;
@@ -45,6 +44,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Tag(name = "Application", description = "APIs for managing applications")
 public class ApplicationController {
+
+    private final OrderMapper orderMapper;
 
     private final WalletMapper walletMapper;
 
@@ -132,6 +133,16 @@ public class ApplicationController {
     @IsApplication
     public WalletDTO getWallet(@PathVariable String id, Authentication authentication) {
         log.info("getting wallet with id {}", id);
-        return walletMapper.toDto(applicationServiceImpl.getWallet(authentication,Long.valueOf(id)));
+        return walletMapper.toDto(
+                applicationServiceImpl.getWallet(authentication, Long.valueOf(id)));
+    }
+
+    @IsAdmin
+    @GetMapping("/{id}/order")
+    public Collection<OrderDTO> getListOrder(@PathVariable String id, PagingDTO pagingDTO) {
+        return applicationServiceImpl.getPageOrder(Long.valueOf(id), pagingDTO)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
