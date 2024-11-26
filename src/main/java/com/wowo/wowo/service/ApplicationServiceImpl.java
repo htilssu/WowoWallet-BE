@@ -15,8 +15,10 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
+import com.wowo.wowo.data.dto.OrderHistoryDTO;
 import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
+import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.ApplicationRepository;
@@ -30,11 +32,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
+
+    private final OrderMapper orderMapper;
 
     private final ApplicationRepository applicationRepository;
     private final ApplicationMapper applicationMapper;
@@ -112,6 +117,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.findFirstBySecret(apiKey);
     }
 
+    @Override
+    public List<Application> getAllApplications() {
+        return applicationRepository.findAll();
+    }
+
     public void deleteWallet(Authentication authentication, String id) {
         var applicationId = Long.valueOf(authentication.getPrincipal()
                 .toString());
@@ -135,10 +145,17 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .orElseThrow(() -> new NotFoundException("Wallet not found"));
     }
 
-    public List<Order> getPageOrder(Long aLong, PagingDTO pagingDTO) {
-        var application = getApplicationOrElseThrow(aLong);
-      return  orderRepository.findByApplication_IdOrderByUpdatedDesc(aLong,
-                Pageable.ofSize(pagingDTO.getOffset())
-                        .withPage(pagingDTO.getPage())).stream().toList();
+    public OrderHistoryDTO getApplicationOrder(Long applicationId, PagingDTO pagingDTO) {
+        final List<Order> list = orderRepository.findByApplication_IdOrderByUpdatedDesc(applicationId,
+                        Pageable.ofSize(pagingDTO.getOffset())
+                                .withPage(pagingDTO.getPage()))
+                .stream()
+                .toList();
+
+        final long total = orderRepository.countByApplication_Id(applicationId);
+
+        return new OrderHistoryDTO(list.stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList()), total);
     }
 }

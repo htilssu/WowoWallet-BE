@@ -14,12 +14,10 @@
 
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.annotation.authorized.IsAdmin;
 import com.wowo.wowo.annotation.authorized.IsApplication;
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.*;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
-import com.wowo.wowo.data.mapper.OrderMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
 import com.wowo.wowo.repository.ApplicationPartnerWalletRepository;
@@ -45,10 +43,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Application", description = "APIs for managing applications")
 public class ApplicationController {
 
-    private final OrderMapper orderMapper;
-
     private final WalletMapper walletMapper;
-
     private final ApplicationServiceImpl applicationServiceImpl;
     private final ApplicationMapper applicationMapper;
     private final ApplicationPartnerWalletRepository applicationPartnerWalletRepository;
@@ -138,18 +133,14 @@ public class ApplicationController {
     }
 
     @GetMapping("/{id}/order")
-    public Collection<OrderDTO> getListOrder(@PathVariable String id, PagingDTO pagingDTO) {
-        return applicationServiceImpl.getPageOrder(Long.valueOf(id), pagingDTO)
-                .stream()
-                .map(orderMapper::toDto)
-                .collect(Collectors.toList());
+    public OrderHistoryDTO getListOrder(@PathVariable String id, PagingDTO pagingDTO) {
+        return applicationServiceImpl.getApplicationOrder(Long.valueOf(id), pagingDTO);
     }
 
     @GetMapping("order")
-    public Collection<OrderDTO> getListOrder(@PathVariable Long id, PagingDTO pagingDTO) {
-        return applicationServiceImpl.getPageOrder(id, pagingDTO)
-                .stream()
-                .map(orderMapper::toDto)
-                .collect(Collectors.toList());
+    public OrderHistoryDTO getListOrder(Authentication authentication, PagingDTO pagingDTO) {
+        final Long id = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        return applicationServiceImpl.getApplicationOrder(id, pagingDTO);
     }
 }

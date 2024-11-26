@@ -49,9 +49,8 @@ public class PaymentService {
         var applicationWallet = order.getApplication()
                 .getWallet();
 
-
         final Transaction transaction = transferService.transferMoney(wallet,
-                applicationWallet, order.getMoney());
+                applicationWallet, order.getDiscountMoney());
         order.setTransaction(transaction);
         return order;
     }

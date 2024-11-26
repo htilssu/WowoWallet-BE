@@ -18,6 +18,7 @@ import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.model.Application;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ApplicationService {
@@ -29,4 +30,5 @@ public interface ApplicationService {
     Application getApplicationOrElseThrow(Long applicationId);
     ApplicationPartnerWallet createWallet(Long applicationId);
     Optional<Application> getApplicationBySecretKey(String apiKey);
+    List<Application> getAllApplications();
 }

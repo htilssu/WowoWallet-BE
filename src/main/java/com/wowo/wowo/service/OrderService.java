@@ -1,6 +1,7 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.CheckOrderTask;
+import com.wowo.wowo.controller.OrderController;
 import com.wowo.wowo.data.dto.OrderCreationDTO;
 import com.wowo.wowo.data.dto.OrderDTO;
 import com.wowo.wowo.data.dto.OrderItemCreationDTO;
@@ -21,6 +22,7 @@ import com.wowo.wowo.repository.VoucherRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class OrderService {
@@ -53,11 +56,6 @@ public class OrderService {
         Order order = orderMapperImpl.toEntity(orderCreationDTO);
         order.setDiscountMoney(order.getMoney());
         return createOrder(order, orderCreationDTO.items(), authentication);
-    }
-
-    private void createCheckOrderJob(Order order) {
-        scheduler.schedule(new CheckOrderTask(order, this), constantService.getOrderMaxLifeTime()
-                .longValue(), TimeUnit.MINUTES);
     }
 
     public OrderDTO createOrder(Order order,
@@ -84,6 +82,11 @@ public class OrderService {
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
         createCheckOrderJob(newOrder);
         return orderDTO;
+    }
+
+    private void createCheckOrderJob(Order order) {
+        scheduler.schedule(new CheckOrderTask(order, this), constantService.getOrderMaxLifeTime()
+                .longValue(), TimeUnit.MINUTES);
     }
 
     public Optional<Order> getById(Long id) {
@@ -117,16 +120,23 @@ public class OrderService {
 
         switch (order.getStatus()) {
             case PENDING -> order.setStatus(PaymentStatus.CANCELLED);
-            case SUCCESS -> throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
-            case REFUNDED -> throw new BadRequest("Đơn hàng đã được hoàn tiền");
+            case SUCCESS -> {
+                log.warn("Cannot cancel order {} because it has been paid", order.getId());
+                throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
+            }
+            case REFUNDED -> {
+                log.warn("Cannot cancel order {} because it has been refunded", order.getId());
+                throw new BadRequest("Đơn hàng đã được hoàn tiền");
+            }
             default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
         }
 
+        log.info("Cancel order {} successfully", order.getId());
 
         return orderRepository.save(order);
     }
 
-    public Order refundOrder(@NotNull Long id, Authentication authentication) {
+    public Order refundOrder(@NotNull Long id, OrderController.RefundDTO refundDTO, Authentication authentication) {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
@@ -140,7 +150,7 @@ public class OrderService {
         switch (order.getStatus()) {
             case PENDING -> throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
             case SUCCESS -> {
-                return refundService.refund(order);
+                return refundService.refund(order, refundDTO);
             }
             case REFUNDED -> throw new BadRequest("Đơn hàng đã được hoàn tiền");
             default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
