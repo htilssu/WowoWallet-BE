@@ -9,7 +9,6 @@ import java.io.Serializable;
 /**
  * DTO for {@link OrderItem}
  */
-
 public record OrderItemCreationDTO(@NotNull String name, @Min(1) Long amount, @Min(0) Long unitPrice)
         implements Serializable {
 

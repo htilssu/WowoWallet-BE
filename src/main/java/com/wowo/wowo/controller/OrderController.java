@@ -1,5 +1,6 @@
 package com.wowo.wowo.controller;
 
+import com.wowo.wowo.annotation.authorized.IsApplication;
 import com.wowo.wowo.annotation.authorized.IsAuthenticated;
 import com.wowo.wowo.annotation.authorized.IsPartner;
 import com.wowo.wowo.data.dto.OrderCreationDTO;
@@ -31,7 +32,7 @@ public class OrderController {
     }
 
     @PostMapping("create")
-    @IsPartner
+    @IsApplication
     public ResponseEntity<?> createOrder(@RequestBody @NotNull @Validated OrderCreationDTO orderCreationDTO,
             Authentication authentication) {
         return ResponseEntity.status(201).body(
@@ -39,6 +40,7 @@ public class OrderController {
     }
 
     @PostMapping("{id}/cancel")
+    @IsApplication
     public ResponseEntity<OrderDTO> cancelOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(
@@ -46,6 +48,7 @@ public class OrderController {
     }
 
     @PostMapping("{id}/refund")
+    @IsApplication
     public ResponseEntity<OrderDTO> refundOrder(@PathVariable @NotNull @Validated Long id,
             Authentication authentication) {
         return ResponseEntity.ok(

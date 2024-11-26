@@ -9,6 +9,6 @@ import lombok.Getter;
 @Builder
 public class RefundResponse {
 
-    TransactionDto transaction;
+    TransactionDTO transaction;
     String message;
 }

@@ -25,7 +25,7 @@ public class User {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     @Size(max = 255)
     private String username;
 
@@ -35,6 +35,9 @@ public class User {
 
     @Column(name = "first_name")
     private String firstName;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserWallet wallet;
 
     @Column(name = "last_name")
     private String lastName;

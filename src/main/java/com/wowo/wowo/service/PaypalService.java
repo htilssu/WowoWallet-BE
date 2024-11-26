@@ -5,8 +5,8 @@ import com.paypal.sdk.controllers.OrdersController;
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.http.response.ApiResponse;
 import com.paypal.sdk.models.*;
-import com.wowo.wowo.data.dto.TopUpRequestDto;
-import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.data.dto.TopUpRequestDTO;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.TopUpRequest;
 import com.wowo.wowo.repository.TopUpRequestRepository;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,6 @@ public class PaypalService {
     public Order createOrder() throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
-
         OrdersCreateInput ordersCreateInput = new OrdersCreateInput.Builder(null,
                 new OrderRequest.Builder(CheckoutPaymentIntent.CAPTURE, Collections.singletonList(
                         new PurchaseUnitRequest.Builder(new AmountWithBreakdown.Builder("USD",
@@ -43,7 +42,7 @@ public class PaypalService {
         return orderApiResponse.getResult();
     }
 
-    public Order createTopUpOrder(TopUpRequestDto topUpRequestDto) throws IOException,
+    public Order createTopUpOrder(TopUpRequestDTO topUpRequestDTO) throws IOException,
                                                                           ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
 
@@ -52,7 +51,7 @@ public class PaypalService {
                 new OrderRequest.Builder(CheckoutPaymentIntent.CAPTURE, Collections.singletonList(
                         new PurchaseUnitRequest.Builder(
                                 new AmountWithBreakdown.Builder("USD", BigDecimal.valueOf(
-                                                topUpRequestDto.getAmount() / 23000D)
+                                                topUpRequestDTO.getAmount() / 23000D)
                                         .setScale(2, RoundingMode.HALF_UP)
                                         .toString()).build()).build())).applicationContext(
                         new OrderApplicationContext.Builder().returnUrl(
@@ -64,14 +63,14 @@ public class PaypalService {
 
             final Order order = orderApiResponse.getResult();
             topUpRequestRepository.save(TopUpRequest.builder().orderId(order.getId())
-                    .walletId(topUpRequestDto.getTo()).amount(topUpRequestDto.getAmount()).build());
+                    .walletId(topUpRequestDTO.getTo()).amount(topUpRequestDTO.getAmount()).build());
             return order;
         }
 
         return null;
     }
 
-    public Wallet captureOrder(String orderId) throws IOException, ApiException {
+    public UserWallet captureOrder(String orderId) throws IOException, ApiException {
         final OrdersController ordersController = paypalServerSDKClient.getOrdersController();
         final ApiResponse<Order> orderApiResponse = ordersController.ordersCapture(
                 new OrdersCaptureInput.Builder(orderId, null)

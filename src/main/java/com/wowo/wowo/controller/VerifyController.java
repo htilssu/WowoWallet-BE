@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.wowo.wowo.data.dto.VerifyDto;
+import com.wowo.wowo.data.dto.VerifyDTO;
 import com.wowo.wowo.exception.UserNotFoundException;
 import com.wowo.wowo.model.User;
 import com.wowo.wowo.model.Verify;
@@ -60,17 +60,17 @@ public class VerifyController {
         String behindImagePath = saveFile(behindImage);
         String userImagePath = saveFile(userImage);
 
-        VerifyDto verifyDto = new VerifyDto();
-        verifyDto.setCustomer(new VerifyDto.Customer(customerId)); 
-        verifyDto.setFontImage(frontImagePath);
-        verifyDto.setBehindImage(behindImagePath);
-        verifyDto.setUserImage(userImagePath);
-        verifyDto.setNumberCard(numberCard); 
-        verifyDto.setOpenDay(openDay);        
-        verifyDto.setCloseDay(closeDay);      
-        verifyDto.setType(type);
+        VerifyDTO verifyDTO = new VerifyDTO();
+        verifyDTO.setCustomer(new VerifyDTO.Customer(customerId)); 
+        verifyDTO.setFontImage(frontImagePath);
+        verifyDTO.setBehindImage(behindImagePath);
+        verifyDTO.setUserImage(userImagePath);
+        verifyDTO.setNumberCard(numberCard); 
+        verifyDTO.setOpenDay(openDay);        
+        verifyDTO.setCloseDay(closeDay);      
+        verifyDTO.setType(type);
     
-        String validationError = verifyService.validateVerifyData(verifyDto);
+        String validationError = verifyService.validateVerifyData(verifyDTO);
         if (validationError != null) {
             return ResponseEntity.badRequest().body(validationError);
         }
@@ -94,7 +94,7 @@ public class VerifyController {
                     .body("Bạn đã gửi yêu cầu chứng thực rồi vui lòng đợi.");
             }
     
-            verifyService.createVerify(verifyDto);
+            verifyService.createVerify(verifyDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Đã gửi yêu cầu chứng thực");
     
         } catch (UserNotFoundException e) {
@@ -136,15 +136,15 @@ public class VerifyController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<VerifyDto>> getAllVerifications() {
-        List<VerifyDto> verificationDtos = verifyService.getAllVerify().stream()
+    public ResponseEntity<List<VerifyDTO>> getAllVerifications() {
+        List<VerifyDTO> verificationDTOs = verifyService.getAllVerify().stream()
             .map(verify -> {
-                VerifyDto dto = new VerifyDto();
+                VerifyDTO dto = new VerifyDTO();
                 dto.setId(verify.getId());
-                VerifyDto.Customer customerDto = new VerifyDto.Customer(
+                VerifyDTO.Customer customerDTO = new VerifyDTO.Customer(
                     verify.getCustomer() != null ? verify.getCustomer().getId() : null
                 );
-                dto.setCustomer(customerDto);
+                dto.setCustomer(customerDTO);
 
                 dto.setType(verify.getType());
                 dto.setNumberCard(verify.getNumberCard());
@@ -157,7 +157,7 @@ public class VerifyController {
             })
             .toList();
 
-        return ResponseEntity.ok(verificationDtos);
+        return ResponseEntity.ok(verificationDTOs);
     }
 
     @PostMapping("/approve/{userId}")

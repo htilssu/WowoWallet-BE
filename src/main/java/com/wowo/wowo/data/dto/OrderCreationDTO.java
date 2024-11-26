@@ -10,7 +10,6 @@ import java.util.Collection;
 /**
  * DTO for {@link com.wowo.wowo.model.Order}
  */
-
 public record OrderCreationDTO(@NotNull @PositiveOrZero(
         message = "Số tiền phải lớn hơn hoặc bằng 0") Long money,
                                @NotNull Collection<OrderItemCreationDTO> items,

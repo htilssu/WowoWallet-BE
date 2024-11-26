@@ -31,11 +31,10 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class AtmCardCreationDTO {
 
     @NotNull
-    @CreditCardNumber
+    @CreditCardNumber(message = "Card Number không hợp lệ")
     private String cardNumber;
     private String atmId;
     @Size(max = 3)

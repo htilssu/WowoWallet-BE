@@ -32,11 +32,11 @@ public class DayAnalysis extends Analysis {
     int day;
 
     public void update(Transaction transaction) {
-        switch (transaction.getType()) {
-            case IN:
+        switch (transaction.getFlowType()) {
+            case RECEIVE_MONEY, WITHDRAW_GROUP_FUND, TOP_UP:
                 this.totalInMoney += transaction.getAmount();
                 break;
-            case OUT:
+            case TRANSFER_MONEY, TOP_UP_GROUP_FUND, WITHDRAW:
                 this.totalOutMoney += transaction.getAmount();
                 break;
             default:

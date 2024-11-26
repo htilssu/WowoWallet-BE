@@ -1,25 +1,22 @@
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.request.CreateWalletDto;
-import com.wowo.wowo.data.dto.*;
-import com.wowo.wowo.data.dto.WalletResponse;
+import com.wowo.wowo.data.dto.WalletCreationDTO;
+import com.wowo.wowo.data.dto.WalletDTO;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.Wallet;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
 public interface WalletMapper {
 
-    // Chuyển đổi từ Wallet sang WalletResponse
-    WalletResponse toResponse(Wallet wallet);
+    Wallet toEntity(WalletCreationDTO walletCreationDTO);
 
-    // Chuyển đổi từ CreateWalletDto sang Wallet
-    Wallet toEntity(CreateWalletDto createWalletDto);
+    WalletDTO toDto(Wallet userWallet);
 
-    // Chuyển đổi từ Wallet sang CreateWalletDto (nếu cần)
-    WalletDto toDto(Wallet wallet);
-
-    // Phương thức cập nhật (nếu cần)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Wallet partialUpdate(CreateWalletDto createWalletDto, @MappingTarget Wallet wallet);
+    Wallet partialUpdate(WalletCreationDTO walletCreationDTO,
+            @MappingTarget Wallet userWallet);
 }

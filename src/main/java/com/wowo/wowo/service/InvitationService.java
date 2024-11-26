@@ -1,6 +1,6 @@
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.GroupFundInvitationDto;
+import com.wowo.wowo.data.dto.GroupFundInvitationDTO;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.exception.ReceiverNotFoundException;
 import com.wowo.wowo.exception.UserNotFoundException;
@@ -87,18 +87,18 @@ public class InvitationService {
     }
 
     // Lấy tất cả lời mời đã gửi đi
-    public List<GroupFundInvitationDto> getSentInvitations(Authentication authentication) {
+    public List<GroupFundInvitationDTO> getSentInvitations(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
         User sender = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
 
         List<GroupFundInvitation> groupFundInvitations = invitationRepository.findBySender(sender);
 
-        return mapToDtoList(groupFundInvitations);
+        return mapToDTOList(groupFundInvitations);
     }
 
     // Lấy tất cả lời mời được nhận
-    public List<GroupFundInvitationDto> getReceivedInvitations(Authentication authentication) {
+    public List<GroupFundInvitationDTO> getReceivedInvitations(Authentication authentication) {
         String userId = (String) authentication.getPrincipal();
         User recipient = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
@@ -107,13 +107,13 @@ public class InvitationService {
                 recipient);
 
         // Chuyển đổi sang DTO
-        return mapToDtoList(groupFundInvitations);
+        return mapToDTOList(groupFundInvitations);
     }
 
     // map entity list to DTO list
-    private List<GroupFundInvitationDto> mapToDtoList(List<GroupFundInvitation> invitations) {
+    private List<GroupFundInvitationDTO> mapToDTOList(List<GroupFundInvitation> invitations) {
         return invitations.stream()
-                .map(invitation -> new GroupFundInvitationDto(
+                .map(invitation -> new GroupFundInvitationDTO(
                         invitation.getId(),
                         invitation.getGroupFund()
                                 .getName(),

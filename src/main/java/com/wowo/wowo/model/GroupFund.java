@@ -47,21 +47,16 @@ public class GroupFund {
     private Long target;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
+    @OneToOne(mappedBy = "groupFund", cascade = CascadeType.ALL)
+    private GroupFundWallet wallet;
 
     @Column(name = "is_locked", nullable = false, columnDefinition = "boolean default false")
     private boolean isLocked = false;
 
     @OneToMany(mappedBy = "group")
     private Set<FundMember> fundMembers = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "group")
-    private Set<GroupFundTransaction> groupFundTransactions = new LinkedHashSet<>();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "created_date", nullable = false, updatable = false)
@@ -70,4 +65,10 @@ public class GroupFund {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "target_date", nullable = false)
     private LocalDate targetDate;
+
+    public boolean isMember(User user) {
+        return getFundMembers().stream()
+                .anyMatch(member -> member.getMember()
+                        .equals(user));
+    }
 }

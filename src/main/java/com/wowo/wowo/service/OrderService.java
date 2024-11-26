@@ -35,26 +35,35 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapperImpl orderMapperImpl;
-    private final PartnerService partnerService;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemMapper orderItemMapper;
     private final RefundService refundService;
     private final OrderMapper orderMapper;
     private final VoucherRepository voucherRepository;
     private final VoucherService voucherService;
-
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final ConstantService constantService;
+    private final ApplicationService applicationService;
+
+    public OrderDTO createOrder(OrderCreationDTO orderCreationDTO, Authentication authentication) {
+        Order order = orderMapperImpl.toEntity(orderCreationDTO);
+        order.setDiscountMoney(order.getMoney());
+        return createOrder(order, orderCreationDTO.items(), authentication);
+    }
+
+    private void createCheckOrderJob(Order order) {
+        scheduler.schedule(new CheckOrderTask(order, this), constantService.getOrderMaxLifeTime()
+                .longValue(), TimeUnit.MINUTES);
+    }
 
     public OrderDTO createOrder(Order order,
             Collection<OrderItemCreationDTO> orderItemCreationDTOS,
             Authentication authentication) {
-        var partnerId = authentication.getPrincipal()
-                .toString();
-        var partner = partnerService.getPartnerById(partnerId)
-                .orElseThrow(() -> new BadRequest("Không tìm thấy đối tác"));
+        var applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        var application = applicationService.getApplicationOrElseThrow(applicationId);
 
-        order.setPartner(partner);
+        order.setApplication(application);
         final Order newOrder = orderRepository.save(order);
         var orderItems = orderItemCreationDTOS.stream()
                 .map(orderItemMapper::toEntity)
@@ -69,20 +78,8 @@ public class OrderService {
         orderDTO.setItems(orderItemCreationDTOS);
         orderDTO.setVouchers(Collections.emptyList());
         orderDTO.setCheckoutUrl("https://wowo.htilssu.id.vn/order/" + order.getId());
-
+        createCheckOrderJob(newOrder);
         return orderDTO;
-    }
-
-    public OrderDTO createOrder(OrderCreationDTO orderCreationDTO, Authentication authentication) {
-        Order order = orderMapperImpl.toEntity(orderCreationDTO);
-        order.setDiscountMoney(order.getMoney());
-        createCheckOrderJob(order);
-        return createOrder(order, orderCreationDTO.items(), authentication);
-    }
-
-    private void createCheckOrderJob(Order order) {
-        scheduler.schedule(new CheckOrderTask(order, this), constantService.getOrderMaxLifeTime()
-                .longValue(), TimeUnit.MINUTES);
     }
 
     public Optional<Order> getById(Long id) {
@@ -107,23 +104,17 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner()
+        if (!order.getApplication()
                 .getId()
-                .equals(authentication.getPrincipal()
-                        .toString())) {
+                .equals(Long.valueOf(authentication.getPrincipal()
+                        .toString()))) {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
         switch (order.getStatus()) {
-            case PENDING -> {
-                order.setStatus(PaymentStatus.CANCELLED);
-            }
-            case SUCCESS -> {
-                throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
-            }
-            case REFUNDED -> {
-                throw new BadRequest("Đơn hàng đã được hoàn tiền");
-            }
+            case PENDING -> order.setStatus(PaymentStatus.CANCELLED);
+            case SUCCESS -> throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
+            case REFUNDED -> throw new BadRequest("Đơn hàng đã được hoàn tiền");
             default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
         }
 
@@ -135,30 +126,21 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        if (!order.getPartner()
+        if (!order.getApplication()
                 .getId()
-                .equals(authentication.getPrincipal()
-                        .toString())) {
+                .equals(Long.valueOf(authentication.getPrincipal()
+                        .toString()))) {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
         switch (order.getStatus()) {
-            case PENDING -> {
-                throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
-            }
+            case PENDING -> throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
             case SUCCESS -> {
                 return refundService.refund(order);
             }
-            case REFUNDED -> {
-                throw new BadRequest("Đơn hàng đã được hoàn tiền");
-            }
+            case REFUNDED -> throw new BadRequest("Đơn hàng đã được hoàn tiền");
             default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
         }
-    }
-
-    public Order getOrderOrThrow(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
     }
 
     public Order useVoucher(UseVoucherMessage message) {
@@ -168,6 +150,11 @@ public class OrderService {
         order.useVoucher(voucher);
         voucherService.save(voucher);
         return orderRepository.save(order);
+    }
+
+    public Order getOrderOrThrow(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
     }
 
     public void cancelOrder(Order orderInDb) {

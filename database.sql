@@ -138,3 +138,7 @@ VALUES (17, 'Ngân hàng TMCP Công thương Việt Nam', 'ICB', '970415', 'Viet
         0, 1, 'CIBBVNVN'),
        (6, 'Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam', 'CBB', '970444', 'CBBank',
         'https://api.vietqr.io/img/CBB.png', 0, 1, 0, 0, 'GTBAVNVX');
+
+
+insert into wallet (id, type, balance, version)
+values (-1, 'USER', 1000000000, 0);

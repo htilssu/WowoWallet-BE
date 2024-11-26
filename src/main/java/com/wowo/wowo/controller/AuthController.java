@@ -2,7 +2,6 @@ package com.wowo.wowo.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.data.dto.SSOData;
-import com.wowo.wowo.service.PartnerService;
 import com.wowo.wowo.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-    private final PartnerService partnerService;
 
     @RequestMapping("/sso")
     @PreAuthorize("isAuthenticated()")
@@ -50,7 +48,6 @@ public class AuthController {
             case "partner" -> {
                 SSOData ssoData = new SSOData(email, partnerId, username, firstName, lastName,
                         name);
-                partnerService.createPartner(ssoData);
             }
 
             default -> throw new IllegalStateException("Unexpected value: " + role);

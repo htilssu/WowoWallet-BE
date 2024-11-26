@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wowo.wowo.data.dto.SupportTicketDto;
+import com.wowo.wowo.data.dto.SupportTicketDTO;
 import com.wowo.wowo.exception.UserNotFoundException;
 import com.wowo.wowo.model.SupportTicket;
 import com.wowo.wowo.model.SupportTicketStatus;
@@ -35,9 +35,9 @@ public class TicketController {
     private UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createTicket(@RequestBody SupportTicketDto supportTicketDto) {
+    public ResponseEntity<String> createTicket(@RequestBody SupportTicketDTO supportTicketDTO) {
         try {
-            String customerId = supportTicketDto.getCustomer().getId();
+            String customerId = supportTicketDTO.getCustomer().getId();
 
             if (customerId == null || customerId.isEmpty()) {
                 return ResponseEntity.badRequest().body("Không tìm thấy thông tin khách hàng.");
@@ -53,7 +53,7 @@ public class TicketController {
                 return ResponseEntity.badRequest().body("Bạn đã gửi một yêu cầu hỗ trợ chưa được phản hồi.");
             }
 
-            supportTicketService.createTicket(supportTicketDto);
+            supportTicketService.createTicket(supportTicketDTO);
             return ResponseEntity.ok("Yêu cầu hỗ trợ của bạn đã được tạo. Vui lòng chờ.");
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -67,13 +67,13 @@ public class TicketController {
     }
 
     @GetMapping("/user/{customerId}")
-    public ResponseEntity<List<SupportTicketDto>> getUserTickets(@PathVariable String customerId) {
+    public ResponseEntity<List<SupportTicketDTO>> getUserTickets(@PathVariable String customerId) {
         List<SupportTicket> tickets = supportTicketService.getUserTicket(customerId);
 
-        List<SupportTicketDto> ticketDTOs = tickets.stream()
-            .map(ticket -> new SupportTicketDto(
+        List<SupportTicketDTO> ticketDTOs = tickets.stream()
+            .map(ticket -> new SupportTicketDTO(
                 ticket.getId(),
-                new SupportTicketDto.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
+                new SupportTicketDTO.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
                 ticket.getTitle(),
                 ticket.getContent(),
                 ticket.getStatus().name()
@@ -84,12 +84,12 @@ public class TicketController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<SupportTicketDto>> getAllTickets() {
+    public ResponseEntity<List<SupportTicketDTO>> getAllTickets() {
         List<SupportTicket> tickets = supportTicketService.getAllTickets();
-        List<SupportTicketDto> ticketDTOs = tickets.stream()
-            .map(ticket -> new SupportTicketDto(
+        List<SupportTicketDTO> ticketDTOs = tickets.stream()
+            .map(ticket -> new SupportTicketDTO(
                 ticket.getId(),
-                new SupportTicketDto.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
+                new SupportTicketDTO.Customer(ticket.getCustomer() != null ? ticket.getCustomer().getId() : null),
                 ticket.getTitle(),
                 ticket.getContent(),
                 ticket.getStatus().name()
@@ -114,10 +114,10 @@ public class TicketController {
     }
 
     @PostMapping("/{id}/again")
-    public ResponseEntity<String> requestTicketAgain(@PathVariable Long id, @RequestBody SupportTicketDto supportTicketDto) {
+    public ResponseEntity<String> requestTicketAgain(@PathVariable Long id, @RequestBody SupportTicketDTO supportTicketDTO) {
         try {
 
-            String customerId = supportTicketDto.getCustomer().getId();
+            String customerId = supportTicketDTO.getCustomer().getId();
 
             if (customerId == null || customerId.isEmpty()) {
                 return ResponseEntity.badRequest().body("Không tìm thấy thông tin khách hàng.");
@@ -150,15 +150,15 @@ public class TicketController {
                 return ResponseEntity.badRequest().body("Yêu cầu hỗ trợ này đã được xử lý");
             }
 
-            SupportTicketDto newTicketDto = new SupportTicketDto(
+            SupportTicketDTO newTicketDTO = new SupportTicketDTO(
                 null, 
-                new SupportTicketDto.Customer(ticket.getCustomer().getId()), 
+                new SupportTicketDTO.Customer(ticket.getCustomer().getId()), 
                 ticket.getTitle(), 
                 ticket.getContent(), 
                 SupportTicketStatus.OPEN.name() 
             );
 
-            supportTicketService.createTicket(newTicketDto);
+            supportTicketService.createTicket(newTicketDTO);
 
             return ResponseEntity.ok("Yêu cầu hỗ trợ đã được gửi lại.");
         } catch (Exception e) {

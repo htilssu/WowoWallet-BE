@@ -2,7 +2,10 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.OrderDTO;
+import com.wowo.wowo.kafka.message.VoucherMessage;
 import com.wowo.wowo.kafka.producer.VoucherProducer;
+import com.wowo.wowo.model.Order;
+import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.service.OrderService;
 import com.wowo.wowo.service.PaymentService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,12 +28,14 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final OrderService orderService;
+    private final VoucherProducer voucherProducer;
 
     @PostMapping("/{id}")
     public OrderDTO makePay(@PathVariable Long id, Authentication authentication) {
 
-        paymentService.pay(id, authentication);
-
+        final Order order = paymentService.pay(id, authentication);
+        voucherProducer.sendVoucherMessage(
+                new VoucherMessage(order.getId(), PaymentStatus.SUCCESS));
         return orderService.getOrderDetail(id);
     }
 }

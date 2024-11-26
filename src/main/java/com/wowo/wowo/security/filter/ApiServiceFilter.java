@@ -1,7 +1,7 @@
 package com.wowo.wowo.security.filter;
 
-import com.wowo.wowo.model.Partner;
-import com.wowo.wowo.repository.PartnerRepository;
+import com.wowo.wowo.model.Application;
+import com.wowo.wowo.service.ApplicationServiceImpl;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class ApiServiceFilter implements Filter {
 
-    PartnerRepository partnerRepository;
+    ApplicationServiceImpl applicationService;
 
     // ApiServiceFilter.java
     @Override
@@ -34,8 +35,8 @@ public class ApiServiceFilter implements Filter {
             return;
         }
 
-        Partner partner = partnerRepository.findPartnerByApiKey(apiKey).orElse(null);
-        if (partner == null) {
+        Optional<Application> application = applicationService.getApplicationBySecretKey(apiKey);
+        if (application.isEmpty()) {
             chain.doFilter(request, response);
             return;
         }
@@ -46,16 +47,14 @@ public class ApiServiceFilter implements Filter {
 
         final UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        partner.getId(),
+                        application.get()
+                                .getId(),
                         apiKey,
-                        Collections.singleton(new SimpleGrantedAuthority("ROLE_PARTNER")));
-        authenticationToken.setDetails(partner);
+                        Collections.singleton(new SimpleGrantedAuthority("ROLE_APPLICATION")));
+        authenticationToken.setDetails(application);
 
         context.setAuthentication(authenticationToken);
         contextHolderStrategy.setContext(context);
-
-        // Debug logging
-        System.out.println("ApiServiceFilter set SecurityContext: " + context.getAuthentication());
 
         chain.doFilter(request, response);
     }
