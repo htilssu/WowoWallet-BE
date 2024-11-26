@@ -3,6 +3,6 @@ package com.wowo.wowo.model;
 public enum PaymentStatus {
     PENDING,
     SUCCESS,
-    CANCELLED, REFUNDED
+    CANCELLED, FAIL, REFUNDED
 
 }

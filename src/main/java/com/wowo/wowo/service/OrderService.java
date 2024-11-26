@@ -10,6 +10,7 @@ import com.wowo.wowo.data.mapper.OrderMapperImpl;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.kafka.message.UseVoucherMessage;
+import com.wowo.wowo.kafka.producer.VoucherProducer;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.OrderItem;
 import com.wowo.wowo.model.PaymentStatus;
@@ -19,6 +20,7 @@ import com.wowo.wowo.repository.OrderRepository;
 import com.wowo.wowo.repository.VoucherRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,8 @@ public class OrderService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final ConstantService constantService;
     private final ApplicationService applicationService;
+    @Getter
+    private final VoucherProducer voucherProducer;
 
     public OrderDTO createOrder(OrderCreationDTO orderCreationDTO, Authentication authentication) {
         Order order = orderMapperImpl.toEntity(orderCreationDTO);
