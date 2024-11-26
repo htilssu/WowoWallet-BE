@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findByApplication_IdOrderByUpdatedDesc(Long applicationId, Pageable pageable);
+    long countByApplication_Id(Long applicationId);
 }
