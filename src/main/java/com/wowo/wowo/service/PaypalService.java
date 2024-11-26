@@ -91,7 +91,7 @@ public class PaypalService {
             topUpService.topUpWithLimit(orderId);
         }
         else {
-            System.out.println("Capture order failed");
+            log.error("Capture order {} failed", orderId);
         }
         return null;
     }

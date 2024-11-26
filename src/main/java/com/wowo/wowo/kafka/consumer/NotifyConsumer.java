@@ -28,7 +28,7 @@ public class NotifyConsumer {
             final NotifyDTO notifyDTO = objectMapper.readValue(message, NotifyDTO.class);
             notifyService.notifyReceiveMoney(notifyDTO.getReceiverId(), notifyDTO)
                     .thenAccept(_ -> {
-                        System.out.println("Received notify message: " + message);
+                        log.info("Notify message processed: {}", message);
                     });
         } catch (JsonProcessingException e) {
             log.error("Error processing notify message: {}", message);

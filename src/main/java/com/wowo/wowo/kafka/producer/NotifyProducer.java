@@ -1,22 +1,26 @@
 package com.wowo.wowo.kafka.producer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wowo.wowo.data.dto.MessageType;
 import com.wowo.wowo.data.dto.NotifyDTO;
 import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.model.UserWallet;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
-public class NotifyProducer extends KafkaTemplate<String, NotifyDTO> {
+public class NotifyProducer extends KafkaTemplate<String, String> {
 
-    public NotifyProducer(ProducerFactory<String, NotifyDTO> producerFactory) {
+    private final ObjectMapper objectMapper;
+
+    public NotifyProducer(ProducerFactory<String, String> producerFactory,
+            ObjectMapper objectMapper) {
         super(producerFactory);
-    }
-
-    public void sendNotifyMessage(NotifyDTO message) {
-        this.send("notify", message);
+        this.objectMapper = objectMapper;
     }
 
     public void pushNotifyMessage(Transaction transaction) {
@@ -30,7 +34,11 @@ public class NotifyProducer extends KafkaTemplate<String, NotifyDTO> {
                             "Bạn vừa nhận được " + transaction.getAmount() + " VND")
                     .type(MessageType.RECEIVED_TRANSFER)
                     .build();
-            this.send("notify", notifyDTO);
+            try {
+                this.send("notify", objectMapper.writeValueAsString(notifyDTO));
+            } catch (JsonProcessingException e) {
+                log.error("Error when serializing notify message: {}", e.getMessage());
+            }
         }
     }
 }
