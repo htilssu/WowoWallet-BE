@@ -1,7 +1,7 @@
 package com.wowo.wowo.service;
 
+import com.wowo.wowo.repository.ApplicationRepository;
 import com.wowo.wowo.repository.GroupFundRepository;
-import com.wowo.wowo.repository.PartnerRepository;
 import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
@@ -16,8 +16,7 @@ public class StatisticsService {
     private final GroupFundRepository groupFundRepository;
 
     private final UserRepository userRepository;
-
-    private final PartnerRepository partnerRepository;
+    private final ApplicationRepository applicationRepository;
 
     // Phương thức trả về tổng số Wallet
     public long getTotalWallets() {
@@ -34,9 +33,10 @@ public class StatisticsService {
         return userRepository.count();
     }
 
-    // Phương thức trả về tổng số Partner
-    public long getTotalPartners() {
-        return partnerRepository.count();
+    public long getTotalApplication() {
+        return applicationRepository.count();
     }
+
+    // Phương thức trả về tổng số Partner
 }
 
