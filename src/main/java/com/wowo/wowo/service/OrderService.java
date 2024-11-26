@@ -130,7 +130,7 @@ public class OrderService {
                 .getId()
                 .equals(Long.valueOf(authentication.getPrincipal()
                         .toString()))) {
-            throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
+            throw new BadRequest("Không thể hủy đơn hàng của application khác");
         }
 
         switch (order.getStatus()) {

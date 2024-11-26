@@ -21,7 +21,7 @@ public class RefundService {
         var senderWallet = walletTransaction.getSenderWallet();
         var receiverWallet = walletTransaction.getReceiveWallet();
 
-        transferService.transferWithNoFee(senderWallet, receiverWallet,
+        transferService.transferWithNoFee(receiverWallet, senderWallet,
                 walletTransaction.getAmount());
 
         order.setStatus(PaymentStatus.REFUNDED);
