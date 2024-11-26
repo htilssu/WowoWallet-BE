@@ -15,16 +15,35 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.WithdrawDTO;
+import com.wowo.wowo.model.FlowType;
+import com.wowo.wowo.model.Transaction;
+import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WithdrawService {
 
     private final WalletService walletService;
+    private final TransferService transferService;
+    private final TransactionRepository transactionRepository;
 
-    public WithdrawService(WalletService walletService) {this.walletService = walletService;}
+    public WithdrawService(WalletService walletService, TransferService transferService,
+            TransactionRepository transactionRepository) {
+        this.walletService = walletService;
+        this.transferService = transferService;
+        this.transactionRepository = transactionRepository;
+    }
 
     public void withdraw(WithdrawDTO withdrawDTO) {
-        walletService.plusBalance(withdrawDTO.getSourceId(), withdrawDTO.getAmount() * -1);
+        final Wallet wallet = walletService.getWallet(Long.valueOf(withdrawDTO.getSourceId()));
+        final Wallet rootWallet = walletService.getRootWallet();
+        transferService.transferWithNoFee(wallet, rootWallet, withdrawDTO.getAmount());
+        Transaction transaction = new Transaction();
+        transaction.setAmount(withdrawDTO.getAmount());
+        transaction.setSenderWallet(wallet);
+        transaction.setReceiveWallet(rootWallet);
+        transaction.setFlowType(FlowType.WITHDRAW);
+        transactionRepository.save(transaction);
     }
 }

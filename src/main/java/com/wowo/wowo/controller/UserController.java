@@ -8,7 +8,10 @@ import com.wowo.wowo.data.dto.WalletDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.data.mapper.WalletMapper;
-import com.wowo.wowo.model.*;
+import com.wowo.wowo.model.Application;
+import com.wowo.wowo.model.MonthAnalysis;
+import com.wowo.wowo.model.User;
+import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.repository.UserWalletRepository;
 import com.wowo.wowo.service.UserService;
@@ -47,7 +50,7 @@ public class UserController {
                  useReturnTypeSchema = true)
     @ApiResponse(responseCode = "404", description = "Không tìm thấy thông tin")
     public UserDTO getUser(Authentication authentication) {
-//        TODO
+        //        TODO
         String id = authentication.getPrincipal()
                 .toString();
         return userMapperImpl.toDto(userService.getUserByIdOrElseThrow(id));
