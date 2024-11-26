@@ -20,12 +20,12 @@ public class StatisticsController {
         long totalWallets = statisticsService.getTotalWallets();
         long totalGroupFunds = statisticsService.getTotalGroupFunds();
         long totalUsers = statisticsService.getTotalUsers();
-        long totalPartners = statisticsService.getTotalPartners();
+        long totalApplications = statisticsService.getTotalApplication();
 
         // Trả về thông tin thống kê dưới dạng JSON
         return String.format(
                 "{ \"total_wallets\": %d, \"total_group_funds\": %d, \"total_users\": %d, \"total_partners\": %d }",
-                totalWallets, totalGroupFunds, totalUsers, totalPartners
+                totalWallets, totalGroupFunds, totalUsers, totalApplications
         );
     }
 }
