@@ -44,6 +44,7 @@ public class WithdrawService {
         transaction.setSenderWallet(wallet);
         transaction.setReceiveWallet(rootWallet);
         transaction.setFlowType(FlowType.WITHDRAW);
+        transaction.setReceiverName("Ngân hàng liên kết");
         transactionRepository.save(transaction);
     }
 }
