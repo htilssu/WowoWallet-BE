@@ -2,6 +2,7 @@ package com.wowo.wowo.service;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.constant.Constant;
+import com.wowo.wowo.data.dto.ApplicationTransferDTO;
 import com.wowo.wowo.data.dto.TransferDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.InsufficientBalanceException;
@@ -29,6 +30,7 @@ public class TransferService {
     private final WalletService walletService;
     private final TransactionService transactionService;
     private final UserService userService;
+    private final ApplicationServiceImpl applicationServiceImpl;
 
     @Transactional
     public Transaction transferWithLimit(TransferDTO data, Authentication authentication) {
@@ -60,7 +62,8 @@ public class TransferService {
         if (senderWallet instanceof UserWallet userWallet) {
             if (!userWallet.getUser()
                     .getId()
-                    .equals(authentication.getPrincipal().toString())) {
+                    .equals(authentication.getPrincipal()
+                            .toString())) {
 
                 throw new BadRequest("Không thể chuyển tiền từ ví này");
             }
@@ -161,5 +164,30 @@ public class TransferService {
         transfer(source, destination, amount);
         transferToRoot(source, tax);
         walletService.save(source, destination);
+    }
+
+    public void transfer(ApplicationTransferDTO transferDTO, Authentication authentication) {
+        var applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        var application = applicationServiceImpl.getApplicationOrElseThrow(applicationId);
+        var sourceWallet = application.getWallet();
+        var destinationWallet = walletRepository.findById(transferDTO.getWalletId())
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy ví"));
+
+        transferWithNoFee(sourceWallet, destinationWallet, transferDTO.getAmount());
+
+        //TODO: save transaction
+    }
+
+    public void withdraw(ApplicationTransferDTO transferDTO, Authentication authentication) {
+        var applicationId = Long.valueOf(authentication.getPrincipal()
+                .toString());
+        var application = applicationServiceImpl.getApplicationOrElseThrow(applicationId);
+        var sourceWallet = walletService.getWallet(transferDTO.getWalletId());
+        var destinationWallet = application.getWallet();
+
+        transferWithNoFee(sourceWallet, destinationWallet, transferDTO.getAmount());
+
+        //TODO: save transaction
     }
 }
