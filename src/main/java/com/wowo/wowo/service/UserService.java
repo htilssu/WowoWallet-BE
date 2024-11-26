@@ -34,7 +34,7 @@ public class UserService {
         var newUser = new User();
         newUser.setId(ssoData.getId());
         newUser.setEmail(ssoData.getEmail());
-        newUser.setUsername(ssoData.getUsername());
+        newUser.setUsername(ssoData.getEmail());
         newUser.setFirstName(ssoData.getFirstName());
         newUser.setLastName(ssoData.getLastName());
 
