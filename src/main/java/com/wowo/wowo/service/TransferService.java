@@ -59,8 +59,8 @@ public class TransferService {
         String senderName = "";
         if (senderWallet instanceof UserWallet userWallet) {
             if (!userWallet.getUser()
-                    .getUsername()
-                    .equals(authentication.getName())) {
+                    .getId()
+                    .equals(authentication.getPrincipal().toString())) {
 
                 throw new BadRequest("Không thể chuyển tiền từ ví này");
             }
