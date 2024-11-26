@@ -5,6 +5,7 @@ import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.dto.TransactionDTO;
 import com.wowo.wowo.data.dto.TransactionHistoryResponseDTO;
 import com.wowo.wowo.service.TransactionService;
+import com.wowo.wowo.model.PaymentStatus;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @AllArgsConstructor
@@ -72,6 +74,12 @@ public class TransactionController {
         //TODO: Implement refundTransaction
         return ResponseEntity.ok()
                 .build();
+    }
+
+    //Thống kê
+    @GetMapping("/stats")
+    public List<Map<String, Object>> getTransactionStats() {
+        return transactionService.getTransactionStats();
     }
 
 }

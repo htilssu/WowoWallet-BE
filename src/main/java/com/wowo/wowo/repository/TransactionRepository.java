@@ -16,4 +16,20 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
     List<Transaction> getGroupFundTransaction(Long groupId, Pageable pageable);
     List<Transaction> findTransactionsByReceiveWalletOrSenderWallet(@NotNull Wallet receiveWallet, @NotNull Wallet senderWallet, Pageable pageable);
     long countTransactionBySenderWalletOrReceiveWallet(@NotNull Wallet senderWallet, @NotNull Wallet receiveWallet);
+
+    //Thống kê
+    @Query(value = """
+            SELECT 
+                COUNT(*) AS total_transactions,
+                SUM(amount) AS total_amount,
+            
+                status,
+                COUNT(*) FILTER (WHERE status = 2) AS total_success,
+                COUNT(*) FILTER (WHERE status = 1) AS total_pending,
+                COUNT(*) FILTER (WHERE status = 3) AS total_cancelled,
+                COUNT(*) FILTER (WHERE status = 4) AS total_refunded
+            FROM transaction
+            GROUP BY status
+            """, nativeQuery = true)
+    List<Object[]> getTransactionStats();
 }

@@ -13,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -85,4 +88,20 @@ public class TransactionService {
         return transactionRepository.getGroupFundTransaction(groupId, Pageable.ofSize(offset)
                 .withPage(page));
     }
+    //Thống kê
+    public List<Map<String, Object>> getTransactionStats() {
+        List<Object[]> stats = transactionRepository.getTransactionStats();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] row : stats) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("totalTransactions", row[0]);
+            data.put("totalAmount", row[1]);
+            data.put("status", row[2]);
+            results.add(data);
+        }
+
+        return results;
+    }
+
 }
