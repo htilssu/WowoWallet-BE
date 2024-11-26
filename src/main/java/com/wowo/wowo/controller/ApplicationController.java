@@ -137,10 +137,17 @@ public class ApplicationController {
                 applicationServiceImpl.getWallet(authentication, Long.valueOf(id)));
     }
 
-    @IsAdmin
     @GetMapping("/{id}/order")
     public Collection<OrderDTO> getListOrder(@PathVariable String id, PagingDTO pagingDTO) {
         return applicationServiceImpl.getPageOrder(Long.valueOf(id), pagingDTO)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("order")
+    public Collection<OrderDTO> getListOrder(@PathVariable Long id, PagingDTO pagingDTO) {
+        return applicationServiceImpl.getPageOrder(id, pagingDTO)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
