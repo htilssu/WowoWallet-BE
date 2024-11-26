@@ -19,19 +19,21 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     //Thống kê
     @Query(value = """
-            SELECT 
-                COUNT(*) AS total_transactions,
-                SUM(amount) AS total_amount,
-            
-                status,
-                COUNT(*) FILTER (WHERE status = 2) AS total_success,
-                COUNT(*) FILTER (WHERE status = 1) AS total_pending,
-                COUNT(*) FILTER (WHERE status = 3) AS total_cancelled,
-                COUNT(*) FILTER (WHERE status = 4) AS total_refunded
-            FROM transaction
-            GROUP BY status
-            """, nativeQuery = true)
+        SELECT 
+            COUNT(*) AS total_transactions,
+            SUM(amount) AS total_amount,
+            flow_type,
+            COUNT(CASE WHEN flow_type = 'TRANSFER_MONEY' THEN 1 END) AS total_transfer,
+            COUNT(CASE WHEN flow_type = 'RECEIVE_MONEY' THEN 1 END) AS total_receive,
+            COUNT(CASE WHEN flow_type = 'TOP_UP' THEN 1 END) AS total_top_up,
+            COUNT(CASE WHEN flow_type = 'WITHDRAW' THEN 1 END) AS total_withdraw,
+            COUNT(CASE WHEN flow_type = 'TOP_UP_GROUP_FUND' THEN 1 END) AS total_top_up_group_fund,
+            COUNT(CASE WHEN flow_type = 'WITHDRAW_GROUP_FUND' THEN 1 END) AS total_withdraw_group_fund
+        FROM transaction
+        GROUP BY flow_type
+        """, nativeQuery = true)
     List<Object[]> getTransactionStats();
+
     List<Transaction> findTransactionsByReceiveWalletOrSenderWalletOrderByUpdatedDesc(@NotNull Wallet receiveWallet,
             @NotNull Wallet senderWallet,
             Pageable pageable);
