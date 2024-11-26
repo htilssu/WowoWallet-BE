@@ -20,7 +20,8 @@ import lombok.Data;
  * DTO for {@link Application}
  */
 @Data
-public class ApplicationCreateDto {
+
+public class ApplicationCreationDTO {
 
     private String name;
     private String ownerId;

@@ -31,7 +31,8 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AtmCardCreateDto {
+
+public class AtmCardCreationDTO {
 
     @NotNull
     @CreditCardNumber

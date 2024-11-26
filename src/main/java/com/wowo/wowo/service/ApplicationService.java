@@ -14,14 +14,14 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.ApplicationCreateDto;
+import com.wowo.wowo.data.dto.ApplicationCreationDTO;
 import com.wowo.wowo.model.Application;
 
 import java.util.Optional;
 
 public interface ApplicationService {
 
-    void createApplication(ApplicationCreateDto applicationCreateDto);
+    void createApplication(ApplicationCreationDTO applicationCreationDTO);
     void deleteApplication(String applicationId);
     Optional<Application> getApplication(String applicationId);
     Application getApplicationByUserId(String userId);

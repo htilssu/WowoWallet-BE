@@ -14,7 +14,7 @@
 
 package com.wowo.wowo.service;
 
-import com.wowo.wowo.data.dto.ApplicationCreateDto;
+import com.wowo.wowo.data.dto.ApplicationCreationDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.model.Application;
 import com.wowo.wowo.repository.ApplicationRepository;
@@ -31,8 +31,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationMapper applicationMapper;
 
     @Override
-    public void createApplication(ApplicationCreateDto applicationCreateDto) {
-        final Application application = applicationMapper.toEntity(applicationCreateDto);
+    public void createApplication(ApplicationCreationDTO applicationCreationDTO) {
+        final Application application = applicationMapper.toEntity(applicationCreationDTO);
     }
 
     @Override

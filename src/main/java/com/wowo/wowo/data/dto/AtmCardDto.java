@@ -18,7 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AtmCardDto implements Serializable {
+public class AtmCardDTO implements Serializable {
 
     private Integer id;
     @NotNull

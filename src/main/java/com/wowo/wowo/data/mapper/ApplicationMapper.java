@@ -14,10 +14,9 @@
 
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.ApplicationCreateDto;
+import com.wowo.wowo.data.dto.ApplicationCreationDTO;
 import com.wowo.wowo.model.Application;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
@@ -25,5 +24,5 @@ import org.mapstruct.ReportingPolicy;
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ApplicationMapper {
 
-    Application toEntity(ApplicationCreateDto applicationCreateDto);
+    Application toEntity(ApplicationCreationDTO applicationCreationDTO);
 }
