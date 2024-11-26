@@ -91,11 +91,12 @@ public class UserController {
                  useReturnTypeSchema = true)
     @ApiResponse(responseCode = "404", description = "Không tìm thấy thông tin")
     @ApiResponse(responseCode = "403", description = "Không có quyền truy cập")
-    public Page<User> getAllUsers(
+    public Page<UserDTO> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        return userService.getAllUsers(pageable);
+        return userService.getAllUsers(pageable)
+                .map(userMapperImpl::toDto);
     }
 
     @GetMapping("/analysis")
