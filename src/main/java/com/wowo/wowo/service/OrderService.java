@@ -150,7 +150,7 @@ public class OrderService {
     public Order useVoucher(UseVoucherMessage message) {
         final Order order = getOrderOrThrow(message.OrderID());
         Voucher voucher = new Voucher(null, message.VoucherID(), message.VoucherName(),
-                message.Discount(), order.getId());
+                message.Discount(), order.getId(), message.Price());
         order.useVoucher(voucher);
         voucherService.save(voucher);
         return orderRepository.save(order);

@@ -64,7 +64,10 @@ public class Order {
         if (status != PaymentStatus.PENDING) {
             throw new BadRequest("Đơn hàng đã được thanh toán");
         }
-        this.discountMoney = money - Long.parseLong(voucher.getDiscount());
+        this.discountMoney = voucher.getPrice();
+        if (discountMoney < 0) {
+            discountMoney = 0L;
+        }
         voucher.setOrderId(this.id);
     }
 
