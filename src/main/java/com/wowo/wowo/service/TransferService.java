@@ -25,8 +25,6 @@ public class TransferService {
     private final WalletRepository walletRepository;
     private final UserService userService;
     private final WalletTransactionService walletTransactionService;
-    private final TransactionRepository transactionRepository;
-    private final ReceiverService receiverService;
     private final ConstantRepository constantRepository;
 
     @Transactional

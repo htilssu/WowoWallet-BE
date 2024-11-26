@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
-import com.wowo.wowo.data.dto.OrderDto;
+import com.wowo.wowo.data.dto.OrderDTO;
 import com.wowo.wowo.kafka.producer.VoucherProducer;
 import com.wowo.wowo.service.OrderService;
 import com.wowo.wowo.service.PaymentService;
@@ -25,10 +25,9 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final OrderService orderService;
-    private final VoucherProducer voucherProducer;
 
     @PostMapping("/{id}")
-    public OrderDto makePay(@PathVariable Long id, Authentication authentication) {
+    public OrderDTO makePay(@PathVariable Long id, Authentication authentication) {
 
         paymentService.pay(id, authentication);
 
