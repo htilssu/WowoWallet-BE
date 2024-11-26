@@ -41,7 +41,7 @@ public class TransactionService {
     public List<TransactionDTO> getRecentTransactions(String userId, int offset, int page) {
         var user = userService.getUserByIdOrElseThrow(userId);
         var transactions =
-                transactionRepository.findTransactionsByReceiveWalletOrSenderWallet(
+                transactionRepository.findTransactionsByReceiveWalletOrSenderWalletOrderByUpdatedDesc(
                         user.getWallet(), user.getWallet(), Pageable.ofSize(offset)
                                 .withPage(page));
 
@@ -88,6 +88,7 @@ public class TransactionService {
         return transactionRepository.getGroupFundTransaction(groupId, Pageable.ofSize(offset)
                 .withPage(page));
     }
+
     //Thống kê
     public List<Map<String, Object>> getTransactionStats() {
         List<Object[]> stats = transactionRepository.getTransactionStats();

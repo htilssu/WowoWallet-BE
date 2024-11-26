@@ -32,4 +32,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             GROUP BY status
             """, nativeQuery = true)
     List<Object[]> getTransactionStats();
+    List<Transaction> findTransactionsByReceiveWalletOrSenderWalletOrderByUpdatedDesc(@NotNull Wallet receiveWallet,
+            @NotNull Wallet senderWallet,
+            Pageable pageable);
 }
