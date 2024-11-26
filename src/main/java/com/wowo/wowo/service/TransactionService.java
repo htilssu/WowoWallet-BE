@@ -98,7 +98,7 @@ public class TransactionService {
             Map<String, Object> data = new HashMap<>();
             data.put("totalTransactions", row[0]);
             data.put("totalAmount", row[1]);
-            data.put("status", row[2]);
+            data.put("flowType", row[2]);
             results.add(data);
         }
 
