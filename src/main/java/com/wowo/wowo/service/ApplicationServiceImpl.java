@@ -14,11 +14,13 @@
 
 package com.wowo.wowo.service;
 
+import com.wowo.wowo.constant.Constant;
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.data.dto.OrderHistoryDTO;
 import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.data.mapper.OrderMapper;
+import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.ApplicationRepository;
@@ -49,6 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final OrderRepository orderRepository;
     private final TransferService transferService;
     private final TransactionRepository transactionRepository;
+    private final ConstantService constantService;
 
     @Override
     public Application createApplication(ApplicationUserCreationDTO applicationUserCreationDTO) {
@@ -131,6 +134,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         final ApplicationWallet wallet = application.getWallet();
         var userWallet = application.getOwner()
                 .getWallet();
+
+        final com.wowo.wowo.model.Constant minWithdraw = constantService.findByKey(
+                Constant.MINIMUM_WITHDRAW_APPLICATION);
+        if (amount < minWithdraw.getValue()) {
+            throw new BadRequest("Số tiền rút phải lớn hơn " + minWithdraw.getValue());
+        }
+
         transferService.transferWithNoFee(wallet, userWallet, amount);
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
@@ -141,6 +151,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         transaction.setSenderName(application.getName());
         transaction.setSenderWallet(wallet);
         transaction.setReceiveWallet(userWallet);
+
         return transactionRepository.save(transaction);
     }
 
