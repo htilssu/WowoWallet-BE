@@ -162,6 +162,23 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.getPartnerWallets()
                 .removeIf(wallet -> wallet.getId()
                         .equals(Long.valueOf(id)));
+
+        final Optional<ApplicationPartnerWallet> applicationPartnerWallet =
+                application.getPartnerWallets()
+                        .stream()
+                        .filter(apw -> apw.getId()
+                                .equals(Long.valueOf(id)))
+                        .findFirst();
+
+        if (applicationPartnerWallet.isEmpty()) {
+            throw new NotFoundException("Wallet not found");
+        }
+
+        if (applicationPartnerWallet.get()
+                .getBalance() > 0) {
+            throw new BadRequest("Không thể xóa wallet còn số dư");
+        }
+
         walletService.deleteWallet(Long.valueOf(id));
         applicationRepository.save(application);
     }
