@@ -17,6 +17,7 @@ package com.wowo.wowo.service;
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.model.Application;
 import com.wowo.wowo.model.ApplicationPartnerWallet;
+import com.wowo.wowo.model.Transaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +32,5 @@ public interface ApplicationService {
     ApplicationPartnerWallet createWallet(Long applicationId);
     Optional<Application> getApplicationBySecretKey(String apiKey);
     List<Application> getAllApplications();
+    Transaction withdraw(String id, Long amount);
 }

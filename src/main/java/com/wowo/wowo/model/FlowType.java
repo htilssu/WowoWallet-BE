@@ -21,4 +21,5 @@ public enum FlowType {
     WITHDRAW,
     TOP_UP_GROUP_FUND,
     WITHDRAW_GROUP_FUND,
+    WITHDRAW_APPLICATION,
 }

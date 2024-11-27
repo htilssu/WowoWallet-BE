@@ -11,6 +11,7 @@ import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.model.UserWallet;
 import com.wowo.wowo.model.Wallet;
+import com.wowo.wowo.repository.ApplicationRepository;
 import com.wowo.wowo.repository.ConstantRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class TransferService {
     private final WalletService walletService;
     private final TransactionService transactionService;
     private final UserService userService;
-    private final ApplicationServiceImpl applicationServiceImpl;
+    private final ApplicationRepository applicationRepository;
 
     @Transactional
     public Transaction transferWithLimit(TransferDTO data, Authentication authentication) {
@@ -132,8 +133,11 @@ public class TransferService {
     }
 
     public void transferWithNoFee(Wallet source, Wallet destination, long amount) {
+        if (amount <= 0) {
+            throw new BadRequest("Số tiền chuyển phải lớn hơn 0");
+        }
         if (source.getBalance() < amount) {
-            log.info("Not enough money when transfer from {} to {} with amount {}",
+            log.warn("Not enough money when transfer from {} to {} with amount {}",
                     source.getId(), destination.getId(), amount);
             throw new InsufficientBalanceException("Số dư không đủ");
         }
@@ -173,7 +177,8 @@ public class TransferService {
     public void transfer(ApplicationTransferDTO transferDTO, Authentication authentication) {
         var applicationId = Long.valueOf(authentication.getPrincipal()
                 .toString());
-        var application = applicationServiceImpl.getApplicationOrElseThrow(applicationId);
+        var application = applicationRepository.findById(applicationId)
+                .orElseThrow();
         var sourceWallet = application.getWallet();
         var destinationWallet = walletRepository.findById(transferDTO.getWalletId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy ví"));
@@ -186,7 +191,8 @@ public class TransferService {
     public void withdraw(ApplicationTransferDTO transferDTO, Authentication authentication) {
         var applicationId = Long.valueOf(authentication.getPrincipal()
                 .toString());
-        var application = applicationServiceImpl.getApplicationOrElseThrow(applicationId);
+        var application = applicationRepository.findById(applicationId)
+                .orElseThrow();
         var sourceWallet = walletService.getWallet(transferDTO.getWalletId());
         var destinationWallet = application.getWallet();
 
