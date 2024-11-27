@@ -19,6 +19,14 @@ import lombok.Data;
 @Data
 public class ApplicationTransferDTO {
 
+    @Override
+    public String toString() {
+        return "ApplicationTransferDTO{" +
+                "walletId=" + walletId +
+                ", amount=" + amount +
+                '}';
+    }
+
     private Long walletId;
     private Long amount;
 }

@@ -1,5 +1,6 @@
 package com.wowo.wowo;
 
+import com.webauthn4j.springframework.security.config.configurers.WebAuthnLoginConfigurer;
 import com.wowo.wowo.security.filter.ApiServiceFilter;
 import com.wowo.wowo.security.filter.TokenFilter;
 import org.springframework.boot.SpringApplication;
@@ -62,7 +63,6 @@ public class EWalletApplication {
                 .permitAll()
                 .anyRequest()
                 .permitAll());
-
 
         //add token filter to security filter chain
         http.addFilterBefore(new TokenFilter(), UsernamePasswordAuthenticationFilter.class);

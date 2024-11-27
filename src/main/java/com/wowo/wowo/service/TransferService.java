@@ -14,6 +14,7 @@ import com.wowo.wowo.model.Wallet;
 import com.wowo.wowo.repository.ConstantRepository;
 import com.wowo.wowo.repository.WalletRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class TransferService {
@@ -131,6 +133,8 @@ public class TransferService {
 
     public void transferWithNoFee(Wallet source, Wallet destination, long amount) {
         if (source.getBalance() < amount) {
+            log.info("Not enough money when transfer from {} to {} with amount {}",
+                    source.getId(), destination.getId(), amount);
             throw new InsufficientBalanceException("Số dư không đủ");
         }
         source.setBalance(source.getBalance() - amount);
