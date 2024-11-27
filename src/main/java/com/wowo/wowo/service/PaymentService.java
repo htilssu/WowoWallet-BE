@@ -81,8 +81,9 @@ public class PaymentService {
         order.setTransaction(transaction);
 
         order.setStatus(PaymentStatus.SUCCESS);
+        final Order orderSaved = orderRepository.save(order);
         RequestUtil.sendRequest(order.getSuccessUrl(), "POST");
-        return orderRepository.save(order);
+        return orderSaved;
     }
 
     private void isOrderValid(Order order) {
