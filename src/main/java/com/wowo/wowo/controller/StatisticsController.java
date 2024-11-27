@@ -1,8 +1,10 @@
 package com.wowo.wowo.controller;
 
+import com.wowo.wowo.data.dto.StatisticSummary;
 import com.wowo.wowo.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +29,11 @@ public class StatisticsController {
                 "{ \"total_wallets\": %d, \"total_group_funds\": %d, \"total_users\": %d, \"total_partners\": %d }",
                 totalWallets, totalGroupFunds, totalUsers, totalApplications
         );
+    }
+
+    // API thống kê theo ứng dụng
+    @GetMapping("/app/{applicationId}")
+    public StatisticSummary getApplicationStatistics(@PathVariable Long applicationId) {
+        return statisticsService.getStatisticsForApplication(applicationId);
     }
 }
