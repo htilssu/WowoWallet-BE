@@ -27,10 +27,11 @@ public class RefundService {
                     "Số tiền hoàn trả không thể lớn hơn số tiền đã thanh toán");
         }
 
-        if (refundDTO.getAmount() == 0){
+        if (refundDTO.getAmount() == null || refundDTO.getAmount() == 0) {
             transferService.transferWithNoFee(receiverWallet, senderWallet,
                     order.getDiscountMoney());
-        }else {
+        }
+        else {
             transferService.transferWithNoFee(receiverWallet, senderWallet,
                     refundDTO.getAmount());
         }

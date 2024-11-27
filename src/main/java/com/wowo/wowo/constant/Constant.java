@@ -10,6 +10,7 @@ public class Constant {
     public static final String MAXIMUM_TOP_UP_AMOUNT = "MAX_TOP_UP";
     public static final String MINIMUM_REFUND_AMOUNT = "MIN_REFUND";
     public static final String MAXIMUM_REFUND_AMOUNT = "MAX_REFUND";
+    public static final String MINIMUM_WITHDRAW_APPLICATION = "MIN_WITHDRAW_APPLICATION";
     public static final String MINIMUM_BALANCE = "MIN_BALANCE";
     public static final String MAXIMUM_BALANCE = "MAX_BALANCE";
     public static final String MINIMUM_TRANSFER_FEE = "MIN_TRANSFER_FEE";

@@ -14,15 +14,18 @@
 
 package com.wowo.wowo.service;
 
+import com.wowo.wowo.constant.Constant;
 import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
 import com.wowo.wowo.data.dto.OrderHistoryDTO;
 import com.wowo.wowo.data.dto.PagingDTO;
 import com.wowo.wowo.data.mapper.ApplicationMapper;
 import com.wowo.wowo.data.mapper.OrderMapper;
+import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.ApplicationRepository;
 import com.wowo.wowo.repository.OrderRepository;
+import com.wowo.wowo.repository.TransactionRepository;
 import com.wowo.wowo.util.ApiKeyUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final UserService userService;
     private final WalletService walletService;
     private final OrderRepository orderRepository;
+    private final TransferService transferService;
+    private final TransactionRepository transactionRepository;
+    private final ConstantService constantService;
 
     @Override
     public Application createApplication(ApplicationUserCreationDTO applicationUserCreationDTO) {
@@ -122,6 +128,33 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.findAll();
     }
 
+    @Override
+    public Transaction withdraw(String id, Long amount) {
+        Application application = getApplicationOrElseThrow(Long.valueOf(id));
+        final ApplicationWallet wallet = application.getWallet();
+        var userWallet = application.getOwner()
+                .getWallet();
+
+        final com.wowo.wowo.model.Constant minWithdraw = constantService.findByKey(
+                Constant.MINIMUM_WITHDRAW_APPLICATION);
+        if (amount < minWithdraw.getValue()) {
+            throw new BadRequest("Số tiền rút phải lớn hơn " + minWithdraw.getValue());
+        }
+
+        transferService.transferWithNoFee(wallet, userWallet, amount);
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setFlowType(FlowType.WITHDRAW_APPLICATION);
+        transaction.setMessage("Rút tiền từ application");
+        transaction.setReceiverName(application.getOwner()
+                .getFullName());
+        transaction.setSenderName(application.getName());
+        transaction.setSenderWallet(wallet);
+        transaction.setReceiveWallet(userWallet);
+
+        return transactionRepository.save(transaction);
+    }
+
     public void deleteWallet(Authentication authentication, String id) {
         var applicationId = Long.valueOf(authentication.getPrincipal()
                 .toString());
@@ -146,7 +179,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     public OrderHistoryDTO getApplicationOrder(Long applicationId, PagingDTO pagingDTO) {
-        final List<Order> list = orderRepository.findByApplication_IdOrderByUpdatedDesc(applicationId,
+        final List<Order> list = orderRepository.findByApplication_IdOrderByUpdatedDesc(
+                        applicationId,
                         Pageable.ofSize(pagingDTO.getOffset())
                                 .withPage(pagingDTO.getPage()))
                 .stream()
