@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +35,8 @@ public class ApplicationTransferController {
     private final TransferService transferService;
 
     @PostMapping("/transfer")
-    public void transfer(ApplicationTransferDTO transferDTO, Authentication authentication) {
+    public void transfer(@RequestBody ApplicationTransferDTO transferDTO,
+            Authentication authentication) {
         transferService.transfer(transferDTO, authentication);
         log.info("Transfer from application {} with {} successfully",
                 authentication.getPrincipal()
@@ -42,7 +44,8 @@ public class ApplicationTransferController {
     }
 
     @PostMapping("withdraw")
-    public void withdraw(ApplicationTransferDTO transferDTO, Authentication authentication) {
+    public void withdraw(@RequestBody ApplicationTransferDTO transferDTO,
+            Authentication authentication) {
         transferService.withdraw(transferDTO, authentication);
         log.info("Withdraw to application {} with {} successfully",
                 authentication.getPrincipal()
