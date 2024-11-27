@@ -1,6 +1,9 @@
 package com.wowo.wowo.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.wowo.wowo.model.Role;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,7 +23,7 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDTO implements Serializable {
+public class RoleDTO implements Serializable {
 
     @Size(max = 32)
     private String id;
@@ -33,5 +36,7 @@ public class UserDTO implements Serializable {
     private String username;
     private String firstName;
     private String lastName;
-    private RoleDTO role;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }

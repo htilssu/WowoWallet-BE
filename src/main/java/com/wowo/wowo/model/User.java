@@ -63,6 +63,10 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private Collection<Application> applications = new ArrayList<>();
 
