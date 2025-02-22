@@ -1,18 +1,22 @@
+/*
+ * ******************************************************
+ *  * Copyright (c) 2024 htilssu
+ *  *
+ *  * This code is the property of htilssu. All rights reserved.
+ *  * Redistribution or reproduction of any part of this code
+ *  * in any form, with or without modification, is strictly
+ *  * prohibited without prior written permission from the author.
+ *  *
+ *  * Author: htilssu
+ *  * Created: 24-11-2024
+ *  ******************************************************
+ */
+
 package com.wowo.wowo.repository;
 
 import com.wowo.wowo.model.Wallet;
-import com.wowo.wowo.model.WalletOwnerType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
-public interface WalletRepository extends CrudRepository<Wallet, Long> {
-
-    Optional<Wallet> findByOwnerIdAndOwnerType(@Size(max = 32) String ownerId,
-            @NotNull WalletOwnerType ownerType);
-    Optional<Wallet> findByOwnerId(String senderId);
-    boolean existsByOwnerId(String ownerId);
-    boolean existsByOwnerIdAndId(@Size(max = 32) String ownerId, Long id);
 }

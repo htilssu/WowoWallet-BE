@@ -2,9 +2,9 @@
 
 ## Description
 
-[//]: # (application using spring boot, micro service architecture, and docker to create an e-wallet application.)
+[//]: # (application using spring boot, micro service architecture, and docker to create an e-userWallet application.)
 
-This is an e-wallet application that allows users to create an account, deposit money, withdraw money, transfer money to
+This is an e-userWallet application that allows users to create an account, deposit money, withdraw money, transfer money to
 other users,
 and view their transaction history. Linking service can using app. The application is built using Spring Boot,
 microservice architecture, and Docker.
@@ -47,7 +47,7 @@ spring.datasource.password=<password>
 
 ```bash
 # Build the docker image
-$ docker buildx build -t wallet-service .
+$ docker buildx build -t userWallet-service .
 # Run the docker image
-$ docker run -p 8080:8080 wallet-service --network=host
+$ docker run -p 8080:8080 userWallet-service --network=host
 ```

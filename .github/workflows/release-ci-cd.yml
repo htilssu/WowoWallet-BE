@@ -79,6 +79,8 @@ jobs:
           context: ./
           push: true
           tags: ${{vars.DOCKER_IMAGE}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     name: deploy

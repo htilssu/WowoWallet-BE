@@ -23,9 +23,8 @@ public class Order {
     @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partner_id")
-    private Partner partner;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Application application;
 
     @NotNull
     @Column(name = "money", nullable = false)
@@ -38,8 +37,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Transaction transaction;
 
     @Size(max = 300)
@@ -66,7 +64,10 @@ public class Order {
         if (status != PaymentStatus.PENDING) {
             throw new BadRequest("Đơn hàng đã được thanh toán");
         }
-        this.discountMoney = money - Long.parseLong(voucher.getDiscount());
+        this.discountMoney = voucher.getPrice();
+        if (discountMoney < 0) {
+            discountMoney = 0L;
+        }
         voucher.setOrderId(this.id);
     }
 

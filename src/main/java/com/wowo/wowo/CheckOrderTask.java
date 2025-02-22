@@ -14,6 +14,7 @@
 
 package com.wowo.wowo;
 
+import com.wowo.wowo.kafka.message.VoucherMessage;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.service.OrderService;
@@ -32,6 +33,8 @@ public class CheckOrderTask implements Callable<Void> {
         final Order orderInDb = orderService.getOrderOrThrow(order.getId());
         if (orderInDb.getStatus() == PaymentStatus.PENDING) {
             orderService.cancelOrder(orderInDb);
+            orderService.getVoucherProducer()
+                    .sendVoucherMessage(new VoucherMessage(orderInDb.getId(), PaymentStatus.FAIL));
         }
 
         return null;

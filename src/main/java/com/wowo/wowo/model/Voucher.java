@@ -15,9 +15,11 @@
 package com.wowo.wowo.model;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 @AllArgsConstructor
@@ -30,4 +32,6 @@ public class Voucher {
     private String name;
     private String discount;
     private Long orderId;
+    @Transient
+    private Long price;
 }

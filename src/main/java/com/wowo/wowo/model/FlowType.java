@@ -15,6 +15,11 @@
 package com.wowo.wowo.model;
 
 public enum FlowType {
-    IN,
-    OUT
+    TRANSFER_MONEY,
+    RECEIVE_MONEY,
+    TOP_UP,
+    WITHDRAW,
+    TOP_UP_GROUP_FUND,
+    WITHDRAW_GROUP_FUND,
+    WITHDRAW_APPLICATION,
 }

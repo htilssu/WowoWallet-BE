@@ -22,7 +22,7 @@ import lombok.Setter;
 public class SupportTicket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "support_ticket_id_seq")
     @SequenceGenerator(name = "support_ticket_id_seq", sequenceName = "support_ticket_id_seq",
                        allocationSize = 1)
     @Column(name = "id", nullable = false)

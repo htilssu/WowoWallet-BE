@@ -31,5 +31,5 @@ public class FundMember {
     @NotNull
     @ColumnDefault("0")
     @Column(name = "money", nullable = false)
-    private Long money;
+    private Long money = 0L;
 }

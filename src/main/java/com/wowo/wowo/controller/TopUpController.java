@@ -16,9 +16,10 @@ package com.wowo.wowo.controller;
 
 import com.paypal.sdk.exceptions.ApiException;
 import com.paypal.sdk.models.Order;
-import com.wowo.wowo.data.dto.TopUpDto;
-import com.wowo.wowo.data.dto.TopUpRequestDto;
+import com.wowo.wowo.data.dto.TopUpDTO;
+import com.wowo.wowo.data.dto.TopUpRequestDTO;
 import com.wowo.wowo.exception.BadRequest;
+import com.wowo.wowo.exception.InsufficientBalanceException;
 import com.wowo.wowo.service.PaypalService;
 import com.wowo.wowo.service.TopUpService;
 import lombok.AllArgsConstructor;
@@ -40,23 +41,29 @@ public class TopUpController {
     private final TopUpService topUpService;
 
     @PostMapping
-    public ResponseEntity<TopUpDto> topUp(@RequestBody @Validated TopUpRequestDto topUpRequestDto) throws
+    public ResponseEntity<TopUpDTO> topUp(@RequestBody @Validated TopUpRequestDTO topUpRequestDTO) throws
                                                                                                    IOException,
                                                                                                    ApiException {
-        switch (topUpRequestDto.getMethod()) {
-            case ATM_CARD -> {
-                topUpService.topUpWithLimit(topUpRequestDto.getTo(), topUpRequestDto.getAmount());
-            }
-            case PAYPAL -> {
-                final Order order = paypalService.createTopUpOrder(topUpRequestDto);
-                return ResponseEntity.ok(TopUpDto.builder()
-                        .redirectTo(order.getLinks().stream().filter(linkDescription ->
-                                        linkDescription.getRel().equals("approve")).findFirst()
-                                .orElseThrow(() -> new BadRequest("Bad request"))
-                                .getHref())
-                        .build());
-            }
-        }
+       try
+       {
+           switch (topUpRequestDTO.getMethod()) {
+               case ATM_CARD -> {
+                   //TODO: validate card in db
+                   topUpService.topUpWithLimit(topUpRequestDTO.getTo(), topUpRequestDTO.getAmount());
+               }
+               case PAYPAL -> {
+                   final Order order = paypalService.createTopUpOrder(topUpRequestDTO);
+                   return ResponseEntity.ok(TopUpDTO.builder()
+                           .redirectTo(order.getLinks().stream().filter(linkDescription ->
+                                           linkDescription.getRel().equals("approve")).findFirst()
+                                   .orElseThrow(() -> new BadRequest("Bad request"))
+                                   .getHref())
+                           .build());
+               }
+           }
+       }catch (InsufficientBalanceException e){
+              throw new BadRequest("Có lỗi khi nạp tiền vào tài khoản, vì giới hạn số tiền có trong app");
+       }
         return ResponseEntity.ok().build();
     }
 }

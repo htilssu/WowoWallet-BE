@@ -5,10 +5,11 @@ values ('MIN_TRANSFER', 'Số tiền tối thiểu cho mỗi giao dịch chuyể
        ('MAX_WITHDRAW', 'Số tiền tối đa khi rút tiền', 1000000000),
        ('MIN_TOP_UP', 'Số tiền tối thiểu khi nạp tiền vào ví', 10000),
        ('ORDER_TIMEOUT', 'Thời gian tối đa chờ cho giao dịch hoàn tất (min)', 10),
-       ('MAX_TOP_UP', 'Số tiền tối đa khi nạp tiền vào ví', 1000000000),
+       ('MAX_TOP_UP', 'Số tiền tối đa khi nạp tiền vào ví', 100000000),
        ('MAX_TRANSFER_PER_DAY', 'Số tiền tối đa cho mỗi giao dịch chuyển tiền trong ngày', 1000000000);
 
-
+insert into constant
+values ('MIN_WITHDRAW_APPLICATION', 'Số tiền tối thiểu khi rút tiền về ví người tạo', 10000);
 
 INSERT INTO banks ("id", "name", "code", "bin", "short_name", "logo", transfer_supported, lookup_supported,
                    "support", is_transfer, "swift_code")
@@ -138,3 +139,7 @@ VALUES (17, 'Ngân hàng TMCP Công thương Việt Nam', 'ICB', '970415', 'Viet
         0, 1, 'CIBBVNVN'),
        (6, 'Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam', 'CBB', '970444', 'CBBank',
         'https://api.vietqr.io/img/CBB.png', 0, 1, 0, 0, 'GTBAVNVX');
+
+
+insert into wallet (id, type, balance, version)
+values (-1, 'USER', 1000000000, 0);

@@ -91,6 +91,9 @@ dependencies {
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
+
+    implementation("com.webauthn4j:webauthn4j-core:0.28.2.RELEASE")
+    implementation("com.webauthn4j:webauthn4j-spring-security-core:0.10.0.RELEASE")
 }
 
 dependencyManagement {

@@ -15,6 +15,7 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.constant.Constant;
+import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.repository.ConstantRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,11 @@ public class ConstantService {
 
         return orderTimeoutConstant.getValue();
 
+    }
+
+    public com.wowo.wowo.model.Constant findByKey(String constantKey) {
+
+        return constantRepository.findById(constantKey)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy biến giới hạn"));
     }
 }

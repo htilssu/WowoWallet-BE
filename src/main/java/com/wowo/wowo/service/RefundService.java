@@ -1,8 +1,9 @@
 package com.wowo.wowo.service;
 
+import com.wowo.wowo.controller.OrderController;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
-import com.wowo.wowo.model.WalletTransaction;
+import com.wowo.wowo.model.Transaction;
 import com.wowo.wowo.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,28 @@ public class RefundService {
     private final OrderRepository orderRepository;
     private final TransferService transferService;
 
-    public Order refund(Order order) {
+    public Order refund(Order order, OrderController.RefundDTO refundDTO) {
 
-        final WalletTransaction walletTransaction = order.getTransaction().getWalletTransaction();
+        final Transaction walletTransaction = order.getTransaction();
 
         var senderWallet = walletTransaction.getSenderWallet();
-        var receiverWallet = walletTransaction.getReceiverWallet();
+        var receiverWallet = walletTransaction.getReceiveWallet();
 
-        transferService.transfer(receiverWallet, senderWallet, order.getTransaction().getAmount());
+        if (order.getDiscountMoney() < refundDTO.getAmount()) {
+            throw new IllegalArgumentException(
+                    "Số tiền hoàn trả không thể lớn hơn số tiền đã thanh toán");
+        }
+
+        if (refundDTO.getAmount() == null || refundDTO.getAmount() == 0) {
+            transferService.transferWithNoFee(receiverWallet, senderWallet,
+                    order.getDiscountMoney());
+        }
+        else {
+            transferService.transferWithNoFee(receiverWallet, senderWallet,
+                    refundDTO.getAmount());
+        }
+
+        //TODO: create refund transaction
 
         order.setStatus(PaymentStatus.REFUNDED);
         return orderRepository.save(order);

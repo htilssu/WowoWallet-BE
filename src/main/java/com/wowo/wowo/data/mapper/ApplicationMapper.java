@@ -14,16 +14,23 @@
 
 package com.wowo.wowo.data.mapper;
 
-import com.wowo.wowo.data.dto.ApplicationCreateDto;
+import com.wowo.wowo.data.dto.ApplicationUserCreationDTO;
+import com.wowo.wowo.data.dto.ApplicationDTO;
 import com.wowo.wowo.model.Application;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ApplicationMapper {
 
-    Application toEntity(ApplicationCreateDto applicationCreateDto);
+    Application toEntity(ApplicationUserCreationDTO applicationUserCreationDTO);
+    @Mapping(source = "balance", target = "wallet.balance")
+    Application toEntity(ApplicationDTO applicationDTO);
+    @Mapping(source = "wallet.balance", target = "balance")
+    ApplicationDTO toDto(Application application);
+    @BeanMapping(
+            nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Application partialUpdate(
+            ApplicationDTO applicationDTO,
+            @MappingTarget Application application);
 }

@@ -39,8 +39,11 @@ public class UseVoucherConsumer {
         try {
             var useVoucher = objectMapper.readValue(message, UseVoucherMessage.class);
             orderService.useVoucher(useVoucher);
+            log.info("Voucher used: {}, on order {}", useVoucher, useVoucher.OrderID());
         } catch (JacksonException e) {
             log.error("Error deserializing message: {}", message);
+        } catch (Exception e) {
+            log.error("Error processing message: {}, with error: {}", message, e.getMessage());
         }
     }
 }
