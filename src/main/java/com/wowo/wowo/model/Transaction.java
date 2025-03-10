@@ -17,7 +17,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Transaction {
+public class Transaction implements Cloneable {
 
     @Id
     @TransactionIdSequence
@@ -39,9 +39,6 @@ public class Transaction {
     @Column(length = 300)
     private String message;
 
-    @Column(name = "type", insertable = false, updatable = false)
-    private String type;
-
     @CreatedDate
     @Column(name = "created", nullable = false)
     private Instant created = Instant.now();
@@ -59,4 +56,13 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "receive_wallet", nullable = false)
     private Wallet receiveWallet;
+
+    @Override
+    public Transaction clone() {
+        try {
+            return (Transaction) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

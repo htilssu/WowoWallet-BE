@@ -64,6 +64,6 @@ public class OrderController {
     public static class RefundDTO {
 
         @PositiveOrZero(message = "Số tiền hoàn trả phải lớn hơn hoặc bằng 0")
-        private Long amount;
+        private Long amount = 0L;
     }
 }

@@ -17,6 +17,7 @@ package com.wowo.wowo.model;
 public enum FlowType {
     TRANSFER_MONEY,
     RECEIVE_MONEY,
+    REFUND,
     TOP_UP,
     WITHDRAW,
     TOP_UP_GROUP_FUND,
