@@ -16,6 +16,8 @@ import java.time.Instant;
 @Entity
 @Table(name = "\"order\"")
 public class Order {
+    @Transient
+    private OrderState state;
 
     @Id
     @Column(name = "id", nullable = false, length = 50)
@@ -39,6 +41,9 @@ public class Order {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Transaction transaction;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private Transaction refundTransaction;
 
     @Size(max = 300)
     @Column(name = "return_url", length = 300)

@@ -1,6 +1,7 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.controller.OrderController;
+import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.model.Transaction;
@@ -27,7 +28,7 @@ public class RefundService {
                     "Số tiền hoàn trả không thể lớn hơn số tiền đã thanh toán");
         }
 
-        if (refundDTO.getAmount() == null || refundDTO.getAmount() == 0) {
+        if (refundDTO.getAmount() == 0) {
             transferService.transferWithNoFee(receiverWallet, senderWallet,
                     order.getDiscountMoney());
         }
@@ -36,8 +37,14 @@ public class RefundService {
                     refundDTO.getAmount());
         }
 
-        //TODO: create refund transaction
+        final Transaction refundTransaction = walletTransaction.clone();
+        refundTransaction.setSenderWallet(receiverWallet);
+        refundTransaction.setReceiveWallet(senderWallet);
+        refundTransaction.setReceiverName(refundTransaction.getSenderName());
+        refundTransaction.setSenderName(refundTransaction.getReceiverName());
+        refundTransaction.setFlowType(FlowType.REFUND);
 
+        order.setRefundTransaction(refundTransaction);
         order.setStatus(PaymentStatus.REFUNDED);
         return orderRepository.save(order);
     }

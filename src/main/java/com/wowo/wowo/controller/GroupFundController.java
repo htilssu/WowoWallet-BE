@@ -34,7 +34,7 @@ public class GroupFundController {
     public ResponseEntity<?> createGroupFund(@RequestBody GroupFundDTO groupFundDTO,
             Authentication authentication) {
         try {
-            GroupFund createdFund = groupFundService.createGroupFund(groupFundDTO, authentication);
+            groupFundService.createGroupFund(groupFundDTO, authentication);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ResponseMessage("Tạo quỹ thành công!"));
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class GroupFundController {
     @PostMapping("/members")
     public ResponseEntity<?> addMemberToGroup(@RequestBody FundMemberDTO memberDTO) {
         try {
-            FundMember addedMember = groupFundService.addMemberToGroup(memberDTO.getGroupId(),
+            groupFundService.addMemberToGroup(memberDTO.getGroupId(),
                     memberDTO.getMemberId());
             return ResponseEntity.ok(new ResponseMessage("Thêm thành viên thành công!"));
         } catch (ResourceNotFoundException e) {
@@ -69,13 +69,10 @@ public class GroupFundController {
             return ResponseEntity.ok(message);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // Thông báo lỗi
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | ReceiverNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     e.getMessage()); // Người dùng không tồn tại
-        } catch (ReceiverNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    e.getMessage()); // Quỹ không tồn tại
-        } catch (Exception e) {
+        }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     "Lỗi hệ thống: " + e.getMessage()); // Lỗi không xác định
         }
@@ -164,8 +161,7 @@ public class GroupFundController {
     @PostMapping("/{groupId}/lock")
     public ResponseEntity<?> lockGroupFund(@PathVariable Long groupId, Authentication authentication) {
         try {
-            // Khóa quỹ bằng service
-            GroupFund lockedFund = groupFundService.lockGroupFund(groupId, authentication);
+            groupFundService.lockGroupFund(groupId, authentication);
             return ResponseEntity.ok(new ResponseMessage("Khóa quỹ thành công!"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
@@ -177,8 +173,7 @@ public class GroupFundController {
     @PostMapping("/{groupId}/unlock")
     public ResponseEntity<?> unlockGroupFund(@PathVariable Long groupId, Authentication authentication) {
         try {
-            // Mở quỹ bằng service
-            GroupFund unlockedFund = groupFundService.unlockGroupFund(groupId, authentication);
+            groupFundService.unlockGroupFund(groupId, authentication);
             return ResponseEntity.ok(new ResponseMessage("Mở khóa quỹ thành công!"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
