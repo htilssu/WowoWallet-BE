@@ -16,8 +16,18 @@ import java.time.Instant;
 @Entity
 @Table(name = "\"order\"")
 public class Order {
+
     @Transient
     private OrderState state;
+
+    public OrderState getState() {
+        switch (status) {
+            case SUCCESS ->  new OrderSuccessState(this);
+            case PENDING -> new OrderPendingState(this);
+            case CANCELLED, REFUNDED, FAIL -> new PreventAllState(this);
+        }
+        throw new IllegalStateException("Unexpected value: " + status);
+    }
 
     @Id
     @Column(name = "id", nullable = false, length = 50)

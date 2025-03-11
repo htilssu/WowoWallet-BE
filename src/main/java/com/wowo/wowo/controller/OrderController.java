@@ -46,7 +46,7 @@ public class OrderController {
     @PostMapping("{id}/cancel")
     @IsApplication
     public ResponseEntity<OrderDTO> cancelOrder(@PathVariable @NotNull @Validated Long id,
-            Authentication authentication) {
+            Authentication authentication) throws Exception {
         return ResponseEntity.ok(
                 orderMapperImpl.toDto(orderService.cancelOrder(id, authentication)));
     }
@@ -55,7 +55,7 @@ public class OrderController {
     @IsApplication
     public ResponseEntity<OrderDTO> refundOrder(@PathVariable @NotNull @Validated Long id,
             @RequestBody @Validated RefundDTO refundDTO,
-            Authentication authentication) {
+            Authentication authentication) throws Exception {
         return ResponseEntity.ok(
                 orderMapperImpl.toDto(orderService.refundOrder(id, refundDTO, authentication)));
     }

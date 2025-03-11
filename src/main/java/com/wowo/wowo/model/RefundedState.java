@@ -7,12 +7,12 @@ public class RefundedState  extends  OrderState{
     }
 
     @Override
-    void refund() {
+    public void refund() {
 
     }
 
     @Override
-    void cancel() {
+    public void cancel() {
 
     }
 }
