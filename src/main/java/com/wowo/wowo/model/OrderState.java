@@ -2,12 +2,12 @@ package com.wowo.wowo.model;
 
 public abstract class OrderState {
 
-    public OrderState(Order order) {
+    protected OrderState(Order order) {
         this.order = order;
     }
 
     Order order;
 
-    abstract void refund();
-    abstract void cancel();
+    public abstract void refund() throws Exception;
+    public abstract void cancel() throws Exception;
 }

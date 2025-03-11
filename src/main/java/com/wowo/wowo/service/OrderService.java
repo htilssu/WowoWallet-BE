@@ -107,7 +107,7 @@ public class OrderService {
         return orderDTO;
     }
 
-    public Order cancelOrder(Long id, Authentication authentication) {
+    public Order cancelOrder(Long id, Authentication authentication) throws Exception {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
@@ -118,25 +118,13 @@ public class OrderService {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
-        switch (order.getStatus()) {
-            case PENDING -> order.setStatus(PaymentStatus.CANCELLED);
-            case SUCCESS -> {
-                log.warn("Cannot cancel order {} because it has been paid", order.getId());
-                throw new BadRequest("Không thể hủy đơn hàng đã thanh toán");
-            }
-            case REFUNDED -> {
-                log.warn("Cannot cancel order {} because it has been refunded", order.getId());
-                throw new BadRequest("Đơn hàng đã được hoàn tiền");
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
-        }
-
-        log.info("Cancel order {} successfully", order.getId());
+        order.getState().cancel();
 
         return orderRepository.save(order);
     }
 
-    public Order refundOrder(@NotNull Long id, OrderController.RefundDTO refundDTO, Authentication authentication) {
+    public Order refundOrder(@NotNull Long id, OrderController.RefundDTO refundDTO, Authentication authentication) throws
+                                                                                                                   Exception {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 

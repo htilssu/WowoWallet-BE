@@ -16,7 +16,10 @@ public class RefundService {
     private final OrderRepository orderRepository;
     private final TransferService transferService;
 
-    public Order refund(Order order, OrderController.RefundDTO refundDTO) {
+    public Order refund(Order order, OrderController.RefundDTO refundDTO) throws Exception {
+
+        order.getState()
+                .refund();
 
         final Transaction walletTransaction = order.getTransaction();
 
@@ -36,16 +39,6 @@ public class RefundService {
             transferService.transferWithNoFee(receiverWallet, senderWallet,
                     refundDTO.getAmount());
         }
-
-        final Transaction refundTransaction = walletTransaction.clone();
-        refundTransaction.setSenderWallet(receiverWallet);
-        refundTransaction.setReceiveWallet(senderWallet);
-        refundTransaction.setReceiverName(refundTransaction.getSenderName());
-        refundTransaction.setSenderName(refundTransaction.getReceiverName());
-        refundTransaction.setFlowType(FlowType.REFUND);
-
-        order.setRefundTransaction(refundTransaction);
-        order.setStatus(PaymentStatus.REFUNDED);
         return orderRepository.save(order);
     }
 }
