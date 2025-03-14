@@ -29,7 +29,7 @@ public class CheckOrderTask implements Callable<Void> {
     private final OrderService orderService;
 
     @Override
-    public Void call() {
+    public Void call() throws Exception {
         final Order orderInDb = orderService.getOrderOrThrow(order.getId());
         if (orderInDb.getStatus() == PaymentStatus.PENDING) {
             orderService.cancelOrder(orderInDb);

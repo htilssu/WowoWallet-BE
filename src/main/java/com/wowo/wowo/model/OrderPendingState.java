@@ -10,7 +10,7 @@ public class OrderPendingState extends OrderState {
     }
 
     @Override
-    public void cancel() throws Exception {
+    public void cancel() {
         order.setStatus(PaymentStatus.CANCELLED);
     }
 }

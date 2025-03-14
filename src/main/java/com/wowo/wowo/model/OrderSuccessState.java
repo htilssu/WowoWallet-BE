@@ -12,6 +12,7 @@ public class OrderSuccessState extends OrderState {
         var receiverWallet = walletTransaction.getReceiveWallet();
 
         final Transaction refundTransaction = walletTransaction.clone();
+        refundTransaction.setId(null);
         refundTransaction.setSenderWallet(receiverWallet);
         refundTransaction.setReceiveWallet(senderWallet);
         refundTransaction.setReceiverName(refundTransaction.getSenderName());

@@ -14,7 +14,6 @@ import com.wowo.wowo.kafka.message.UseVoucherMessage;
 import com.wowo.wowo.kafka.producer.VoucherProducer;
 import com.wowo.wowo.model.Order;
 import com.wowo.wowo.model.OrderItem;
-import com.wowo.wowo.model.PaymentStatus;
 import com.wowo.wowo.model.Voucher;
 import com.wowo.wowo.repository.OrderItemRepository;
 import com.wowo.wowo.repository.OrderRepository;
@@ -37,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 @AllArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final OrderMapperImpl orderMapperImpl;
     private final OrderItemRepository orderItemRepository;
@@ -111,6 +109,8 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
+        order.getState().cancel();
+
         if (!order.getApplication()
                 .getId()
                 .equals(Long.valueOf(authentication.getPrincipal()
@@ -118,13 +118,14 @@ public class OrderService {
             throw new BadRequest("Không thể hủy đơn hàng của đối tác khác");
         }
 
-        order.getState().cancel();
 
         return orderRepository.save(order);
     }
 
-    public Order refundOrder(@NotNull Long id, OrderController.RefundDTO refundDTO, Authentication authentication) throws
-                                                                                                                   Exception {
+    public Order refundOrder(@NotNull Long id,
+            OrderController.RefundDTO refundDTO,
+            Authentication authentication) throws
+                                           Exception {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
@@ -159,8 +160,8 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
     }
 
-    public void cancelOrder(Order orderInDb) {
-        orderInDb.cancel();
+    public void cancelOrder(Order orderInDb) throws Exception {
+        orderInDb.getState().cancel();
         orderRepository.save(orderInDb);
     }
 }
