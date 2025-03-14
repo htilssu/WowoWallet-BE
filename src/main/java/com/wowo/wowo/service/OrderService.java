@@ -160,8 +160,8 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
     }
 
-    public void cancelOrder(Order orderInDb) throws Exception {
-        orderInDb.getState().cancel();
-        orderRepository.save(orderInDb);
+    public void cancelOrder(Order order) throws Exception {
+        order.getState().cancel();
+        orderRepository.save(order);
     }
 }
