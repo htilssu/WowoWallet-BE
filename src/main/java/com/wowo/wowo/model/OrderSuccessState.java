@@ -1,5 +1,7 @@
 package com.wowo.wowo.model;
 
+import org.apache.coyote.BadRequestException;
+
 public class OrderSuccessState extends OrderState {
 
     public OrderSuccessState(Order order) {super(order);}
@@ -24,7 +26,7 @@ public class OrderSuccessState extends OrderState {
     }
 
     @Override
-    public void cancel() throws Exception {
-        throw new Exception("Order is already paid");
+    public void cancel() throws BadRequestException {
+        throw new BadRequestException("Không thể hủy đơn hàng đã thanh toán");
     }
 }

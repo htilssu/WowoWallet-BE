@@ -1,6 +1,7 @@
 package com.wowo.wowo.model;
 
 import com.wowo.wowo.exception.BadRequest;
+import com.wowo.wowo.factory.OrderStateFactory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,16 +19,7 @@ import java.time.Instant;
 public class Order {
 
     @Transient
-    private OrderState state;
-
-    public OrderState getState() {
-        switch (status) {
-            case SUCCESS ->  new OrderSuccessState(this);
-            case PENDING -> new OrderPendingState(this);
-            case CANCELLED, REFUNDED, FAIL -> new PreventAllState(this);
-        }
-        throw new IllegalStateException("Unexpected value: " + status);
-    }
+    OrderState orderState;
 
     @Id
     @Column(name = "id", nullable = false, length = 50)
@@ -86,9 +78,16 @@ public class Order {
         voucher.setOrderId(this.id);
     }
 
-    public void cancel() {
-        if (this.status == PaymentStatus.PENDING) {
-            this.status = PaymentStatus.CANCELLED;
-        }
+    public void cancel() throws Exception {
+        orderState.cancel();
+    }
+
+    public void refund() throws Exception {
+        orderState.refund();
+    }
+
+    @PostLoad
+    public void postLoad() {
+        this.orderState = OrderStateFactory.getOrderState(this);
     }
 }

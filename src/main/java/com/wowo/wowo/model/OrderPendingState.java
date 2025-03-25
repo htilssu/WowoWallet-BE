@@ -1,12 +1,14 @@
 package com.wowo.wowo.model;
 
+import org.apache.coyote.BadRequestException;
+
 public class OrderPendingState extends OrderState {
 
     public OrderPendingState(Order order) {super(order);}
 
     @Override
-    public void refund() throws Exception {
-        throw new Exception("Order is pending");
+    public void refund() throws BadRequestException {
+        throw new BadRequestException("Không thể hoàn tiền đơn hàng đang chờ xử lý");
     }
 
     @Override

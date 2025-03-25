@@ -1,7 +1,6 @@
 package com.wowo.wowo.util;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -17,9 +16,8 @@ import java.util.Base64;
 public class RSAUtil {
 
     public static RSAPublicKey getPublicKeyFromString() {
-        HttpURLConnection connection = null;
-
-        try (HttpClient httpClient = HttpClient.newBuilder().build()) {
+        try (HttpClient httpClient = HttpClient.newBuilder()
+                .build()) {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("https://sso.htilssu.id.vn/v1/sso/certs?type=pem"))
@@ -29,9 +27,12 @@ public class RSAUtil {
                     HttpResponse.BodyHandlers.ofString());
             final String pem = httpResponse.body();
             String publicKeyPEM = pem.replace("-----BEGIN PUBLIC KEY-----", "")
-                    .replace("-----END PUBLIC KEY-----", "").replaceAll("\"", "")
-                    .replaceAll("\\s+", "").replaceAll("\\\\n", "");
-            byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\"", "")
+                    .replaceAll("\\s+", "")
+                    .replaceAll("\\\\n", "");
+            byte[] encoded = Base64.getDecoder()
+                    .decode(publicKeyPEM);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
             return (RSAPublicKey) keyFactory.generatePublic(keySpec);

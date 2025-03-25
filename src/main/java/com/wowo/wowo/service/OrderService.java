@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @AllArgsConstructor
 public class OrderService {
+
     private final OrderRepository orderRepository;
     private final OrderMapperImpl orderMapperImpl;
     private final OrderItemRepository orderItemRepository;
@@ -47,6 +48,7 @@ public class OrderService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
     private final ConstantService constantService;
     private final ApplicationService applicationService;
+
     @Getter
     private final VoucherProducer voucherProducer;
 
@@ -109,7 +111,7 @@ public class OrderService {
         final Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy đơn hàng"));
 
-        order.getState().cancel();
+        order.cancel();
 
         if (!order.getApplication()
                 .getId()
@@ -136,14 +138,7 @@ public class OrderService {
             throw new BadRequest("Không thể hủy đơn hàng của application khác");
         }
 
-        switch (order.getStatus()) {
-            case PENDING -> throw new BadRequest("Không thể hoàn tiền đơn hàng chưa thanh toán");
-            case SUCCESS -> {
-                return refundService.refund(order, refundDTO);
-            }
-            case REFUNDED -> throw new BadRequest("Đơn hàng đã được hoàn tiền");
-            default -> throw new IllegalStateException("Unexpected value: " + order.getStatus());
-        }
+        return refundService.refund(order, refundDTO);
     }
 
     public Order useVoucher(UseVoucherMessage message) {
@@ -161,7 +156,7 @@ public class OrderService {
     }
 
     public void cancelOrder(Order order) throws Exception {
-        order.getState().cancel();
+        order.cancel();
         orderRepository.save(order);
     }
 }
