@@ -13,7 +13,7 @@ public class OrderStateFactory {
         return switch (status) {
             case SUCCESS -> new OrderSuccessState(order);
             case PENDING -> new OrderPendingState(order);
-            case CANCELLED, REFUNDED, FAIL -> new PreventAllState(order);
+            case CANCELLED, REFUNDED, FAIL -> new OrderPreventAllState(order);
         };
     }
 }

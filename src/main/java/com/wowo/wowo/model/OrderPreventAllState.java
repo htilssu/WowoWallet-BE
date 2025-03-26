@@ -2,9 +2,9 @@ package com.wowo.wowo.model;
 
 import org.apache.coyote.BadRequestException;
 
-public class PreventAllState extends OrderState {
+public class OrderPreventAllState extends OrderState {
 
-    public PreventAllState(Order order) {
+    public OrderPreventAllState(Order order) {
         super(order);
     }
 
