@@ -14,9 +14,11 @@
 
 package com.wowo.wowo.controller;
 
+
+import com.wowo.wowo.Decorator.WithdrawService;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.WithdrawDTO;
-import com.wowo.wowo.service.WithdrawService;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +36,6 @@ public class WithdrawController {
 
     @PostMapping
     public ResponseEntity<?> withdraw(@RequestBody @Validated WithdrawDTO withdrawDTO) {
-
         withdrawService.withdraw(withdrawDTO);
         return ResponseEntity.ok(new ResponseMessage("Rút tiền thành công"));
     }
