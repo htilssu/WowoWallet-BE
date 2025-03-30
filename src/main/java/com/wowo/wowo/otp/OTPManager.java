@@ -1,7 +1,7 @@
 package com.wowo.wowo.otp;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.wowo.wowo.data.dto.OtpSendDTO;
+import com.wowo.wowo.data.dto.OTPSendDTO;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.OtpClaim;
 import com.wowo.wowo.repository.OtpClaimRepository;
@@ -24,26 +24,22 @@ public class OTPManager {
     private final OtpClaimRepository otpClaimRepository;
 
     /**
-     * Gửi mã OTP cho người dùng, thông tin người nhận sẽ được lấy từ {@link OtpSendDTO#getSendTo()}
+     * Gửi mã OTP cho người dùng, thông tin người nhận sẽ được lấy từ {@link OTPSendDTO#getSendTo()}
      * hàm này sẽ gửi OTP bất đồng bộ
      * {@link OTPSender} là service gửi OTP (ví dụ: gửi qua email, sms) {@link EmailService},
      *
      * @param otpSender  đối tượng gửi OTP
      * @param otpSendDTO thông tin người nhận và loại OTP
      */
-    public void send(OTPSender otpSender, OtpSendDTO otpSendDTO, Authentication authentication) {
+    public void send(OTPSender otpSender, OTPSendDTO otpSendDTO, Authentication authentication) {
         DecodedJWT decodedJWT = (DecodedJWT) authentication.getDetails();
         String role = decodedJWT.getClaim("role").asString();
         String senderMail;
         switch (role) {
-            case "user" -> {
-                senderMail = userRepository.findById(authentication.getPrincipal().toString())
-                        .orElseThrow(() -> new NotFoundException("User not found")).getEmail();
-            }
-            case "partner" -> {
-                senderMail = userRepository.findById(authentication.getPrincipal().toString())
-                        .orElseThrow(() -> new NotFoundException("Partner not found")).getEmail();
-            }
+            case "user" -> senderMail = userRepository.findById(authentication.getPrincipal().toString())
+                    .orElseThrow(() -> new NotFoundException("User not found")).getEmail();
+            case "partner" -> senderMail = userRepository.findById(authentication.getPrincipal().toString())
+                    .orElseThrow(() -> new NotFoundException("Partner not found")).getEmail();
             case null, default -> throw new NotFoundException("Role not found");
         }
 

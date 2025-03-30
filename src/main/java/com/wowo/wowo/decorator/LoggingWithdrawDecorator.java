@@ -1,4 +1,4 @@
-package com.wowo.wowo.Decorator;
+package com.wowo.wowo.decorator;
 
 import com.wowo.wowo.data.dto.WithdrawDTO;
 import org.slf4j.Logger;

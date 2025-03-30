@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.Strategy.PaymentStrategy;
-import com.wowo.wowo.Strategy.PaymentStrategyFactory;
+import com.wowo.wowo.strategy.PaymentStrategy;
+import com.wowo.wowo.strategy.PaymentStrategyFactory;
 import com.wowo.wowo.data.dto.TopUpRequestDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.InsufficientBalanceException;

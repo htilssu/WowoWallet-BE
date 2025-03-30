@@ -1,6 +1,6 @@
 package com.wowo.wowo.config;
 
-import com.wowo.wowo.Decorator.*;
+import com.wowo.wowo.decorator.*;
 import com.wowo.wowo.repository.TransactionRepository;
 import com.wowo.wowo.service.TransferService;
 import com.wowo.wowo.service.WalletService;

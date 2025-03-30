@@ -2,7 +2,7 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.data.dto.OtpSendDTO;
+import com.wowo.wowo.data.dto.OTPSendDTO;
 import com.wowo.wowo.data.dto.OTPVerifyDTO;
 import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.service.EmailService;
@@ -27,7 +27,7 @@ public class OTPController {
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<?> sendOtp(@RequestBody @Nullable OtpSendDTO otpSendDTO,
+    public ResponseEntity<?> sendOtp(@RequestBody @Nullable OTPSendDTO otpSendDTO,
             Authentication authentication) {
 
         if (otpSendDTO == null) {

@@ -1,4 +1,4 @@
-package com.wowo.wowo.Decorator;
+package com.wowo.wowo.decorator;
 
 import com.wowo.wowo.data.dto.WithdrawDTO;
 import com.wowo.wowo.service.TransferService;

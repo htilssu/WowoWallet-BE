@@ -15,7 +15,7 @@
 package com.wowo.wowo.controller;
 
 
-import com.wowo.wowo.Decorator.WithdrawService;
+import com.wowo.wowo.decorator.WithdrawService;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.WithdrawDTO;
 

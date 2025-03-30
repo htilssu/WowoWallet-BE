@@ -2,7 +2,7 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.annotation.authorized.IsUser;
 import com.wowo.wowo.data.dto.OTPVerifyDTO;
-import com.wowo.wowo.data.dto.OtpSendDTO;
+import com.wowo.wowo.data.dto.OTPSendDTO;
 import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.data.mapper.UserMapper;
@@ -36,7 +36,7 @@ public class TransferController {
 
     @PostMapping("/send-otp")
     @IsUser
-    public ResponseEntity<?> sendOtp(@RequestBody @Validated OtpSendDTO data,
+    public ResponseEntity<?> sendOtp(@RequestBody @Validated OTPSendDTO data,
             Authentication authentication) {
         otpManager.send(emailService, data, authentication);
         return ResponseEntity.ok(new ResponseMessage("Gửi mã otp thành công"));

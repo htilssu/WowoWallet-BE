@@ -14,38 +14,21 @@
 
 package com.wowo.wowo.data.dto;
 
-import java.util.Objects;
-
 import com.wowo.wowo.constant.Constant;
-
 import com.wowo.wowo.otp.OTPData;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
-@Data
-public class OtpSendDTO extends OTPData {
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+public class OTPSendDTO extends OTPData {
 
     @NotNull
     private Constant.OTPService type;
-    private String sendTo;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        OtpSendDTO that = (OtpSendDTO) o;
-        return getType() == that.getType() && Objects.equals(getSendTo(), that.getSendTo());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Objects.hashCode(getType());
-        result = 31 * result + Objects.hashCode(getSendTo());
-        return result;
-    }
+    private String recipient;
 }
