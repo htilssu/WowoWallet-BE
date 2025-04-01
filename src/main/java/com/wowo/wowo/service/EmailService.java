@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import static jakarta.mail.Message.RecipientType.TO;
 
 @Service
-public class EmailService implements OTPSender {
+public class EmailService {
 
     public final JavaMailSender javaMailSender;
 
@@ -42,23 +42,6 @@ public class EmailService implements OTPSender {
         javaMailSender.send(msg);
     }
 
-    @Override
-    public void sendOTP(String recipientAddress, String otp) {
-        var newMail = javaMailSender.createMimeMessage();
-        // set the email recipient
 
-        String htmlText = MailContent.OTP_BODY.replace("{{OTP}}", otp);
-
-        try {
-            newMail.setSubject("Mã xác thực OTP", "utf-8");
-            newMail.addRecipients(TO, recipientAddress);
-            newMail.setContent(htmlText, "text/html; charset=utf-8");
-        } catch (MessagingException e) {
-            Logger.getAnonymousLogger()
-                    .log(Level.WARNING, e.getMessage());
-        }
-
-        javaMailSender.send(newMail);
-    }
 }
 

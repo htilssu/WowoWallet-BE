@@ -18,91 +18,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
-@AllArgsConstructor
-public class TransactionService {
+/**
+ * Interface định nghĩa các dịch vụ liên quan đến giao dịch
+ */
+public interface TransactionService {
 
-    private final TransactionRepository transactionRepository;
-    private final TransactionMapper transactionMapper;
-    private final UserService userService;
+    /**
+     * Lấy số tiền của giao dịch từ ID giao dịch
+     * 
+     * @param transactionId ID của giao dịch cần lấy thông tin
+     * @return số tiền của giao dịch
+     * @throws IllegalArgumentException nếu không tìm thấy giao dịch
+     */
+    double getTransactionAmount(String transactionId);
 
-    public void refund(Transaction transaction) {
-        //TODO: implement refund
-    }
+    void refund(Transaction transaction);
 
-    public Transaction save(Transaction transaction) {
-        try {
-            return transactionRepository.save(transaction);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    Transaction save(Transaction transaction);
 
-    public List<TransactionDTO> getRecentTransactions(String userId, int offset, int page) {
-        var user = userService.getUserByIdOrElseThrow(userId);
-        var transactions =
-                transactionRepository.findTransactionsByReceiveWalletOrSenderWalletOrderByUpdatedDesc(
-                        user.getWallet(), user.getWallet(), Pageable.ofSize(offset)
-                                .withPage(page));
+    List<TransactionDTO> getRecentTransactions(String userId, int offset, int page);
 
-        transactions = transactions.stream()
-                .peek(transaction -> {
-                    if (transaction.getFlowType() == FlowType.TRANSFER_MONEY && transaction
-                            .getReceiveWallet()
-                            .equals(user.getWallet())) {
-                        transaction.setFlowType(FlowType.RECEIVE_MONEY);
-                    }
-                })
-                .toList();
+    long getTotalTransactions(String userId);
 
+    TransactionDTO getTransactionDetail(String id, Authentication authentication);
 
-        return transactions.stream()
-                .map(transactionMapper::toDto)
-                .toList();
-    }
-
-    public long getTotalTransactions(String userId) {
-        var user = userService.getUserByIdOrElseThrow(userId);
-        return transactionRepository.countTransactionBySenderWalletOrReceiveWallet(
-                user.getWallet(), user.getWallet());
-    }
-
-    public TransactionDTO getTransactionDetail(String id, Authentication authentication) {
-        String userId = authentication.getPrincipal()
-                .toString();
-        var user = userService.getUserByIdOrElseThrow(userId);
-        final Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Giao dịch không tồn tại"));
-
-        if (transaction.getReceiveWallet()
-                .equals(user.getWallet())) {
-            transaction.setFlowType(FlowType.RECEIVE_MONEY);
-        }
-        return transactionMapper.toDto(transaction);
-    }
-
-    public List<Transaction> getGroupFundTransaction(Long groupId,
+    List<Transaction> getGroupFundTransaction(Long groupId,
             @Min(0) @NotNull Integer offset,
-            @Min(0) @NotNull Integer page) {
+            @Min(0) @NotNull Integer page);
 
-        return transactionRepository.getGroupFundTransaction(groupId, Pageable.ofSize(offset)
-                .withPage(page));
-    }
-
-    //Thống kê
-    public List<Map<String, Object>> getTransactionStats() {
-        List<Object[]> stats = transactionRepository.getTransactionStats();
-        List<Map<String, Object>> results = new ArrayList<>();
-
-        for (Object[] row : stats) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("totalTransactions", row[0]);
-            data.put("totalAmount", row[1]);
-            data.put("flowType", row[2]);
-            results.add(data);
-        }
-
-        return results;
-    }
-
+    // Thống kê
+    List<Map<String, Object>> getTransactionStats();
 }
