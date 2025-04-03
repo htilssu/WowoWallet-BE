@@ -2,7 +2,6 @@ package com.wowo.wowo.config;
 
 import com.wowo.wowo.Strategy.AtmCardPaymentStrategy;
 import com.wowo.wowo.Strategy.PaypalPaymentStrategy;
-import com.wowo.wowo.Strategy.PaymentStrategyFactory;
 import com.wowo.wowo.service.PaypalService;
 import com.wowo.wowo.service.TopUpService;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +20,5 @@ public class PaymentConfig {
     @Bean
     public AtmCardPaymentStrategy atmCardPaymentStrategy(TopUpService topUpService) {
         return new AtmCardPaymentStrategy(topUpService);
-    }
-
-    // Đăng ký bean PaymentStrategyFactory
-    @Bean
-    public PaymentStrategyFactory paymentStrategyFactory(
-            PaypalPaymentStrategy paypalPaymentStrategy,
-            AtmCardPaymentStrategy atmCardPaymentStrategy) {
-        return new PaymentStrategyFactory(paypalPaymentStrategy, atmCardPaymentStrategy);
     }
 }

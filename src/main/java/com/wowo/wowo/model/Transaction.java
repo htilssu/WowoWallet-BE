@@ -18,7 +18,6 @@ import java.time.Instant;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Transaction {
-
     @Id
     @TransactionIdSequence
     @Column(name = "id", nullable = false, length = 40)

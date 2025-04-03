@@ -1,7 +1,7 @@
 package com.wowo.wowo.controller;
 
-import com.wowo.wowo.Strategy.PaymentStrategy;
-import com.wowo.wowo.Strategy.PaymentStrategyFactory;
+import com.wowo.wowo.Strategy.AtmCardPaymentStrategy;
+import com.wowo.wowo.Strategy.PaypalPaymentStrategy;
 import com.wowo.wowo.data.dto.TopUpRequestDTO;
 import com.wowo.wowo.exception.BadRequest;
 import com.wowo.wowo.exception.InsufficientBalanceException;
@@ -17,13 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/top-up")
 @AllArgsConstructor
 public class TopUpController {
-    private final PaymentStrategyFactory paymentStrategyFactory;
+    private final PaypalPaymentStrategy paypalPaymentStrategy;
+    private final AtmCardPaymentStrategy atmCardPaymentStrategy;
 
     @PostMapping
     public ResponseEntity<String> topUp(@RequestBody @Validated TopUpRequestDTO topUpRequestDTO) {
         try {
-            PaymentStrategy strategy = paymentStrategyFactory.getStrategy(topUpRequestDTO.getMethod());
-            strategy.processPayment(topUpRequestDTO);
+            switch (topUpRequestDTO.getMethod()) {
+                case PAYPAL:
+                    paypalPaymentStrategy.processPayment(topUpRequestDTO);
+                    break;
+                case ATM_CARD:
+                    atmCardPaymentStrategy.processPayment(topUpRequestDTO);
+                    break;
+                default:
+                    throw new BadRequest("Phương thức thanh toán không được hỗ trợ");
+            }
             return ResponseEntity.ok("Giao dịch đang được xử lý");
         } catch (BadRequest | InsufficientBalanceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -49,7 +49,6 @@ dependencies {
     implementation("com.auth0:auth0:2.14.0")
 
 
-
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.google.guava:guava:33.2.1-jre")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
@@ -94,6 +93,9 @@ dependencies {
 
     implementation("com.webauthn4j:webauthn4j-core:0.28.2.RELEASE")
     implementation("com.webauthn4j:webauthn4j-spring-security-core:0.10.0.RELEASE")
+
+
+    implementation ("io.apimatic:core:0.6.8")
 }
 
 dependencyManagement {
