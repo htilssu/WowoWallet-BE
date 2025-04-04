@@ -1,24 +1,23 @@
 package com.wowo.wowo.otp;
 
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wowo.wowo.constant.Constant.OTPType;
 import com.wowo.wowo.data.MailContent;
 import com.wowo.wowo.data.dto.OTPRequestDTO;
 import com.wowo.wowo.exception.NotFoundException;
+import com.wowo.wowo.otp.OTPFactory.OTPChannel;
 import com.wowo.wowo.otp.storage.OTPRepository;
 import com.wowo.wowo.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Lớp quản lý chức năng OTP, điều phối việc tạo, gửi và xác minh OTP
@@ -41,30 +40,26 @@ public class OTPManager {
     private OTPSender smsOTPSender;
 
     /**
-     * Enum xác định phương thức gửi OTP
-     */
-    public enum OTPChannel {
-        EMAIL,
-        SMS,
-        BOTH
-    }
-
-    /**
      * Phương thức thống nhất để tạo và gửi mã OTP cho người dùng.
      * Phương thức này sẽ tự động xác định loại OTP và cách thức gửi dựa trên thông
      * tin đầu vào.
-     * 
+     *
      * @param otpRequestDTO  DTO chứa thông tin yêu cầu OTP
      * @param authentication thông tin xác thực của người dùng
-     * @param channel        kênh gửi OTP (EMAIL, SMS, BOTH)
+     * @param channel        kênh gửi OTP (EMAIL, SMS)
+     *
      * @return true nếu gửi thành công, false nếu thất bại
      */
-    public boolean send(OTPRequestDTO otpRequestDTO, Authentication authentication, OTPChannel channel) {
+    public boolean send(OTPRequestDTO otpRequestDTO,
+            Authentication authentication,
+            OTPChannel channel) {
         try {
             // Lấy thông tin người dùng từ authentication
             DecodedJWT decodedJWT = (DecodedJWT) authentication.getDetails();
-            String userId = authentication.getPrincipal().toString();
-            String role = decodedJWT.getClaim("role").asString();
+            String userId = authentication.getPrincipal()
+                    .toString();
+            String role = decodedJWT.getClaim("role")
+                    .asString();
 
             // Xác thực quyền của người dùng
             if (!userId.equals(otpRequestDTO.getUserId())) {
@@ -82,21 +77,11 @@ public class OTPManager {
                 if (recipient == null || recipient.isEmpty()) {
                     throw new IllegalArgumentException("Không có email để gửi OTP");
                 }
-            } else if (channel == OTPChannel.SMS) {
+            }
+            else { // SMS
                 recipient = user.getPhoneNumber();
                 if (recipient == null || recipient.isEmpty()) {
                     throw new IllegalArgumentException("Không có số điện thoại để gửi SMS");
-                }
-            } else { // BOTH
-                // Kiểm tra xem có ít nhất một phương thức liên hệ không
-                if (user.getEmail() == null || user.getEmail().isEmpty()) {
-                    if (user.getPhoneNumber() == null || user.getPhoneNumber().isEmpty()) {
-                        throw new IllegalArgumentException("Không có phương thức liên hệ nào");
-                    }
-                    recipient = user.getPhoneNumber();
-                    channel = OTPChannel.SMS; // Nếu không có email, chỉ gửi SMS
-                } else {
-                    recipient = user.getEmail();
                 }
             }
 
@@ -107,65 +92,38 @@ public class OTPManager {
             boolean isTransactionRelated = otpType == OTPType.TRANSACTION_CONFIRMATION ||
                     otpType == OTPType.WITHDRAW_CONFIRMATION;
 
-            // Tạo OTP phù hợp
+            // Tạo OTP phù hợp với loại và kênh gửi
             OTP otp;
             if (isTransactionRelated) {
                 String transactionId = otpRequestDTO.getTransactionId();
                 if (transactionId == null || transactionId.isEmpty()) {
-                    throw new IllegalArgumentException("Transaction ID là bắt buộc cho OTP giao dịch");
+                    throw new IllegalArgumentException(
+                            "Transaction ID là bắt buộc cho OTP giao dịch");
                 }
-                otp = otpFactory.createOTP(otpType, userId, recipient, transactionId);
-            } else {
-                otp = otpFactory.createOTP(otpType, userId, recipient);
+                otp = otpFactory.createOTP(otpType, userId, recipient, transactionId, channel);
+            }
+            else {
+                otp = otpFactory.createOTP(otpType, userId, recipient, channel);
             }
 
             // Tạo mã OTP
-            String otpCode = otpGenerator.generateOTP().get();
+            String otpCode = otpGenerator.generateOTP()
+                    .get();
             otp.setCode(otpCode);
 
             // Lưu OTP vào repository
             otpRepository.save(otp);
 
-            // Chuẩn bị nội dung gửi
-            String subject = getSubject(otpType, isTransactionRelated);
-            String content = getContent(otpCode, otpType, isTransactionRelated,
-                    isTransactionRelated ? otpRequestDTO.getTransactionId() : null);
-
-            // Gửi OTP qua kênh đã chọn
-            boolean success = false;
-            switch (channel) {
-                case EMAIL:
-                    success = emailOTPSender.send(recipient, subject, content);
-                    break;
-                case SMS:
-                    success = smsOTPSender.send(recipient, subject, content);
-                    break;
-                case BOTH:
-                    boolean emailSuccess = false;
-                    boolean smsSuccess = false;
-
-                    // Gửi qua email nếu có
-                    if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-                        emailSuccess = emailOTPSender.send(user.getEmail(), subject, content);
-                    }
-
-                    // Gửi qua SMS nếu có
-                    if (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty()) {
-                        smsSuccess = smsOTPSender.send(user.getPhoneNumber(), subject, content);
-                    }
-
-                    // Thành công nếu ít nhất một kênh thành công
-                    success = emailSuccess || smsSuccess;
-                    break;
-            }
-
-            return success;
+            // Gửi OTP trực tiếp thông qua đối tượng OTP
+            return otp.send();
 
         } catch (ExecutionException | InterruptedException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Lỗi khi tạo OTP: " + e.getMessage(), e);
+            Logger.getAnonymousLogger()
+                    .log(Level.SEVERE, "Lỗi khi tạo OTP: " + e.getMessage(), e);
             return false;
         } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Lỗi khi gửi OTP: " + e.getMessage(), e);
+            Logger.getAnonymousLogger()
+                    .log(Level.SEVERE, "Lỗi khi gửi OTP: " + e.getMessage(), e);
             return false;
         }
     }
@@ -179,11 +137,12 @@ public class OTPManager {
 
     /**
      * Phương thức để xác minh OTP, xử lý cả OTP thông thường và OTP giao dịch
-     * 
+     *
      * @param userId        ID người dùng
      * @param otpCode       mã OTP cần xác minh
      * @param otpType       loại OTP
      * @param transactionId ID giao dịch (tùy chọn, cần thiết cho OTP giao dịch)
+     *
      * @return true nếu OTP hợp lệ, false nếu không hợp lệ
      */
     public boolean verify(String userId, String otpCode, OTPType otpType, String transactionId) {
@@ -209,7 +168,8 @@ public class OTPManager {
             // Đối với OTP giao dịch, cần kiểm tra thêm transactionId
             if (isTransactionRelated) {
                 if (transactionId == null || transactionId.isEmpty()) {
-                    throw new IllegalArgumentException("Transaction ID là bắt buộc để xác minh OTP giao dịch");
+                    throw new IllegalArgumentException(
+                            "Transaction ID là bắt buộc để xác minh OTP giao dịch");
                 }
 
                 if (!(otp instanceof TransactionOTP transactionOTP)) {
@@ -217,7 +177,8 @@ public class OTPManager {
                 }
 
                 // Kiểm tra ID giao dịch có khớp không
-                if (!transactionOTP.getTransactionId().equals(transactionId)) {
+                if (!transactionOTP.getTransactionId()
+                        .equals(transactionId)) {
                     return false;
                 }
             }
@@ -233,7 +194,8 @@ public class OTPManager {
             return isValid;
 
         } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Lỗi khi xác minh OTP: " + e.getMessage(), e);
+            Logger.getAnonymousLogger()
+                    .log(Level.SEVERE, "Lỗi khi xác minh OTP: " + e.getMessage(), e);
             return false;
         }
     }
@@ -246,7 +208,8 @@ public class OTPManager {
                 otpType == OTPType.WITHDRAW_CONFIRMATION;
 
         if (isTransactionRelated) {
-            throw new IllegalArgumentException("Transaction ID là bắt buộc để xác minh OTP giao dịch");
+            throw new IllegalArgumentException(
+                    "Transaction ID là bắt buộc để xác minh OTP giao dịch");
         }
 
         return verify(userId, otpCode, otpType, null);
@@ -264,7 +227,8 @@ public class OTPManager {
                 case TRANSACTION_CONFIRMATION -> "Xác nhận giao dịch - Mã xác thực OTP";
                 default -> "Mã xác thực OTP giao dịch";
             };
-        } else {
+        }
+        else {
             return switch (otpType) {
                 case PASSWORD_RESET -> "Đặt lại mật khẩu - Mã xác thực OTP";
                 case EMAIL_VERIFICATION -> "Xác minh email - Mã xác thực OTP";
@@ -277,7 +241,10 @@ public class OTPManager {
     /**
      * Lấy nội dung email/SMS dựa trên loại OTP
      */
-    private String getContent(String otpCode, OTPType otpType, boolean isTransactionRelated, String transactionId) {
+    private String getContent(String otpCode,
+            OTPType otpType,
+            boolean isTransactionRelated,
+            String transactionId) {
         if (isTransactionRelated) {
             String baseTemplate = MailContent.TRANSACTION_OTP_BODY
                     .replace("{{OTP}}", otpCode)
@@ -291,7 +258,8 @@ public class OTPManager {
             };
 
             return baseTemplate.replace("{{MESSAGE}}", messageByType);
-        } else {
+        }
+        else {
             String baseTemplate = MailContent.OTP_BODY.replace("{{OTP}}", otpCode);
 
             // Thêm thông báo tùy theo loại OTP

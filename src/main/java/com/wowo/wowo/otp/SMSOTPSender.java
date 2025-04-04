@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.wowo.wowo.constant.Constant.OTPType;
+
 /**
  * Dịch vụ gửi OTP qua tin nhắn SMS
  */
@@ -33,7 +35,7 @@ public class SMSOTPSender implements OTPSender {
     public boolean send(String recipientPhoneNumber, String subject, String content) {
         try {
             // Chuẩn bị nội dung tin nhắn SMS (không cần subject như email)
-            String smsContent = extractSmsContent(content);
+            String smsContent = content;
 
             // Chuẩn bị dữ liệu để gửi đến SMS API
             Map<String, String> smsRequest = new HashMap<>();
@@ -53,61 +55,64 @@ public class SMSOTPSender implements OTPSender {
         }
     }
 
-    /**
-     * Loại bỏ HTML và trích xuất nội dung cần thiết cho SMS
-     */
-    private String extractSmsContent(String htmlContent) {
-        // Tìm mã OTP trong nội dung HTML
-        String otpCode = extractOTPFromHTML(htmlContent);
+    @Override
+    public boolean sendOTP(OTP otp) {
+        // Tạo nội dung SMS dựa trên loại OTP
+        String smsContent = generateSmsContent(otp);
 
-        // Tìm thông báo trong nội dung HTML
-        String message = extractMessageFromHTML(htmlContent);
-
-        // Tạo nội dung SMS ngắn gọn
-        return "Mã OTP " + message + " " + otpCode
-                + ". Mã có hiệu lực trong thời gian ngắn. Không chia sẻ mã này với bất kỳ ai.";
+        // Gửi SMS (không cần subject)
+        return send(otp.getRecipient(), null, smsContent);
     }
 
     /**
-     * Trích xuất mã OTP từ nội dung HTML
+     * Tạo nội dung SMS dựa trên loại OTP
      */
-    private String extractOTPFromHTML(String htmlContent) {
-        // Tìm nội dung giữa {{OTP}} trong template
-        int start = htmlContent.indexOf("{{OTP}}");
-        if (start != -1) {
-            // Tìm thẻ div chứa OTP
-            int divStart = htmlContent.lastIndexOf("<div class=\"otp-code\">", start);
-            int divEnd = htmlContent.indexOf("</div>", start);
+    private String generateSmsContent(OTP otp) {
+        OTPType otpType = otp.getOtpType();
+        String otpCode = otp.getCode();
 
-            if (divStart != -1 && divEnd != -1) {
-                // Trích xuất nội dung giữa thẻ div
-                return htmlContent.substring(divStart + "<div class=\"otp-code\">".length(), divEnd).trim();
+        // Xác định nội dung thông báo dựa trên loại OTP
+        String message;
+
+        // Thêm thông báo khác nhau tùy theo loại OTP
+        if (otp instanceof TransactionOTP) {
+            TransactionOTP transactionOTP = (TransactionOTP) otp;
+            String transactionId = transactionOTP.getTransactionId();
+
+            message = switch (otpType) {
+                case WITHDRAW_CONFIRMATION -> "xác nhận rút tiền";
+                case TRANSACTION_CONFIRMATION -> "xác nhận giao dịch";
+                default -> "xác nhận giao dịch tài chính";
+            };
+
+            return String.format(
+                    "Mã OTP %s là %s. Mã giao dịch: %s. Có hiệu lực trong %d phút. KHÔNG chia sẻ mã này với bất kỳ ai.",
+                    message, otpCode, transactionId, otpType.getExpirationTimeInMinutes());
+        } else if (otp instanceof PasswordResetOTP) {
+            PasswordResetOTP passwordResetOTP = (PasswordResetOTP) otp;
+            String token = passwordResetOTP.getToken();
+
+            String baseMessage = String.format(
+                    "Mã OTP đặt lại mật khẩu là %s. Có hiệu lực trong %d phút. KHÔNG chia sẻ mã này với bất kỳ ai.",
+                    otpCode, otpType.getExpirationTimeInMinutes());
+
+            if (token != null && !token.isEmpty()) {
+                return baseMessage + "\nToken đặt lại mật khẩu: " + token;
             }
+
+            return baseMessage;
+        } else {
+            message = switch (otpType) {
+                case PASSWORD_RESET -> "đặt lại mật khẩu";
+                case EMAIL_VERIFICATION -> "xác minh email";
+                case ACCOUNT_VERIFICATION -> "xác minh tài khoản";
+                default -> "xác thực";
+            };
+
+            return String.format(
+                    "Mã OTP %s của bạn là %s. Có hiệu lực trong %d phút. KHÔNG chia sẻ mã này với bất kỳ ai.",
+                    message, otpCode, otpType.getExpirationTimeInMinutes());
         }
-
-        return "UNKNOWN"; // Không tìm thấy mã OTP
-    }
-
-    /**
-     * Trích xuất thông báo từ nội dung HTML
-     */
-    private String extractMessageFromHTML(String htmlContent) {
-        // Tìm nội dung giữa {{MESSAGE}} trong template
-        int start = htmlContent.indexOf("{{MESSAGE}}");
-        if (start != -1) {
-            // Tìm phần văn bản trước {{MESSAGE}}
-            int beforeMessageStart = htmlContent.lastIndexOf(">", start);
-            int afterMessageEnd = htmlContent.indexOf("<", start);
-
-            if (beforeMessageStart != -1 && afterMessageEnd != -1) {
-                // Lấy đoạn văn bản chứa {{MESSAGE}}
-                String messageLine = htmlContent.substring(beforeMessageStart + 1, afterMessageEnd);
-                // Thay thế {{MESSAGE}} bằng chuỗi rỗng để lấy các từ xung quanh
-                return messageLine.replace("{{MESSAGE}}", "").trim();
-            }
-        }
-
-        return "của bạn là"; // Thông báo mặc định
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.wowo.wowo.otp;
 
 import com.wowo.wowo.constant.Constant.OTPType;
-import com.wowo.wowo.data.MailContent;
 
 /**
  * OTP dùng cho giao dịch, mở rộng từ OTP cơ bản với thông tin giao dịch
@@ -20,29 +19,6 @@ public class TransactionOTP extends OTP {
 
     public String getTransactionId() {
         return transactionId;
-    }
-
-    @Override
-    protected String generateSubject() {
-        return switch (otpType) {
-            case WITHDRAW_CONFIRMATION -> "Xác nhận rút tiền - Mã xác thực OTP";
-            case TRANSACTION_CONFIRMATION -> "Xác nhận giao dịch - Mã xác thực OTP";
-            default -> "Mã xác thực OTP giao dịch";
-        };
-    }
-
-    @Override
-    protected String generateContent() {
-        String messageByType = switch (otpType) {
-            case WITHDRAW_CONFIRMATION -> "để xác nhận yêu cầu rút tiền";
-            case TRANSACTION_CONFIRMATION -> "để xác nhận giao dịch";
-            default -> "để xác nhận thao tác tài chính";
-        };
-
-        return MailContent.TRANSACTION_OTP_BODY
-                .replace("{{OTP}}", code)
-                .replace("{{TRANSACTION_ID}}", transactionId)
-                .replace("{{MESSAGE}}", messageByType);
     }
 
     /**

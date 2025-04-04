@@ -1,7 +1,6 @@
 package com.wowo.wowo.otp;
 
 import com.wowo.wowo.constant.Constant.OTPType;
-import com.wowo.wowo.data.MailContent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,25 +44,5 @@ public class PasswordResetOTP extends OTP {
             return false;
         }
         return otpGenerator.verify(inputCode.toLowerCase());
-    }
-
-    @Override
-    protected String generateSubject() {
-        return "Đặt lại mật khẩu - Mã xác thực OTP";
-    }
-
-    @Override
-    protected String generateContent() {
-        String baseContent = MailContent.OTP_BODY
-                .replace("{{OTP}}", code)
-                .replace("{{MESSAGE}}", "để đặt lại mật khẩu cho tài khoản của bạn.");
-
-        // Nếu có token, thêm vào nội dung
-        if (token != null && !token.isEmpty()) {
-            baseContent = baseContent.replace("</body>",
-                    "<p>Bạn cũng có thể sử dụng token sau để đặt lại mật khẩu: " + token + "</p></body>");
-        }
-
-        return baseContent;
     }
 }

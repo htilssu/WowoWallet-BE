@@ -54,32 +54,14 @@ public abstract class OTP {
     }
 
     /**
-     * Phương thức gửi OTP, sẽ được triển khai bởi các lớp con
+     * Phương thức gửi OTP
      * 
      * @return true nếu gửi thành công, false nếu thất bại
      */
     public boolean send() {
-        // Tạo tiêu đề và nội dung theo loại OTP
-        String subject = generateSubject();
-        String content = generateContent();
-
-        // Gửi qua đối tượng sender đã được inject
-        return otpSender.send(recipient, subject, content);
+        // Gửi trực tiếp qua đối tượng sender đã được inject
+        return otpSender.sendOTP(this);
     }
-
-    /**
-     * Tạo tiêu đề email dựa trên loại OTP, được triển khai bởi lớp con
-     * 
-     * @return tiêu đề phù hợp với loại OTP
-     */
-    protected abstract String generateSubject();
-
-    /**
-     * Tạo nội dung email dựa trên loại OTP, được triển khai bởi lớp con
-     * 
-     * @return nội dung phù hợp với loại OTP
-     */
-    protected abstract String generateContent();
 
     /**
      * Đặt đối tượng sender

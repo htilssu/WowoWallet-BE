@@ -1,7 +1,6 @@
 package com.wowo.wowo.otp;
 
 import com.wowo.wowo.constant.Constant.OTPType;
-import com.wowo.wowo.data.MailContent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,17 +18,5 @@ public class EmailVerificationOTP extends OTP {
         this.recipient = recipient;
         this.otpType = OTPType.EMAIL_VERIFICATION;
         setExpirationTime();
-    }
-
-    @Override
-    protected String generateSubject() {
-        return "Xác minh email - Mã xác thực OTP";
-    }
-
-    @Override
-    protected String generateContent() {
-        return MailContent.OTP_BODY
-                .replace("{{OTP}}", code)
-                .replace("{{MESSAGE}}", "để xác minh địa chỉ email của bạn.");
     }
 }

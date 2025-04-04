@@ -3,7 +3,7 @@ package com.wowo.wowo.controller;
 import com.wowo.wowo.constant.Constant.OTPType;
 import com.wowo.wowo.data.dto.OTPRequestDTO;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.otp.OTPManager.OTPChannel;
+import com.wowo.wowo.otp.OTPFactory.OTPChannel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +45,7 @@ public class OTPController {
      * Gửi OTP qua kênh được chỉ định
      * 
      * @param otpRequestDTO  yêu cầu OTP
-     * @param channel        kênh gửi OTP (EMAIL, SMS, BOTH)
+     * @param channel        kênh gửi OTP (EMAIL, SMS)
      * @param authentication thông tin xác thực của người dùng
      * @return kết quả gửi OTP
      */
@@ -60,7 +60,7 @@ public class OTPController {
             otpChannel = OTPChannel.valueOf(channel.toUpperCase());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(
-                    new ApiResponse(false, "Kênh gửi OTP không hợp lệ. Các lựa chọn hợp lệ: EMAIL, SMS, BOTH"));
+                    new ApiResponse(false, "Kênh gửi OTP không hợp lệ. Các lựa chọn hợp lệ: EMAIL, SMS"));
         }
 
         boolean sent = otpManager.send(otpRequestDTO, authentication, otpChannel);

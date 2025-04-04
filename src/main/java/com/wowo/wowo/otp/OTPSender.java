@@ -17,4 +17,13 @@ public interface OTPSender {
      * @return true nếu gửi thành công, false nếu thất bại
      */
     boolean send(String recipientAddress, String subject, String content);
+
+    /**
+     * Gửi OTP trực tiếp dựa trên đối tượng OTP.
+     * Phương thức này sẽ tự động tạo nội dung phù hợp dựa trên loại OTP.
+     *
+     * @param otp Đối tượng OTP cần gửi, chứa tất cả thông tin cần thiết
+     * @return true nếu gửi thành công, false nếu thất bại
+     */
+    boolean sendOTP(OTP otp);
 }
