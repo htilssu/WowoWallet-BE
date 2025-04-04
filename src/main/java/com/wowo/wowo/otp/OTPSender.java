@@ -1,30 +1,29 @@
 package com.wowo.wowo.otp;
 
-import java.util.concurrent.CompletableFuture;
-
+/**
+ * Interface định nghĩa phương thức gửi OTP.
+ * Có thể được triển khai bằng nhiều cách khác nhau: email, SMS, app
+ * notification, etc.
+ */
 public interface OTPSender {
 
     /**
-     * Gửi mã OTP cho người dùng
+     * Gửi nội dung với tiêu đề xác định đến địa chỉ người nhận.
+     * Phương thức này tổng quát hóa việc gửi nội dung, không chỉ giới hạn ở OTP.
      *
-     * @param sendTo người nhận mã OTP
-     * @param otp    mã OTP
+     * @param recipientAddress địa chỉ người nhận (email, số điện thoại, etc.)
+     * @param subject          tiêu đề của nội dung gửi đi
+     * @param content          nội dung cần gửi, đã được xử lý và định dạng trước
+     * @return true nếu gửi thành công, false nếu thất bại
      */
-    void sendOTP(String sendTo, String otp);
+    boolean send(String recipientAddress, String subject, String content);
 
     /**
-     * Send otp to the given receiver asynchronously and return a future
-     * if you want to wait for the completion of the task
-     * you can call {@link CompletableFuture#get()} or {@link CompletableFuture#join()} current
-     * thread will be blocked
-     * util the task is completed, if you want to perform some operation after the task is completed
-     * asynchronously you can use {@link CompletableFuture#thenAccept(java.util.function.Consumer)}
+     * Gửi OTP trực tiếp dựa trên đối tượng OTP.
+     * Phương thức này sẽ tự động tạo nội dung phù hợp dựa trên loại OTP.
      *
-     * @param sendTo receiver email or phone number, used to send otp
-     * @param otp    one time password, which will be sent to the receiver
-     *
-     * @return a future that will be completed when the task is completed
+     * @param otp Đối tượng OTP cần gửi, chứa tất cả thông tin cần thiết
+     * @return true nếu gửi thành công, false nếu thất bại
      */
-    CompletableFuture<Void> sendOTPAsync(String sendTo, String otp);
-
+    boolean sendOTP(OTP otp);
 }

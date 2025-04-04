@@ -17,7 +17,6 @@ public class Constant {
     public static final String MAXIMUM_WAITING_TIME = "MAX_WAITING_TIME";
     public static final String ORDER_TIMEOUT = "ORDER_TIMEOUT";
 
-
     public enum PaymentService {
         PAYPAL,
         STRIPE,
@@ -25,9 +24,26 @@ public class Constant {
         WALLET
     }
 
-
     public enum OTPService {
         SMS,
         EMAIL
+    }
+
+    public enum OTPType {
+        TRANSACTION_CONFIRMATION(10), // OTP xác nhận giao dịch (10 phút)
+        PASSWORD_RESET(30), // OTP đặt lại mật khẩu (30 phút)
+        EMAIL_VERIFICATION(60), // OTP xác minh email (60 phút)
+        ACCOUNT_VERIFICATION(15), // OTP xác minh tài khoản (15 phút)
+        WITHDRAW_CONFIRMATION(5); // OTP xác nhận rút tiền (5 phút)
+
+        private final int expirationTimeInMinutes;
+
+        OTPType(int expirationTimeInMinutes) {
+            this.expirationTimeInMinutes = expirationTimeInMinutes;
+        }
+
+        public int getExpirationTimeInMinutes() {
+            return expirationTimeInMinutes;
+        }
     }
 }

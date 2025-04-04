@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import static jakarta.mail.Message.RecipientType.TO;
 
 @Service
-public class EmailService implements OTPSender {
+public class EmailService {
 
     public final JavaMailSender javaMailSender;
 
@@ -42,47 +42,6 @@ public class EmailService implements OTPSender {
         javaMailSender.send(msg);
     }
 
-    @Override
-    public void sendOTP(String sendTo, String otp) {
-        var newMail = javaMailSender.createMimeMessage();
-        // set the email recipient
 
-        String htmlText = MailContent.OTP_BODY.replace("{{OTP}}", otp);
-
-        try {
-            newMail.setSubject("Mã xác thực OTP", "utf-8");
-            newMail.addRecipients(TO, sendTo);
-            newMail.setContent(htmlText, "text/html; charset=utf-8");
-        } catch (MessagingException e) {
-            Logger.getAnonymousLogger()
-                    .log(Level.WARNING, e.getMessage());
-        }
-
-        javaMailSender.send(newMail);
-    }
-
-    @Override
-    @Async
-    public CompletableFuture<Void> sendOTPAsync(String sendTo, String otp) {
-        var newMail = javaMailSender.createMimeMessage();
-        // set the email recipient
-
-        String htmlText = MailContent.OTP_BODY.replace("{{OTP}}", otp);
-        try {
-            newMail.setSubject("Mã xác thực OTP", "utf-8");
-            newMail.addRecipients(TO, sendTo);
-            newMail.setContent(htmlText, "text/html; charset=utf-8");
-        } catch (MessagingException e) {
-            CompletableFuture.failedFuture(e);
-        }
-
-        javaMailSender.send(newMail);
-
-        return CompletableFuture.completedFuture(null);
-    }
-
-    public void sendResetPasswordToken(@Size(max = 255) @NotNull String email, String token) {
-
-    }
 }
 

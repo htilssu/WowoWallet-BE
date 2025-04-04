@@ -63,6 +63,10 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "phone_number")
+    @Size(max = 20)
+    private String phoneNumber;
+
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private Collection<Application> applications = new ArrayList<>();
 

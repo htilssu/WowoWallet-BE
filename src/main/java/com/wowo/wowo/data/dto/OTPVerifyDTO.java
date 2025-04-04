@@ -14,6 +14,7 @@
 
 package com.wowo.wowo.data.dto;
 
+import com.wowo.wowo.constant.Constant;
 import com.wowo.wowo.otp.OTPData;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,4 @@ import lombok.EqualsAndHashCode;
 @Data
 public class OTPVerifyDTO extends OTPData {
 
-    @NotNull
-    String otp;
-    String type;
 }
