@@ -30,11 +30,12 @@ public class Constant {
     }
 
     public enum OTPType {
+        FINANCIAL_OPERATION(10), // OTP cho các thao tác tài chính (10 phút)
         TRANSACTION_CONFIRMATION(10), // OTP xác nhận giao dịch (10 phút)
+        WITHDRAW_CONFIRMATION(10), // OTP xác nhận rút tiền (10 phút)
         PASSWORD_RESET(30), // OTP đặt lại mật khẩu (30 phút)
         EMAIL_VERIFICATION(60), // OTP xác minh email (60 phút)
-        ACCOUNT_VERIFICATION(15), // OTP xác minh tài khoản (15 phút)
-        WITHDRAW_CONFIRMATION(5); // OTP xác nhận rút tiền (5 phút)
+        ACCOUNT_VERIFICATION(15); // OTP xác minh tài khoản (15 phút)
 
         private final int expirationTimeInMinutes;
 

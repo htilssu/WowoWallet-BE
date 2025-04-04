@@ -42,7 +42,7 @@ public abstract class OTP {
         if (isExpired()) {
             return false;
         }
-        return otpGenerator.verify(inputCode);
+        return otpGenerator.verify(inputCode, otpType);
     }
 
     /**

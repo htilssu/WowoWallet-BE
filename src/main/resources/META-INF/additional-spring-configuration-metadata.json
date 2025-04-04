@@ -99,6 +99,36 @@
       "name": "kafka.bootstrap.servers",
       "type": "java.lang.String",
       "description": "Description for kafka.bootstrap.servers."
+    },
+    {
+      "name": "esms.api.url",
+      "type": "java.lang.String",
+      "description": "URL của eSMS API SendMultipleMessage_V4"
+    },
+    {
+      "name": "esms.api.key",
+      "type": "java.lang.String",
+      "description": "API Key của tài khoản eSMS"
+    },
+    {
+      "name": "esms.secret.key",
+      "type": "java.lang.String",
+      "description": "Secret Key của tài khoản eSMS"
+    },
+    {
+      "name": "esms.brandname",
+      "type": "java.lang.String",
+      "description": "Tên Brandname đã đăng ký với eSMS"
+    },
+    {
+      "name": "esms.sandbox",
+      "type": "java.lang.String",
+      "description": "Chế độ Sandbox (1: môi trường test, 0: môi trường thực tế)"
+    },
+    {
+      "name": "esms.is_unicode",
+      "type": "java.lang.String",
+      "description": "Gửi tin nhắn có dấu (1: có dấu, 0: không dấu)"
     }
   ]
 }

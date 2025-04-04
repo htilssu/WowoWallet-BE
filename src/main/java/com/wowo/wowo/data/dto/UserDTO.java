@@ -33,4 +33,16 @@ public class UserDTO implements Serializable {
     private String username;
     private String firstName;
     private String lastName;
+    private String avatar;
+    private String phoneNumber;
+    private Long totalMoney;
+
+    /**
+     * Lấy họ tên đầy đủ của người dùng
+     * 
+     * @return họ tên đầy đủ
+     */
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

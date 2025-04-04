@@ -2,6 +2,7 @@ package com.wowo.wowo.controller;
 
 import com.wowo.wowo.constant.Constant.OTPType;
 import com.wowo.wowo.data.dto.OTPRequestDTO;
+import com.wowo.wowo.data.dto.OTPVerifyDTO;
 import com.wowo.wowo.otp.OTPManager;
 import com.wowo.wowo.otp.OTPFactory.OTPChannel;
 import org.springframework.http.ResponseEntity;
@@ -23,88 +24,43 @@ public class OTPController {
     /**
      * Gửi OTP theo yêu cầu
      * 
-     * @param otpRequestDTO  yêu cầu OTP
+     * @param otpRequestDTO  yêu cầu OTP chứa thông tin gửi (loại OTP, phương thức
+     *                       gửi, v.v.)
      * @param authentication thông tin xác thực của người dùng
      * @return kết quả gửi OTP
      */
     @PostMapping("/send")
-    public ResponseEntity<?> sendOTP(@RequestBody OTPRequestDTO otpRequestDTO,
-            Authentication authentication) {
-        boolean sent = otpManager.send(otpRequestDTO, authentication);
-
-        if (sent) {
-            return ResponseEntity.ok().body(
-                    new ApiResponse(true, "OTP đã được gửi thành công"));
-        } else {
-            return ResponseEntity.badRequest().body(
-                    new ApiResponse(false, "Không thể gửi OTP"));
-        }
-    }
-
-    /**
-     * Gửi OTP qua kênh được chỉ định
-     * 
-     * @param otpRequestDTO  yêu cầu OTP
-     * @param channel        kênh gửi OTP (EMAIL, SMS)
-     * @param authentication thông tin xác thực của người dùng
-     * @return kết quả gửi OTP
-     */
-    @PostMapping("/send/{channel}")
-    public ResponseEntity<?> sendOTPWithChannel(
+    public ResponseEntity<?> sendOTP(
             @RequestBody OTPRequestDTO otpRequestDTO,
-            @PathVariable String channel,
             Authentication authentication) {
+        // Lấy kênh gửi từ DTO (EMAIL hoặc SMS)
+        OTPChannel channel = otpRequestDTO.getSendChannel();
 
-        OTPChannel otpChannel;
-        try {
-            otpChannel = OTPChannel.valueOf(channel.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(
-                    new ApiResponse(false, "Kênh gửi OTP không hợp lệ. Các lựa chọn hợp lệ: EMAIL, SMS"));
-        }
-
-        boolean sent = otpManager.send(otpRequestDTO, authentication, otpChannel);
+        // Gửi OTP với kênh đã chọn
+        boolean sent = otpManager.send(otpRequestDTO, authentication, channel);
 
         if (sent) {
             return ResponseEntity.ok().body(
-                    new ApiResponse(true, "OTP đã được gửi thành công qua " + channel));
+                    new ApiResponse(true, "OTP đã được gửi thành công qua " + channel.name()));
         } else {
             return ResponseEntity.badRequest().body(
-                    new ApiResponse(false, "Không thể gửi OTP qua " + channel));
+                    new ApiResponse(false, "Không thể gửi OTP qua " + channel.name()));
         }
     }
 
     /**
      * Xác minh OTP
      * 
-     * @param userId        ID người dùng
-     * @param otpCode       mã OTP
-     * @param otpTypeStr    loại OTP dạng chuỗi
-     * @param transactionId ID giao dịch (nếu có)
+     * @param verifyDTO      DTO chứa thông tin xác minh OTP
+     * @param authentication thông tin xác thực của người dùng
      * @return kết quả xác minh OTP
      */
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyOTP(@RequestParam String userId,
-            @RequestParam String otpCode,
-            @RequestParam String otpTypeStr,
-            @RequestParam(required = false) String transactionId) {
+    public ResponseEntity<?> verifyOTP(
+            @RequestBody OTPVerifyDTO verifyDTO,
+            Authentication authentication) {
         try {
-            OTPType otpType = OTPType.valueOf(otpTypeStr);
-            boolean verified;
-
-            // Xác định loại OTP và phương thức xác minh phù hợp
-            boolean isTransactionRelated = otpType == OTPType.TRANSACTION_CONFIRMATION ||
-                    otpType == OTPType.WITHDRAW_CONFIRMATION;
-
-            if (isTransactionRelated) {
-                if (transactionId == null) {
-                    return ResponseEntity.badRequest().body(
-                            new ApiResponse(false, "Transaction ID bắt buộc phải có để xác minh OTP giao dịch"));
-                }
-                verified = otpManager.verify(userId, otpCode, otpType, transactionId);
-            } else {
-                verified = otpManager.verify(userId, otpCode, otpType);
-            }
+            boolean verified = otpManager.verify(authentication, verifyDTO);
 
             if (verified) {
                 return ResponseEntity.ok().body(
@@ -113,9 +69,9 @@ public class OTPController {
                 return ResponseEntity.badRequest().body(
                         new ApiResponse(false, "OTP không hợp lệ hoặc đã hết hạn"));
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    new ApiResponse(false, "Loại OTP không hợp lệ: " + otpTypeStr));
+                    new ApiResponse(false, "Lỗi xử lý OTP: " + e.getMessage()));
         }
     }
 

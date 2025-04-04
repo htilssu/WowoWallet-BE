@@ -14,16 +14,25 @@
 
 package com.wowo.wowo.data.dto;
 
-import com.wowo.wowo.constant.Constant;
+import com.wowo.wowo.constant.Constant.OTPType;
 import com.wowo.wowo.otp.OTPData;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class OTPVerifyDTO extends OTPData {
 
+    /**
+     * Constructor với OTPType và mã OTP
+     * 
+     * @param otpType Loại OTP
+     * @param otpCode Mã OTP
+     */
+    public OTPVerifyDTO(OTPType otpType, String otpCode) {
+        this.setOtpType(otpType);
+        this.setOtpCode(otpCode);
+    }
 }

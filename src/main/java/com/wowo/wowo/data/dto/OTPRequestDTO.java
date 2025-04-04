@@ -1,6 +1,7 @@
 package com.wowo.wowo.data.dto;
 
 import com.wowo.wowo.constant.Constant.OTPType;
+import com.wowo.wowo.otp.OTPFactory.OTPChannel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,41 +15,32 @@ import lombok.NoArgsConstructor;
 public class OTPRequestDTO {
 
     /**
-     * Loại OTP (TRANSACTION_CONFIRMATION, PASSWORD_RESET, v.v)
-     * Được chuyển đổi thành OTPType enum khi xử lý
+     * Loại OTP
      */
-    private String otpType;
+    private OTPType otpType;
 
     /**
-     * ID của người dùng cần nhận OTP
+     * Địa chỉ người nhận (email, số điện thoại)
      */
-    private String userId;
+    private String recipient;
 
     /**
-     * ID giao dịch (nếu là OTP liên quan đến giao dịch)
+     * Phương thức gửi OTP (EMAIL hoặc SMS)
+     * Mặc định là EMAIL nếu không được chỉ định
      */
-    private String transactionId;
+    private String sendChannel;
 
     /**
-     * Chuyển đổi chuỗi otpType thành đối tượng enum OTPType
+     * Chuyển đổi sendMethod thành OTPChannel
      * 
-     * @return đối tượng OTPType tương ứng
+     * @return OTPChannel tương ứng (EMAIL hoặc SMS)
      */
-    public OTPType getOtpType() {
-        return OTPType.valueOf(otpType);
-    }
-
-    /**
-     * Tạo đối tượng TransactionInfo từ transactionId
-     * 
-     * @return đối tượng TransactionInfo hoặc null nếu không có transactionId
-     */
-    public TransactionInfo getTransactionInfo() {
-        if (transactionId == null || transactionId.isEmpty()) {
-            return null;
+    public OTPChannel getSendChannel() {
+        try {
+            return OTPChannel.valueOf(sendChannel.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // Mặc định trả về EMAIL nếu giá trị không hợp lệ
+            return OTPChannel.EMAIL;
         }
-        TransactionInfo info = new TransactionInfo();
-        info.setTransactionId(transactionId);
-        return info;
     }
 }

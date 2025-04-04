@@ -1,4 +1,5 @@
 package com.wowo.wowo.strategy;
+
 import com.paypal.sdk.models.Order;
 import com.wowo.wowo.data.dto.TopUpRequestDTO;
 import com.wowo.wowo.exception.BadRequest;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaypalPaymentStrategy implements PaymentStrategy {
+
     private final PaypalService paypalService;
 
     public PaypalPaymentStrategy(PaypalService paypalService) {
@@ -17,7 +19,8 @@ public class PaypalPaymentStrategy implements PaymentStrategy {
     public void processPayment(TopUpRequestDTO request) {
         try {
             Order order = paypalService.createTopUpOrder(request);
-            String redirectUrl = order.getLinks().stream()
+            String redirectUrl = order.getLinks()
+                    .stream()
                     .filter(link -> "approve".equals(link.getRel()))
                     .findFirst()
                     .orElseThrow(() -> new BadRequest("Bad request"))

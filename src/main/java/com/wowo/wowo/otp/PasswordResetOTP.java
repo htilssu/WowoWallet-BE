@@ -43,6 +43,6 @@ public class PasswordResetOTP extends OTP {
         if (isExpired()) {
             return false;
         }
-        return otpGenerator.verify(inputCode.toLowerCase());
+        return otpGenerator.verify(inputCode.toLowerCase(), otpType);
     }
 }

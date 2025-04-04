@@ -118,10 +118,24 @@ Query Params:
 
 ### Cấu hình SMS
 
-Để sử dụng tính năng SMS OTP, cần cấu hình trong `application.properties`:
+Để sử dụng tính năng SMS OTP, cần cấu hình trong `application.properties` hoặc biến môi trường:
 
 ```properties
-# SMS Configuration
-sms.api.url=https://api.yoursmsgateway.com/sms
-sms.api.key=your-sms-api-key
+# eSMS Configuration
+esms.api.url=https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/
+esms.api.key=your-esms-api-key
+esms.secret.key=your-esms-secret-key
+esms.brandname=your-registered-brandname
+esms.sandbox=0  # 0: Môi trường thực tế, 1: Môi trường test
+esms.is_unicode=1  # 1: Có dấu, 0: Không dấu
+```
+
+### Biến môi trường cho SMS
+
+Trong môi trường production và staging, bạn cần thiết lập các biến môi trường sau:
+
+```
+ESMS_API_KEY=your-esms-api-key
+ESMS_SECRET_KEY=your-esms-secret-key
+ESMS_BRANDNAME=your-registered-brandname
 ```

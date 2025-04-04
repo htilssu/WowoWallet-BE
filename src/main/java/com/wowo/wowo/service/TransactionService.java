@@ -1,20 +1,11 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.TransactionDTO;
-import com.wowo.wowo.data.mapper.TransactionMapper;
-import com.wowo.wowo.exception.NotFoundException;
-import com.wowo.wowo.model.FlowType;
 import com.wowo.wowo.model.Transaction;
-import com.wowo.wowo.repository.TransactionRepository;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +16,11 @@ public interface TransactionService {
 
     /**
      * Lấy số tiền của giao dịch từ ID giao dịch
-     * 
+     *
      * @param transactionId ID của giao dịch cần lấy thông tin
+     *
      * @return số tiền của giao dịch
+     *
      * @throws IllegalArgumentException nếu không tìm thấy giao dịch
      */
     double getTransactionAmount(String transactionId);

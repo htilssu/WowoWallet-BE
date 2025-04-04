@@ -7,20 +7,23 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
 
+    @Mapping(target = "avatar", source = "avatar")
+    @Mapping(target = "phoneNumber", source = "phoneNumber")
+    @Mapping(target = "totalMoney", source = "totalMoney")
     User toEntity(UserDTO userDTO);
 
+    @Mapping(target = "avatar", source = "avatar")
+    @Mapping(target = "phoneNumber", source = "phoneNumber")
+    @Mapping(target = "totalMoney", source = "totalMoney")
     UserDTO toDto(User user);
 
     List<UserDTO> toDtoList(List<User> users);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdateFromDTO(UserDTO userDTO, @MappingTarget User user);
-
-
 
     CreateUserDTO toDtoRequest(User user);
 

@@ -19,9 +19,8 @@ public class TokenFilter implements Filter {
 
     // TokenFilter.java
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
-                                                                                              ServletException,
-                                                                                              IOException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException,
+            IOException {
         final Cookie[] cookies = ((HttpServletRequest) request).getCookies();
 
         if (cookies == null) {
@@ -45,8 +44,7 @@ public class TokenFilter implements Filter {
 
         final String role = decodedJWT.getClaim("role").as(String.class);
 
-        SecurityContextHolderStrategy contextHolder =
-                SecurityContextHolder.getContextHolderStrategy();
+        SecurityContextHolderStrategy contextHolder = SecurityContextHolder.getContextHolderStrategy();
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         var authorities = Collections.singleton(
@@ -57,8 +55,7 @@ public class TokenFilter implements Filter {
                     decodedJWT.getClaim("userId").toString().replaceAll("\"", ""),
                     cookie.getValue(),
                     authorities);
-        }
-        else {
+        } else {
             authenticationToken = new UsernamePasswordAuthenticationToken(
                     decodedJWT.getClaim("partnerId").toString().replaceAll("\"", ""),
                     cookie.getValue(),

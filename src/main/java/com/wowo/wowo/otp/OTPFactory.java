@@ -1,43 +1,48 @@
 package com.wowo.wowo.otp;
 
-import com.wowo.wowo.constant.Constant.OTPType;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.wowo.wowo.constant.Constant.OTPType;
+import com.wowo.wowo.service.UserService;
+
 /**
- * Factory class để tạo các đối tượng OTP
+ * Factory tạo ra các đối tượng OTP khác nhau dựa trên loại OTP.
+ * Áp dụng mẫu thiết kế Factory Method.
  */
 @Component
-@AllArgsConstructor
 public class OTPFactory {
 
+    @Autowired
     @Qualifier("emailOTPSender")
     private OTPSender emailOTPSender;
 
+    @Autowired
     @Qualifier("smsOTPSender")
     private OTPSender smsOTPSender;
 
+    @Autowired
+    private UserService userService;
+
     /**
-     * Enum xác định phương thức gửi OTP
+     * Enum định nghĩa các kênh gửi OTP
      */
     public enum OTPChannel {
         EMAIL, // Gửi qua email
-        SMS // Gửi qua tin nhắn SMS
+        SMS // Gửi qua SMS
     }
 
     /**
      * Tạo đối tượng OTP thích hợp dựa trên loại OTP và kênh gửi
      * 
-     * @param otpType       loại OTP
-     * @param userId        ID người dùng
-     * @param recipient     địa chỉ người nhận
-     * @param transactionId ID giao dịch (cần thiết cho OTP liên quan đến giao dịch)
-     * @param channel       kênh gửi OTP (EMAIL hoặc SMS)
+     * @param otpType   loại OTP
+     * @param userId    ID người dùng
+     * @param recipient địa chỉ người nhận
+     * @param channel   kênh gửi OTP (EMAIL hoặc SMS)
      * @return đối tượng OTP tương ứng
      */
-    public OTP createOTP(OTPType otpType, String userId, String recipient, String transactionId, OTPChannel channel) {
+    public OTP createOTP(OTPType otpType, String userId, String recipient, OTPChannel channel) {
         OTP otp;
 
         switch (otpType) {
@@ -45,21 +50,20 @@ public class OTPFactory {
                 otp = new PasswordResetOTP(userId, recipient);
                 break;
             case EMAIL_VERIFICATION:
-                otp = new EmailVerificationOTP(userId, recipient);
+                otp = new EmailVerificationOTP(userId, recipient, userService);
                 break;
             case ACCOUNT_VERIFICATION:
-                otp = new EmailVerificationOTP(userId, recipient);
+                otp = new EmailVerificationOTP(userId, recipient, userService);
                 otp.setOtpType(OTPType.ACCOUNT_VERIFICATION);
                 break;
+            case FINANCIAL_OPERATION:
+                otp = new FinancialOTP(userId, recipient);
+                break;
             case TRANSACTION_CONFIRMATION:
+                otp = new FinancialOTP(userId, recipient, OTPType.TRANSACTION_CONFIRMATION);
+                break;
             case WITHDRAW_CONFIRMATION:
-                if (transactionId == null) {
-                    throw new IllegalArgumentException("Transaction ID is required for transaction-related OTPs");
-                }
-
-                // Tạo TransactionOTP
-                otp = new TransactionOTP(userId, recipient, transactionId);
-                otp.setOtpType(otpType);
+                otp = new FinancialOTP(userId, recipient, OTPType.WITHDRAW_CONFIRMATION);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported OTP type: " + otpType);
@@ -79,73 +83,28 @@ public class OTPFactory {
     /**
      * Tạo đối tượng OTP thích hợp dựa trên loại OTP (mặc định gửi qua email)
      * 
-     * @param otpType       loại OTP
-     * @param userId        ID người dùng
-     * @param recipient     địa chỉ người nhận
-     * @param transactionId ID giao dịch (cần thiết cho OTP liên quan đến giao dịch)
-     * @return đối tượng OTP tương ứng
-     */
-    public OTP createOTP(OTPType otpType, String userId, String recipient, String transactionId) {
-        return createOTP(otpType, userId, recipient, transactionId, OTPChannel.EMAIL);
-    }
-
-    /**
-     * Tạo đối tượng OTP thích hợp dựa trên loại OTP (phương thức overload cho OTP
-     * không liên quan đến giao dịch)
-     * 
      * @param otpType   loại OTP
      * @param userId    ID người dùng
      * @param recipient địa chỉ người nhận
      * @return đối tượng OTP tương ứng
      */
     public OTP createOTP(OTPType otpType, String userId, String recipient) {
-        boolean isTransactionRelated = otpType == OTPType.TRANSACTION_CONFIRMATION ||
-                otpType == OTPType.WITHDRAW_CONFIRMATION;
-
-        if (isTransactionRelated) {
-            throw new IllegalArgumentException("Transaction ID is required for transaction-related OTPs");
-        }
-
-        return createOTP(otpType, userId, recipient, null, OTPChannel.EMAIL);
+        return createOTP(otpType, userId, recipient, OTPChannel.EMAIL);
     }
 
     /**
-     * Tạo đối tượng OTP thích hợp dựa trên loại OTP và kênh gửi (phương thức
-     * overload cho OTP
-     * không liên quan đến giao dịch)
+     * Tạo đối tượng OTP từ chuỗi otpType và kênh gửi
      * 
-     * @param otpType   loại OTP
-     * @param userId    ID người dùng
-     * @param recipient địa chỉ người nhận
-     * @param channel   kênh gửi OTP (EMAIL hoặc SMS)
+     * @param otpTypeStr chuỗi biểu diễn loại OTP
+     * @param userId     ID người dùng
+     * @param recipient  địa chỉ người nhận
+     * @param channel    kênh gửi OTP (EMAIL hoặc SMS)
      * @return đối tượng OTP tương ứng
      */
-    public OTP createOTP(OTPType otpType, String userId, String recipient, OTPChannel channel) {
-        boolean isTransactionRelated = otpType == OTPType.TRANSACTION_CONFIRMATION ||
-                otpType == OTPType.WITHDRAW_CONFIRMATION;
-
-        if (isTransactionRelated) {
-            throw new IllegalArgumentException("Transaction ID is required for transaction-related OTPs");
-        }
-
-        return createOTP(otpType, userId, recipient, null, channel);
-    }
-
-    /**
-     * Tạo đối tượng OTP từ chuỗi otpType
-     * 
-     * @param otpTypeStr    chuỗi biểu diễn loại OTP
-     * @param userId        ID người dùng
-     * @param recipient     địa chỉ người nhận
-     * @param transactionId ID giao dịch (có thể null)
-     * @param channel       kênh gửi OTP (EMAIL hoặc SMS)
-     * @return đối tượng OTP tương ứng
-     */
-    public OTP createOTPFromString(String otpTypeStr, String userId, String recipient, String transactionId,
-            OTPChannel channel) {
+    public OTP createOTP(String otpTypeStr, String userId, String recipient, OTPChannel channel) {
         try {
-            OTPType otpType = OTPType.valueOf(otpTypeStr);
-            return createOTP(otpType, userId, recipient, transactionId, channel);
+            OTPType otpType = OTPType.valueOf(otpTypeStr.toUpperCase());
+            return createOTP(otpType, userId, recipient, channel);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid OTP type: " + otpTypeStr);
         }
@@ -154,13 +113,12 @@ public class OTPFactory {
     /**
      * Tạo đối tượng OTP từ chuỗi otpType (mặc định gửi qua email)
      * 
-     * @param otpTypeStr    chuỗi biểu diễn loại OTP
-     * @param userId        ID người dùng
-     * @param recipient     địa chỉ người nhận
-     * @param transactionId ID giao dịch (có thể null)
+     * @param otpTypeStr chuỗi biểu diễn loại OTP
+     * @param userId     ID người dùng
+     * @param recipient  địa chỉ người nhận
      * @return đối tượng OTP tương ứng
      */
-    public OTP createOTPFromString(String otpTypeStr, String userId, String recipient, String transactionId) {
-        return createOTPFromString(otpTypeStr, userId, recipient, transactionId, OTPChannel.EMAIL);
+    public OTP createOTP(String otpTypeStr, String userId, String recipient) {
+        return createOTP(otpTypeStr, userId, recipient, OTPChannel.EMAIL);
     }
 }

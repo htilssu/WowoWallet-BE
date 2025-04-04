@@ -1,9 +1,9 @@
 package com.wowo.wowo.config;
 
-import com.wowo.wowo.Strategy.AtmCardPaymentStrategy;
-import com.wowo.wowo.Strategy.PaypalPaymentStrategy;
 import com.wowo.wowo.service.PaypalService;
 import com.wowo.wowo.service.TopUpService;
+import com.wowo.wowo.strategy.AtmCardPaymentStrategy;
+import com.wowo.wowo.strategy.PaypalPaymentStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

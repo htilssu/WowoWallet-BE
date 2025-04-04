@@ -17,7 +17,7 @@ public class BasicWithdrawService implements WithdrawService {
     private WithdrawDTO withdrawDTO;
 
     public BasicWithdrawService(WalletService walletService, TransferService transferService,
-                                TransactionRepository transactionRepository) {
+            TransactionRepository transactionRepository) {
         this.walletService = walletService;
         this.transferService = transferService;
         this.transactionRepository = transactionRepository;

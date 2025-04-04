@@ -7,8 +7,8 @@ import com.wowo.wowo.data.dto.ResponseMessage;
 import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.data.mapper.UserMapper;
 import com.wowo.wowo.exception.BadRequest;
+import com.wowo.wowo.otp.OTPFactory.OTPChannel;
 import com.wowo.wowo.otp.OTPManager;
-import com.wowo.wowo.service.EmailService;
 import com.wowo.wowo.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,6 @@ public class TransferController {
 
     private final OTPManager otpManager;
     private final UserService userService;
-    private final EmailService emailService;
     private final UserMapper userMapper;
 
     @GetMapping("/check/{id}")
@@ -38,15 +37,21 @@ public class TransferController {
     @IsUser
     public ResponseEntity<?> sendOtp(@RequestBody @Validated OTPSendDTO data,
             Authentication authentication) {
-        otpManager.send(emailService, data, authentication);
-        return ResponseEntity.ok(new ResponseMessage("Gửi mã otp thành công"));
+        OTPChannel channel = data.getSendChannel();
+
+        boolean sent = otpManager.send(data, authentication);
+        if (sent) {
+            return ResponseEntity.ok(new ResponseMessage("Gửi mã OTP thành công qua " + channel.name()));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Không thể gửi mã OTP qua " + channel.name()));
+        }
     }
 
     @PostMapping("/verify-otp")
     @IsUser
     public ResponseEntity<?> verifyOtp(@RequestBody @Validated OTPVerifyDTO data,
             Authentication authentication) {
-        final boolean verified = otpManager.verify(((String) authentication.getPrincipal()), data);
+        final boolean verified = otpManager.verify(authentication, data);
         if (!verified) {
             throw new BadRequest("OTP không hợp lệ");
         }

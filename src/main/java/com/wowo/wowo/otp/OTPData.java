@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public abstract class OTPData {
 
-    String otp;
-    String userId;
-    Constant.OTPService type;
+    String otpCode;
+    Constant.OTPType otpType;
 }

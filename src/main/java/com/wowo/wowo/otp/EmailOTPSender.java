@@ -66,6 +66,7 @@ public class EmailOTPSender implements OTPSender {
             case PASSWORD_RESET -> "Đặt lại mật khẩu - Mã xác thực OTP";
             case EMAIL_VERIFICATION -> "Xác minh email - Mã xác thực OTP";
             case ACCOUNT_VERIFICATION -> "Xác minh tài khoản - Mã xác thực OTP";
+            case FINANCIAL_OPERATION -> "Xác nhận giao dịch tài chính - Mã xác thực OTP";
             case WITHDRAW_CONFIRMATION -> "Xác nhận rút tiền - Mã xác thực OTP";
             case TRANSACTION_CONFIRMATION -> "Xác nhận giao dịch - Mã xác thực OTP";
             default -> "Mã xác thực OTP";
@@ -73,61 +74,47 @@ public class EmailOTPSender implements OTPSender {
     }
 
     /**
-     * Tạo nội dung email dựa trên loại OTP
+     * Tạo nội dung dựa trên loại OTP
      */
     private String generateContent(OTP otp) {
         OTPType otpType = otp.getOtpType();
         String otpCode = otp.getCode();
 
-        // Xác định nội dung thông báo và template dựa trên loại OTP
-        boolean isTransactionOTP = otp instanceof TransactionOTP;
+        // Xác định nếu là OTP tài chính hoặc giao dịch
+        boolean isFinancialOTP = (otpType == OTPType.FINANCIAL_OPERATION ||
+                otpType == OTPType.TRANSACTION_CONFIRMATION ||
+                otpType == OTPType.WITHDRAW_CONFIRMATION);
 
-        if (isTransactionOTP) {
-            TransactionOTP transactionOTP = (TransactionOTP) otp;
-            String transactionId = transactionOTP.getTransactionId();
-
-            // Tạo nội dung cho OTP liên quan đến giao dịch
+        if (isFinancialOTP) {
+            // Tạo nội dung cho OTP tài chính
             String baseTemplate = MailContent.TRANSACTION_OTP_BODY
                     .replace("{{OTP}}", otpCode)
-                    .replace("{{TRANSACTION_ID}}", transactionId);
+                    .replace("{{TRANSACTION_ID}}", "N/A");
 
-            // Thêm thông báo tùy theo loại OTP giao dịch
-            String messageByType = switch (otpType) {
+            // Thêm thông báo tùy theo loại OTP tài chính
+            String message = switch (otpType) {
                 case WITHDRAW_CONFIRMATION -> "để xác nhận yêu cầu rút tiền";
-                case TRANSACTION_CONFIRMATION -> "để xác nhận giao dịch";
+                case TRANSACTION_CONFIRMATION -> "để xác nhận giao dịch chuyển tiền";
+                case FINANCIAL_OPERATION -> "để xác nhận thao tác tài chính";
                 default -> "để xác nhận thao tác tài chính";
             };
 
-            return baseTemplate.replace("{{MESSAGE}}", messageByType);
-        } else if (otp instanceof PasswordResetOTP) {
-            // Xử lý đặc biệt cho PasswordResetOTP
-            PasswordResetOTP passwordResetOTP = (PasswordResetOTP) otp;
-            String token = passwordResetOTP.getToken();
-
-            String baseContent = MailContent.OTP_BODY
-                    .replace("{{OTP}}", otpCode)
-                    .replace("{{MESSAGE}}", "để đặt lại mật khẩu cho tài khoản của bạn.");
-
-            // Nếu có token, thêm vào nội dung
-            if (token != null && !token.isEmpty()) {
-                baseContent = baseContent.replace("</body>",
-                        "<p>Bạn cũng có thể sử dụng token sau để đặt lại mật khẩu: " + token + "</p></body>");
-            }
-
-            return baseContent;
+            return baseTemplate.replace("{{MESSAGE}}", message);
         } else {
-            // Tạo nội dung cho OTP thông thường
-            String baseTemplate = MailContent.OTP_BODY.replace("{{OTP}}", otpCode);
+            // Sử dụng template OTP cơ bản cho tất cả các trường hợp khác
+            String baseTemplate = MailContent.OTP_BODY;
 
             // Thêm thông báo tùy theo loại OTP
             String messageByType = switch (otpType) {
-                case PASSWORD_RESET -> "để đặt lại mật khẩu cho tài khoản của bạn.";
-                case EMAIL_VERIFICATION -> "để xác minh địa chỉ email của bạn.";
-                case ACCOUNT_VERIFICATION -> "để xác minh tài khoản của bạn.";
-                default -> "để xác nhận thao tác của bạn.";
+                case PASSWORD_RESET -> "để đặt lại mật khẩu cho tài khoản của bạn";
+                case EMAIL_VERIFICATION -> "để xác minh địa chỉ email của bạn";
+                case ACCOUNT_VERIFICATION -> "để xác minh tài khoản của bạn";
+                default -> "để xác nhận thao tác của bạn";
             };
 
-            return baseTemplate.replace("{{MESSAGE}}", messageByType);
+            return baseTemplate
+                    .replace("{{OTP}}", otpCode)
+                    .replace("{{MESSAGE}}", messageByType);
         }
     }
 }

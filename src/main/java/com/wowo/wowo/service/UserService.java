@@ -1,6 +1,7 @@
 package com.wowo.wowo.service;
 
 import com.wowo.wowo.data.dto.SSOData;
+import com.wowo.wowo.data.dto.UpdateUserDTO;
 import com.wowo.wowo.exception.NotFoundException;
 import com.wowo.wowo.model.*;
 import com.wowo.wowo.repository.UserRepository;
@@ -29,7 +30,8 @@ public class UserService {
 
     public User createUser(SSOData ssoData) {
         var user = userRepository.findById(ssoData.getId());
-        if (user.isPresent()) return user.get();
+        if (user.isPresent())
+            return user.get();
 
         var newUser = new User();
         newUser.setId(ssoData.getId());
@@ -48,7 +50,7 @@ public class UserService {
         }
     }
 
-    //lấy tất cả người dùng
+    // lấy tất cả người dùng
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
@@ -76,5 +78,50 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(
                         () -> new NotFoundException("Người dùng không tồn tại"));
+    }
+
+    /**
+     * Cập nhật thông tin người dùng
+     *
+     * @param userId        ID của người dùng cần cập nhật
+     * @param updateUserDTO Thông tin cần cập nhật
+     * @return Người dùng đã được cập nhật
+     */
+    public User updateUser(String userId, UpdateUserDTO updateUserDTO) {
+        User user = getUserByIdOrElseThrow(userId);
+
+        if (updateUserDTO.getFirstName() != null) {
+            user.setFirstName(updateUserDTO.getFirstName());
+        }
+
+        if (updateUserDTO.getLastName() != null) {
+            user.setLastName(updateUserDTO.getLastName());
+        }
+
+        if (updateUserDTO.getJob() != null) {
+            user.setJob(updateUserDTO.getJob());
+        }
+
+        if (updateUserDTO.getAvatar() != null) {
+            user.setAvatar(updateUserDTO.getAvatar());
+        }
+
+        if (updateUserDTO.getPhoneNumber() != null) {
+            user.setPhoneNumber(updateUserDTO.getPhoneNumber());
+        }
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Cập nhật trạng thái xác thực email của người dùng
+     *
+     * @param userId ID của người dùng cần cập nhật
+     * @return Người dùng đã được cập nhật trạng thái xác thực
+     */
+    public User verifyUserEmail(String userId) {
+        User user = getUserByIdOrElseThrow(userId);
+        user.setIsVerified(true);
+        return userRepository.save(user);
     }
 }
