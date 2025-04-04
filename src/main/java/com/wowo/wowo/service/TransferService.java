@@ -146,12 +146,6 @@ public class TransferService {
         walletRepository.saveAll(List.of(source, destination));
     }
 
-    public void transferWithFee(Wallet source, Wallet destination, long amount, long fee) {
-        transfer(source, destination, amount);
-        transferToRoot(source, fee);
-        walletService.save(source, destination);
-    }
-
     public void transfer(Wallet source, Wallet destination, long amount) {
         if (source.getBalance() < amount) {
             throw new InsufficientBalanceException("Số dư không đủ");
@@ -160,19 +154,6 @@ public class TransferService {
         destination.setBalance(destination.getBalance() + amount);
     }
 
-    public void transferToRoot(Wallet source, long amount) {
-        final var rootWallet = walletService.getRootWallet();
-        transfer(source, rootWallet, amount);
-        walletService.save(rootWallet);
-    }
-
-    public void transferWithTax(Wallet source, Wallet destination, long amount, long tax) {
-        tax = (amount * tax) / 100;
-        amount = amount - tax;
-        transfer(source, destination, amount);
-        transferToRoot(source, tax);
-        walletService.save(source, destination);
-    }
 
     public void transfer(ApplicationTransferDTO transferDTO, Authentication authentication) {
         var applicationId = Long.valueOf(authentication.getPrincipal()

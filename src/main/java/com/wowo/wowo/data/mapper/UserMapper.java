@@ -5,6 +5,8 @@ import com.wowo.wowo.data.dto.UserDTO;
 import com.wowo.wowo.model.User;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
@@ -12,6 +14,8 @@ public interface UserMapper {
     User toEntity(UserDTO userDTO);
 
     UserDTO toDto(User user);
+
+    List<UserDTO> toDtoList(List<User> users);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User partialUpdateFromDTO(UserDTO userDTO, @MappingTarget User user);

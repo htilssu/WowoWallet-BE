@@ -86,49 +86,6 @@ public class InvitationService {
         return response;
     }
 
-    // Lấy tất cả lời mời đã gửi đi
-    public List<GroupFundInvitationDTO> getSentInvitations(Authentication authentication) {
-        String userId = (String) authentication.getPrincipal();
-        User sender = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
-
-        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findBySender(sender);
-
-        return mapToDTOList(groupFundInvitations);
-    }
-
-    // Lấy tất cả lời mời được nhận
-    public List<GroupFundInvitationDTO> getReceivedInvitations(Authentication authentication) {
-        String userId = (String) authentication.getPrincipal();
-        User recipient = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
-
-        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipient(
-                recipient);
-
-        // Chuyển đổi sang DTO
-        return mapToDTOList(groupFundInvitations);
-    }
-
-    // map entity list to DTO list
-    private List<GroupFundInvitationDTO> mapToDTOList(List<GroupFundInvitation> invitations) {
-        return invitations.stream()
-                .map(invitation -> new GroupFundInvitationDTO(
-                        invitation.getId(),
-                        invitation.getGroupFund()
-                                .getName(),
-                        invitation.getGroupFund()
-                                .getDescription(),
-                        invitation.getSender()
-                                .getUsername(),
-                        invitation.getSender()
-                                .getEmail(),
-                        invitation.getStatus(),
-                        invitation.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
-    }
-
     // Xác nhận lời mời
     public void acceptInvitation(Long invitationId) {
         GroupFundInvitation groupFundInvitation = invitationRepository.findById(invitationId)
@@ -173,6 +130,49 @@ public class InvitationService {
 
         // Xóa lời mời sau khi đã chấp nhận
         invitationRepository.delete(groupFundInvitation);
+    }
+
+    // Lấy tất cả lời mời đã gửi đi
+    public List<GroupFundInvitationDTO> getSentInvitations(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        User sender = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
+
+        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findBySender(sender);
+
+        return mapToDTOList(groupFundInvitations);
+    }
+
+    // Lấy tất cả lời mời được nhận
+    public List<GroupFundInvitationDTO> getReceivedInvitations(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        User recipient = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Người dùng không tồn tại"));
+
+        List<GroupFundInvitation> groupFundInvitations = invitationRepository.findByRecipient(
+                recipient);
+
+        // Chuyển đổi sang DTO
+        return mapToDTOList(groupFundInvitations);
+    }
+
+    // map entity list to DTO list
+    private List<GroupFundInvitationDTO> mapToDTOList(List<GroupFundInvitation> invitations) {
+        return invitations.stream()
+                .map(invitation -> new GroupFundInvitationDTO(
+                        invitation.getId(),
+                        invitation.getGroupFund()
+                                .getName(),
+                        invitation.getGroupFund()
+                                .getDescription(),
+                        invitation.getSender()
+                                .getUsername(),
+                        invitation.getSender()
+                                .getEmail(),
+                        invitation.getStatus(),
+                        invitation.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     // Từ chối lời mời
