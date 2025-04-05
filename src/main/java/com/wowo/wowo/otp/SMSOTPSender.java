@@ -82,8 +82,6 @@ public class SMSOTPSender implements OTPSender {
             request.setIsUnicode("1"); // Có dấu
             request.setRequestId(UUID.randomUUID().toString());
 
-            // Thiết lập CallbackUrl nếu cần
-            // request.setCallbackUrl("https://wowowallet.com/sms-callback");
 
             // Thiết lập headers
             HttpHeaders headers = new HttpHeaders();

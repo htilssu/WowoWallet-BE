@@ -1,141 +1,132 @@
-<h1 style="text-align: center">EWallet Application</h1>
+# 🏦 WowoWallet: Advanced E-Wallet Backend System
 
-## Description
+## 📋 Project Overview
 
-[//]: # "application using spring boot, micro service architecture, and docker to create an e-userWallet application."
+A robust fintech solution providing comprehensive financial services with advanced security features and modern architectural patterns.
 
-This is an e-userWallet application that allows users to create an account, deposit money, withdraw money, transfer money to
-other users,
-and view their transaction history. Linking service can using app. The application is built using Spring Boot,
-microservice architecture, and Docker.
+## 🚀 Core Features
 
-Technologies used:
+### 💰 Financial Transaction Management
 
-- Spring Boot
-- Spring Cloud
-- Spring Data JPA
-- Spring Security
-- Docker
-- Postgres SQL (AWS)
-- Swagger
-- Version Control
-  - Git
-  - GitHub
-- API Documentation
-  - Swagger
-  - OpenAPI
-  - Postman
+- **Multi-channel Payment Processing**
 
-## How to run the application
+  - Implemented payment gateway integrations using Strategy Pattern
+  - Supported multiple payment methods (PayPal, ATM cards)
+  - Built secure transaction workflows with validation stages
 
-```bash
-# Clone the repository
-$ git clone https://github.com/htilssu/EWallet.git
-```
+- **Secure Money Operations**
+  - Developed transfer, withdrawal, and deposit functionalities
+  - Implemented fraud detection and prevention mechanisms
+  - Created transaction history with comprehensive audit trails
+  - Designed automated refund processing and dispute resolution
 
-#### You need to have create an env.properties file in the resources folder of each service and add the following properties:
+### 🔐 Security Architecture
 
-```properties
-#replace <server>, <port>, <database>, <username>, <password> with your own values
-spring.datasource.url=jdbc:sqlserver://<server>:<port>;databaseName=<database>;encrypt=true;trustServerCertificate=false;loginTimeout=30;
-# <username> is the username of the database
-spring.datasource.username=<username>
-# <password> is the password of the database
-spring.datasource.password=<password>
-```
+- **Advanced Authentication**
 
-### Using Docker
+  - Built JWT-based authentication system
+  - Implemented custom security filters (TokenFilter, ApiServiceFilter)
+  - Created secure password management with salted encryption
 
-```bash
-# Build the docker image
-$ docker buildx build -t userWallet-service .
-# Run the docker image
-$ docker run -p 8080:8080 userWallet-service --network=host
-```
+- **Authorization Framework**
+  - Designed role-based access control (Admin, User)
+  - Implemented fine-grained API access permissions
+  - Developed secure session management
 
-# WowoWallet Backend
+### 📱 Multi-Channel OTP System
 
-## Tính năng OTP
+- **Bridge Pattern Implementation**
 
-Hệ thống WowoWallet hỗ trợ gửi OTP qua hai kênh: Email và SMS.
+  - Separated OTP types from delivery channels for maximum flexibility
+  - Supported both Email and SMS delivery methods
+  - Enhanced system maintainability and extensibility
 
-### API Gửi OTP
+- **OTP Factory Pattern**
 
-#### 1. Gửi OTP qua Email (mặc định)
+  - Created context-aware OTP generation for different use cases
+  - Implemented specialized OTP types (Password Reset, Email Verification, Transaction)
+  - Built verification workflows with expiration handling
 
-```
-POST /api/otp/send
-```
+- **SMS Integration**
+  - Integrated eSMS API for reliable SMS delivery
+  - Added support for Vietnamese-language messages
+  - Implemented delivery status tracking and error handling
 
-Body Request:
+### 👥 Group Fund Management
 
-```json
-{
-  "userId": "user-123",
-  "otpType": "PASSWORD_RESET",
-  "transactionId": "tx-123" // Chỉ cần thiết cho OTP liên quan giao dịch
-}
-```
+- **Collaborative Financial Tools**
 
-#### 2. Gửi OTP qua kênh chỉ định (Email hoặc SMS)
+  - Designed shared fund pools for multiple users
+  - Developed member invitation and management system
+  - Created permission hierarchy for fund operations
 
-```
-POST /api/otp/send/{channel}
-```
+- **Transaction Governance**
+  - Implemented approval workflows for financial actions
+  - Built transaction visibility controls based on permissions
+  - Created audit and reporting tools for group activities
 
-Trong đó `{channel}` có thể là `EMAIL` hoặc `SMS`.
+## 🏗️ Technical Implementation
 
-Body Request:
+### 📐 Design Patterns
 
-```json
-{
-  "userId": "user-123",
-  "otpType": "PASSWORD_RESET",
-  "transactionId": "tx-123" // Chỉ cần thiết cho OTP liên quan giao dịch
-}
-```
+- **Structural Patterns**
 
-#### Các loại OTP hỗ trợ:
+  - Bridge Pattern for OTP system separation of concerns
+  - Proxy Pattern for controlled access to sensitive operations
+  - Decorator Pattern for dynamic behavior extension
 
-- `PASSWORD_RESET`: Đặt lại mật khẩu
-- `EMAIL_VERIFICATION`: Xác minh email
-- `ACCOUNT_VERIFICATION`: Xác minh tài khoản
-- `TRANSACTION_CONFIRMATION`: Xác nhận giao dịch (cần transactionId)
-- `WITHDRAW_CONFIRMATION`: Xác nhận rút tiền (cần transactionId)
+- **Behavioral Patterns**
+  - Strategy Pattern for payment processing flexibility
+  - Chain of Responsibility for transaction validation
+  - Factory Pattern for object creation management
 
-### API Xác minh OTP
+### 🔄 Microservice Architecture
 
-```
-POST /api/otp/verify
-```
+- **Service Communication**
 
-Query Params:
+  - Integrated Apache Kafka for asynchronous messaging
+  - Designed REST API interfaces for service interaction
+  - Implemented resilient error handling and retry mechanisms
 
-- `userId`: ID của người dùng
-- `otpCode`: Mã OTP cần xác minh
-- `otpTypeStr`: Loại OTP (cùng loại với khi gửi)
-- `transactionId`: ID giao dịch (chỉ cần thiết cho OTP liên quan giao dịch)
+- **Data Management**
+  - Used PostgreSQL for transactional data
+  - Leveraged DynamoDB for high-throughput operations
+  - Implemented data consistency patterns across services
 
-### Cấu hình SMS
+### 📊 Analytics and Reporting
 
-Để sử dụng tính năng SMS OTP, cần cấu hình trong `application.properties` hoặc biến môi trường:
+- **Financial Insights**
 
-```properties
-# eSMS Configuration
-esms.api.url=https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/
-esms.api.key=your-esms-api-key
-esms.secret.key=your-esms-secret-key
-esms.brandname=your-registered-brandname
-esms.sandbox=0  # 0: Môi trường thực tế, 1: Môi trường test
-esms.is_unicode=1  # 1: Có dấu, 0: Không dấu
-```
+  - Developed transaction analysis and reporting tools
+  - Created year/month-based financial statistics
+  - Built visualization components for financial trends
 
-### Biến môi trường cho SMS
+- **User Behavior Tracking**
+  - Implemented activity monitoring for security purposes
+  - Developed usage analytics for service improvement
+  - Created personalized financial insights
 
-Trong môi trường production và staging, bạn cần thiết lập các biến môi trường sau:
+## 🛠️ Technologies
 
-```
-ESMS_API_KEY=your-esms-api-key
-ESMS_SECRET_KEY=your-esms-secret-key
-ESMS_BRANDNAME=your-registered-brandname
-```
+- **Backend Framework**: Spring Boot, Spring Security, Spring Data JPA
+- **Databases**: PostgreSQL, Amazon DynamoDB
+- **Authentication**: JWT, Custom Security Filters
+- **Messaging**: Apache Kafka
+- **Documentation**: Swagger/OpenAPI
+- **External Integrations**: PayPal API, eSMS API, Pusher
+
+## 🌟 Key Achievements
+
+- Designed a flexible, secure financial platform with multiple payment options
+- Implemented robust security measures for sensitive financial operations
+- Created modular, maintainable codebase using modern design patterns
+- Built scalable architecture ready for high transaction volumes
+- Developed comprehensive API documentation for seamless integration
+
+## 📈 Business Impact
+
+- Enabled secure financial transactions with multi-factor verification
+- Provided collaborative financial tools for group management
+- Delivered real-time notifications across multiple channels
+- Created comprehensive audit trails for regulatory compliance
+- Supported international payments with proper currency handling
