@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/equity", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "equity", produces = "application/json; charset=UTF-8")
 @Tag(name = "Equity", description = "Biến động số dư")
 public class EquityController {
 

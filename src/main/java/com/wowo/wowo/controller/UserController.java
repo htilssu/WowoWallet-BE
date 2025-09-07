@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/v1/user", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "/user", produces = "application/json; charset=UTF-8")
 @Tag(name = "User", description = "Người dùng")
 @IsAuthenticated
 public class UserController {

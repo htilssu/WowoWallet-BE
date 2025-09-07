@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/admin/v1/application")
+@RequestMapping("/admin/application")
 @RestController
 @AllArgsConstructor
 @IsAuthenticated

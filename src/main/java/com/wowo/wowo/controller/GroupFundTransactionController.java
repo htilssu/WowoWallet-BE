@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @IsUser
-@RequestMapping(value = "v1/group-fund", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "group-fund", produces = "application/json; charset=utf-8")
 @AllArgsConstructor
 public class GroupFundTransactionController {
 

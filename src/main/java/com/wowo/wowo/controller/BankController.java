@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "v1/banks", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "banks", produces = "application/json; charset=utf-8")
 public class BankController {
 
     private final BankRepostitory bankRepostitory;

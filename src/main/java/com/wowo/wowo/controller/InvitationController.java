@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/v1/invitations")
+@RequestMapping("/invitations")
 @AllArgsConstructor
 public class InvitationController {
     private final InvitationService invitationService;

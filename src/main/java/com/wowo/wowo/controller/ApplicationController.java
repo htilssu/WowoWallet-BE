@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v1/application")
+@RequestMapping("/application")
 @IsUser
 @Slf4j
 @AllArgsConstructor

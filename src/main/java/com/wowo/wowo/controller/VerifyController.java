@@ -29,7 +29,7 @@ import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.service.VerifyService;
 
 @RestController
-@RequestMapping(value = "v1/verifications", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "verifications", produces = "application/json; charset=utf-8")
 public class VerifyController {
 
     @Autowired

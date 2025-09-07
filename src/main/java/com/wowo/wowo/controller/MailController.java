@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("v1/mail")
+@RequestMapping("mail")
 @Tag(name = "Mail", description = "Gửi mail")
 public class MailController {
 

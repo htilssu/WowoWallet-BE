@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("v1/auth")
+@RequestMapping("auth")
 @Tag(name = "Auth", description = "Xác thực")
 public class AuthController {
 

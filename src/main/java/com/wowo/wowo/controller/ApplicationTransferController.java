@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/application")
+@RequestMapping("/application")
 @AllArgsConstructor
 @IsAuthenticated
 public class ApplicationTransferController {

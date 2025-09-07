@@ -25,7 +25,7 @@ import com.wowo.wowo.repository.UserRepository;
 import com.wowo.wowo.service.SupportTicketService;
 
 @RestController
-@RequestMapping(value = "v1/ticket", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "ticket", produces = "application/json; charset=utf-8")
 public class TicketController {
 
     @Autowired

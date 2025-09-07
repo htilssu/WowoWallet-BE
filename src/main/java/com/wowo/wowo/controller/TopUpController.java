@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/v1/top-up")
+@RequestMapping("/top-up")
 @AllArgsConstructor
 public class TopUpController {
 

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "v1/orders", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "orders", produces = "application/json; charset=UTF-8")
 @Tag(name = "Order", description = "Đơn hàng")
 public class OrderController {
 

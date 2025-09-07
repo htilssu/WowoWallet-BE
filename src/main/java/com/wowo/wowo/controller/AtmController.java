@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "v1/atm", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "atm", produces = "application/json; charset=utf-8")
 @Tag(name = "ATM", description = "ATM")
 public class AtmController {
 

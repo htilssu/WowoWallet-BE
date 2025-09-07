@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * Demonstrates clean separation of concerns with application services.
  */
 @RestController
-@RequestMapping("/api/v2/wallets")
+@RequestMapping("/wallets")
 @RequiredArgsConstructor
 @Tag(name = "Wallet DDD", description = "Wallet operations using Domain-Driven Design")
 public class WalletDddController {

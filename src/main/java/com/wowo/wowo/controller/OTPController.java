@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/otp", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "otp", produces = "application/json; charset=utf-8")
 @Tag(name = "OTP", description = "One Time Password")
 public class OTPController {
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/card", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "card", produces = "application/json; charset=UTF-8")
 @IsUser
 @Tag(name = "Card", description = "Thẻ ngân hàng")
 public class CardController {

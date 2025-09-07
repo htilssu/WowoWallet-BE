@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "v1/paypal", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "paypal", produces = "application/json; charset=utf-8")
 public class PaypalController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaypalController.class);

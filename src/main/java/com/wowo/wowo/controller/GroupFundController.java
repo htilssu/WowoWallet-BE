@@ -24,7 +24,7 @@ import java.util.Map;
 @RestController
 @IsUser
 @AllArgsConstructor
-@RequestMapping(value = "v1/group-fund", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "group-fund", produces = "application/json; charset=utf-8")
 public class GroupFundController {
 
     private final GroupFundService groupFundService;

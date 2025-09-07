@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @ApiResponse(responseCode = "200", description = "Ok")
 @ApiResponse(responseCode = "400", description = "Bad request")
-@RequestMapping("v1/pay")
+@RequestMapping("pay")
 @Tag(name = "Payment", description = "Thanh toán")
 @AllArgsConstructor
 @IsUser

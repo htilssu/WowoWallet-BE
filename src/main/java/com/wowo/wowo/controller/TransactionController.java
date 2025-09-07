@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "v1/transaction", produces = "application/json; charset=UTF-8")
+@RequestMapping(value = "transaction", produces = "application/json; charset=UTF-8")
 @IsUser
 @Tag(name = "Transaction", description = "Giao dịch")
 public class TransactionController {
