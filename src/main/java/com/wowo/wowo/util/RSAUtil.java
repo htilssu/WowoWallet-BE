@@ -19,7 +19,8 @@ public class RSAUtil {
     public static RSAPublicKey getPublicKeyFromString() {
         HttpURLConnection connection = null;
 
-        try (HttpClient httpClient = HttpClient.newBuilder().build()) {
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        try {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("https://sso.htilssu.id.vn/v1/sso/certs?type=pem"))

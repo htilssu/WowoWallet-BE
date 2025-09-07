@@ -44,7 +44,7 @@ public class OTPManager {
                 senderMail = userRepository.findById(authentication.getPrincipal().toString())
                         .orElseThrow(() -> new NotFoundException("Partner not found")).getEmail();
             }
-            case null, default -> throw new NotFoundException("Role not found");
+            default -> throw new NotFoundException("Role not found");
         }
 
         otpGenerator.generateOTP().thenAccept(otp -> {
