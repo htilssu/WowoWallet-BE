@@ -2,6 +2,7 @@ package com.wowo.wowo.domain.wallet.repository;
 
 import com.wowo.wowo.domain.wallet.entity.WalletAggregate;
 import com.wowo.wowo.domain.wallet.valueobjects.WalletId;
+import com.wowo.wowo.exception.NotFoundException;
 
 import java.util.Optional;
 
@@ -26,6 +27,18 @@ public interface WalletRepository {
      * @return the wallet if found
      */
     Optional<WalletAggregate> findById(WalletId walletId);
+    
+    /**
+     * Finds a wallet by its ID or throws an exception.
+     * 
+     * @param walletId the wallet ID
+     * @return the wallet
+     * @throws NotFoundException if wallet not found
+     */
+    default WalletAggregate findByIdOrThrow(WalletId walletId) {
+        return findById(walletId)
+            .orElseThrow(() -> new NotFoundException("Wallet not found: " + walletId.getValue()));
+    }
     
     /**
      * Checks if a wallet exists by its ID.
