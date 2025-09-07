@@ -1,5 +1,7 @@
 package com.wowo.wowo.domain.user.valueobjects;
 
+import java.util.UUID;
+
 /**
  * User ID value object
  */
@@ -13,6 +15,10 @@ public record UserId(String value) {
     
     public static UserId of(String id) {
         return new UserId(id.trim());
+    }
+    
+    public static UserId generate() {
+        return new UserId(UUID.randomUUID().toString().replace("-", ""));
     }
     
     @Override
