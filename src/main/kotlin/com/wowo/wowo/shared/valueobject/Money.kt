@@ -3,6 +3,7 @@ package com.wowo.wowo.shared.valueobject
 import com.wowo.wowo.shared.domain.ValueObject
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.jvm.JvmStatic
 
 /**
  * Value Object representing monetary amount with currency
@@ -35,7 +36,7 @@ data class Money(
     fun isZero(): Boolean = amount.compareTo(BigDecimal.ZERO) == 0
 
     companion object {
+        @JvmStatic
         fun zero(currency: Currency) = Money(BigDecimal.ZERO.setScale(2), currency)
     }
 }
-

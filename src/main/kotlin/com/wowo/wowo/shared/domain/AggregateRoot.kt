@@ -1,22 +1,20 @@
 package com.wowo.wowo.shared.domain
-}
-    fun getDomainEvents(): List<DomainEvent> = domainEvents.toList()
 
-    }
-        domainEvents.clear()
-    fun clearDomainEvents() {
-
-    }
-        domainEvents.add(event)
-    fun addDomainEvent(event: DomainEvent) {
-
-    private val domainEvents: MutableList<DomainEvent> = mutableListOf()
-abstract class AggregateRoot<ID> : Entity<ID>() {
- */
- * Base class for Aggregate Roots in DDD
 /**
+ * Base class for Aggregate Roots in DDD
+ */
+abstract class AggregateRoot<ID> : Entity<ID>() {
+    private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
-import java.util.*
-import java.time.LocalDateTime
+    fun addDomainEvent(event: DomainEvent) {
+        domainEvents.add(event)
+    }
+
+    fun clearDomainEvents() {
+        domainEvents.clear()
+    }
+
+    fun getDomainEvents(): List<DomainEvent> = domainEvents.toList()
+}
 
 

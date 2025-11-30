@@ -9,6 +9,7 @@ import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
 import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.exception.EntityNotFoundException
+import com.wowo.wowo.shared.exception.InsufficientBalanceException
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.springframework.stereotype.Service
@@ -44,18 +45,19 @@ class TransferMoneyUseCase(
         )
 
         try {
-            // Debit from source wallet
             fromWallet.debit(amount)
             walletRepository.save(fromWallet)
 
-            // Credit to destination wallet
             toWallet.credit(amount)
             walletRepository.save(toWallet)
 
-            // Complete transaction
             transaction.complete()
 
         } catch (e: Exception) {
+            if (e is InsufficientBalanceException) {
+                throw e
+            }
+
             transaction.fail(e.message ?: "Transfer failed")
         }
 
@@ -73,4 +75,3 @@ class TransferMoneyUseCase(
         return TransactionDTO.fromDomain(savedTransaction)
     }
 }
-

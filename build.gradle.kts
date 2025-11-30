@@ -53,6 +53,7 @@ dependencies {
     implementation("org.springframework.ai:spring-ai-starter-model-google-genai")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     "developmentOnly"("org.springframework.boot:spring-boot-devtools")

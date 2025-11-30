@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class RegisterUserUseCase(
     private val userRepository: UserRepository,
+    @Suppress("SpringJavaInjectionPointsAutowiringInspection")
     private val eventPublisher: DomainEventPublisher
 ) {
     fun execute(command: RegisterUserCommand): UserDTO {
