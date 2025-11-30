@@ -1,16 +1,20 @@
 plugins {
-    java
-    id("org.springframework.boot") version "3.3.0"
-    id("io.spring.dependency-management") version "1.1.5"
+    kotlin("jvm") version "1.9.25"
+    kotlin("plugin.spring") version "1.9.25"
+    id("org.springframework.boot") version "3.5.9-SNAPSHOT"
+    id("io.spring.dependency-management") version "1.1.7"
+    id("org.asciidoctor.jvm.convert") version "4.0.5"
+    kotlin("plugin.jpa") version "1.9.25"
 }
-val springCloudVersion by extra("2023.0.3")
 
-
-group = "com.ewallet"
+group = "com.wowo"
 version = "0.0.1-SNAPSHOT"
+description = "Wowo Application"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_22
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
@@ -21,92 +25,77 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
+extra["snippetsDir"] = file("build/generated-snippets")
+extra["springAiVersion"] = "1.1.0"
+extra["springCloudVersion"] = "2025.0.0"
+
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-data-rest")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-
-    //Kafka
-    implementation("org.apache.kafka:kafka-streams")
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
-    testImplementation("org.springframework.kafka:spring-kafka-test")
-    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
-
-
-    //jwt
-    implementation("com.github.bastiaanjansen:otp-java:2.0.3")
-    implementation("com.auth0:auth0:2.14.0")
-
-
-
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    implementation("com.google.guava:guava:33.2.1-jre")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    implementation("com.google.code.gson:gson:2.11.0")
-
-
-    //database
-    implementation("org.flywaydb:flyway-core:10.17.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
-
-    //Paypal
-    implementation("com.paypal.sdk:paypal-server-sdk:0.5.2")
-
-    //Pusher
-    implementation("com.pusher:pusher-http-java:1.3.3")
-
-    //dynamodb
-    implementation("software.amazon.awssdk:dynamodb-enhanced")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2")
-
-
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    "developmentOnly"("org.springframework.boot:spring-boot-devtools")
-
-    //Lombok
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.ai:spring-ai-starter-model-google-genai")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.kafka:spring-kafka")
     compileOnly("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    "developmentOnly"("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.postgresql:postgresql")
+    developmentOnly("org.springframework.ai:spring-ai-spring-boot-docker-compose")
     annotationProcessor("org.projectlombok:lombok")
-
-    //Test
-    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    //Map struct
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.1")
-
-    //Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.6.0")
-
-    implementation("com.webauthn4j:webauthn4j-core:0.28.2.RELEASE")
-    implementation("com.webauthn4j:webauthn4j-spring-security-core:0.10.0.RELEASE")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.security:spring-security-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
-        mavenBom("software.amazon.awssdk:bom:2.26.12")
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.compileJava { //encode UTF-8
-    options.encoding = "UTF-8"
+tasks.test {
+    outputs.dir(project.extra["snippetsDir"]!!)
+}
+
+tasks.asciidoctor {
+    inputs.dir(project.extra["snippetsDir"]!!)
+    dependsOn(tasks.test)
 }

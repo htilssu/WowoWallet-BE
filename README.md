@@ -2,29 +2,66 @@
 
 ## Description
 
-[//]: # (application using spring boot, micro service architecture, and docker to create an e-userWallet application.)
+This is an e-wallet application that allows users to create an account, deposit money, withdraw money, transfer money to
+other users, and view their transaction history. The application is built using **Clean Architecture** principles with **SOLID design** and modern **Design Patterns**.
 
-This is an e-userWallet application that allows users to create an account, deposit money, withdraw money, transfer money to
-other users,
-and view their transaction history. Linking service can using app. The application is built using Spring Boot,
-microservice architecture, and Docker.
+## 🎉 Architecture Refactoring (November 2024)
 
-Technologies used:
+This project has been refactored following **Clean Architecture** with:
+- ✅ **SOLID Principles** implementation
+- ✅ **10+ Design Patterns** (Strategy, Factory, Command, Observer, etc.)
+- ✅ **Hexagonal Architecture** (Ports & Adapters)
+- ✅ **Event-Driven Architecture**
+- ✅ **Rich Domain Models** with Value Objects
 
-- Spring Boot
+### 📚 Documentation
+
+**Start here:**
+- 📖 **[QUICK START GUIDE](QUICK_START_GUIDE.md)** - Practical guide for developers
+- 📊 **[PROJECT SUMMARY](PROJECT_SUMMARY.md)** - Overview & statistics
+- 🏗️ **[ARCHITECTURE DIAGRAMS](ARCHITECTURE_DIAGRAMS.md)** - Visual architecture
+- 📋 **[REFACTORING GUIDE](REFACTORING_GUIDE.md)** - Detailed architecture guide
+- 📝 **[IMPLEMENTATION SUMMARY](IMPLEMENTATION_SUMMARY.md)** - Implementation status
+
+### Technologies used:
+
+**Core:**
+- Spring Boot 3.3.0
+- Java 22
 - Spring Cloud
 - Spring Data JPA
 - Spring Security
-- Docker
-- Postgres SQL (AWS)
-- Swagger
-- Version Control
-    - Git
-    - GitHub
-- API Documentation
-    - Swagger
-    - OpenAPI
-    - Postman
+
+**Architecture:**
+- Clean Architecture
+- Hexagonal Architecture
+- Domain-Driven Design (DDD)
+- Event-Driven Architecture
+
+**Databases:**
+- PostgreSQL (AWS)
+- MongoDB
+- DynamoDB
+
+**Message Broker:**
+- Apache Kafka
+
+**Development:**
+- Docker & Docker Compose
+- Swagger/OpenAPI
+- Git & GitHub
+
+**Design Patterns:**
+- Strategy Pattern
+- Factory Pattern
+- Command Pattern
+- Chain of Responsibility
+- Observer Pattern
+- Facade Pattern
+- Adapter Pattern
+- Repository Pattern
+- Value Object Pattern
+- Result Pattern
 
 ## How to run the application
 
