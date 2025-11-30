@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
  * REST Controller for Wallet operations
  */
 @RestController
-@RequestMapping("/api/v1/wallets")
+@RequestMapping("/wallets")
 class WalletController(
     private val createWalletUseCase: CreateWalletUseCase,
     private val creditWalletUseCase: CreditWalletUseCase

@@ -4,7 +4,6 @@ import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionId
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
-import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.springframework.stereotype.Component
@@ -32,7 +31,7 @@ class TransactionRepositoryAdapter(
     }
 
     override fun findByStatus(status: TransactionStatus): List<Transaction> {
-        return jpaRepository.findByStatus(status.name).map { toDomainEntity(it) }
+        return jpaRepository.findByStatus(status).map { toDomainEntity(it) }
     }
 
     override fun delete(transaction: Transaction) {
@@ -46,8 +45,8 @@ class TransactionRepositoryAdapter(
             toWalletId = transaction.toWalletId,
             amount = transaction.amount.amount,
             currency = transaction.amount.currency.name,
-            type = transaction.type.name,
-            status = transaction.getStatus().name,
+            type = transaction.type,
+            status = transaction.getStatus(),
             description = transaction.description,
             reference = transaction.reference,
             createdAt = transaction.createdAt,
@@ -62,8 +61,8 @@ class TransactionRepositoryAdapter(
             fromWalletId = jpaEntity.fromWalletId,
             toWalletId = jpaEntity.toWalletId,
             amount = Money(jpaEntity.amount, currency),
-            type = TransactionType.valueOf(jpaEntity.type),
-            status = TransactionStatus.valueOf(jpaEntity.status),
+            type = jpaEntity.type,
+            status = jpaEntity.status,
             description = jpaEntity.description,
             reference = jpaEntity.reference,
             createdAt = jpaEntity.createdAt,

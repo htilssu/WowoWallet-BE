@@ -43,7 +43,7 @@ class WalletRepositoryAdapter(
             id = wallet.id.value,
             userId = wallet.userId,
             balance = wallet.getBalance().money.amount,
-            currency = wallet.currency.name,
+            currency = wallet.currency,
             isActive = wallet.isActive,
             createdAt = wallet.createdAt,
             updatedAt = wallet.updatedAt
@@ -51,12 +51,11 @@ class WalletRepositoryAdapter(
     }
 
     private fun toDomainEntity(jpaEntity: WalletJpaEntity): Wallet {
-        val currency = Currency.valueOf(jpaEntity.currency)
         return Wallet(
             id = WalletId(jpaEntity.id),
             userId = jpaEntity.userId,
-            balance = Balance(Money(jpaEntity.balance, currency)),
-            currency = currency,
+            balance = Balance(Money(jpaEntity.balance, jpaEntity.currency)),
+            currency = jpaEntity.currency,
             isActive = jpaEntity.isActive,
             createdAt = jpaEntity.createdAt,
             updatedAt = jpaEntity.updatedAt

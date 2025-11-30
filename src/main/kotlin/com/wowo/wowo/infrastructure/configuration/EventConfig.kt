@@ -1,4 +1,4 @@
-package com.wowo.wowo.config
+package com.wowo.wowo.infrastructure.configuration
 
 import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.infrastructure.event.SpringDomainEventPublisher

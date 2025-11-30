@@ -1,5 +1,6 @@
 package com.wowo.wowo.contexts.wallet.infrastructure.persistence
 
+import com.wowo.wowo.shared.valueobject.Currency
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ class WalletJpaEntity(
 
     @Column(nullable = false, length = 3)
     @Enumerated(EnumType.STRING)
-    var currency: String,
+    var currency: Currency,
 
     @Column(nullable = false)
     var isActive: Boolean = true,

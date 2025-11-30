@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
  * REST Controller for Transaction operations
  */
 @RestController
-@RequestMapping("/api/v1/transactions")
+@RequestMapping("/transactions")
 class TransactionController(
     private val transferMoneyUseCase: TransferMoneyUseCase
 ) {

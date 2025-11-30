@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
  * REST Controller for User operations
  */
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 class UserController(
     private val registerUserUseCase: RegisterUserUseCase,
     private val getUserUseCase: GetUserUseCase

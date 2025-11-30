@@ -1,5 +1,7 @@
 package com.wowo.wowo.contexts.transaction.infrastructure.persistence
 
+import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
+import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -28,11 +30,11 @@ class TransactionJpaEntity(
 
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    var type: String,
+    var type: TransactionType,
 
     @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    var status: String,
+    var status: TransactionStatus,
 
     @Column(length = 500)
     var description: String? = null,
