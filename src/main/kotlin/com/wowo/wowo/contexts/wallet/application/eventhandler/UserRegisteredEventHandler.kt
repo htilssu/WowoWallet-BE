@@ -8,20 +8,21 @@ import com.wowo.wowo.shared.valueobject.Currency
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
+import org.springframework.transaction.support.TransactionCallbackWithoutResult
+import org.springframework.transaction.support.TransactionTemplate
 
 /**
  * Event Handler: Automatically create a default wallet when a user is registered
- *
- * This handler listens for UserRegisteredEvent and creates a default wallet
- * for the newly registered user. It runs after the user registration transaction
- * commits successfully to ensure data consistency.
  */
 @Component
 class UserRegisteredEventHandler(
     private val createWalletUseCase: CreateWalletUseCase,
     private val walletRepository: WalletRepository,
+    private val transactionManager: PlatformTransactionManager,
     @param:Value("\${wallet.default-currency:VND}") private val defaultCurrency: String
 ) {
     private val logger = LoggerFactory.getLogger(UserRegisteredEventHandler::class.java)
@@ -56,9 +57,17 @@ class UserRegisteredEventHandler(
                 currency = currencyEnum.name
             )
 
-            val wallet = createWalletUseCase.execute(command)
+            // Execute wallet creation in a new transaction so saveAndFlush has an active transaction
+            val txTemplate = TransactionTemplate(transactionManager)
+            txTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
 
-            logger.info("Default wallet created successfully for user ID: ${event.aggregateId}, wallet ID: ${wallet.id}")
+            txTemplate.execute(object : TransactionCallbackWithoutResult() {
+                override fun doInTransactionWithoutResult(status: org.springframework.transaction.TransactionStatus) {
+                    createWalletUseCase.execute(command)
+                }
+            })
+
+            logger.info("Default wallet created successfully for user ID: ${event.aggregateId}")
         } catch (e: Exception) { // Log error but don't throw - wallet creation failure shouldn't affect user registration
             logger.error("Failed to create default wallet for user ID: ${event.aggregateId}", e)
         }

@@ -44,11 +44,10 @@ class RegisterUserUseCase(
         // Persist user
         val savedUser = userRepository.save(user)
 
-        // Publish domain events
-        eventPublisher.publish(savedUser.getDomainEvents())
-        savedUser.clearDomainEvents()
+        // Publish domain events from the original aggregate (user) because savedUser is a new instance created by the adapter
+        eventPublisher.publish(user.getDomainEvents())
+        user.clearDomainEvents()
 
         return UserDTO.fromDomain(savedUser)
     }
 }
-

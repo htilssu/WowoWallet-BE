@@ -6,6 +6,7 @@ import com.wowo.wowo.contexts.wallet.domain.valueobject.Balance
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 /**
@@ -16,9 +17,13 @@ class WalletRepositoryAdapter(
     private val jpaRepository: WalletJpaRepository
 ) : WalletRepository {
 
+    private val logger = LoggerFactory.getLogger(WalletRepositoryAdapter::class.java)
+
     override fun save(wallet: Wallet): Wallet {
         val jpaEntity = toJpaEntity(wallet)
-        val savedEntity = jpaRepository.save(jpaEntity)
+        logger.debug("Saving WalletJpaEntity to DB for userId={}, currency={}", wallet.userId, wallet.currency)
+        val savedEntity = jpaRepository.saveAndFlush(jpaEntity)
+        logger.debug("Saved WalletJpaEntity.id={}", savedEntity.id)
         return toDomainEntity(savedEntity)
     }
 
