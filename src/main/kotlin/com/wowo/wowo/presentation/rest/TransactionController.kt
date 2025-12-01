@@ -1,10 +1,11 @@
-package com.wowo.wowo.contexts.transaction.presentation.rest
+package com.wowo.wowo.presentation.rest
 
 import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
 import com.wowo.wowo.contexts.transaction.application.usecase.TransferMoneyUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -17,6 +18,7 @@ class TransactionController(
 ) {
 
     @PostMapping("/transfer")
+    @PreAuthorize("isAuthenticated()")
     fun transferMoney(@RequestBody request: TransferMoneyRequest): ResponseEntity<TransactionDTO> {
         val command = TransferMoneyCommand(
             fromWalletId = request.fromWalletId,

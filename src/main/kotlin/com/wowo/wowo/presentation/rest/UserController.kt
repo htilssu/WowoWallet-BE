@@ -1,4 +1,4 @@
-package com.wowo.wowo.contexts.user.presentation.rest
+package com.wowo.wowo.presentation.rest
 
 import com.wowo.wowo.contexts.user.application.dto.RegisterUserCommand
 import com.wowo.wowo.contexts.user.application.dto.UserDTO
@@ -6,6 +6,7 @@ import com.wowo.wowo.contexts.user.application.usecase.GetUserUseCase
 import com.wowo.wowo.contexts.user.application.usecase.RegisterUserUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -32,6 +33,7 @@ class UserController(
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("isAuthenticated()")
     fun getUser(@PathVariable userId: String): ResponseEntity<UserDTO> {
         val userDTO = getUserUseCase.execute(userId)
         return ResponseEntity.ok(userDTO)

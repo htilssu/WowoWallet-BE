@@ -34,6 +34,10 @@ class WalletRepositoryAdapter(
         return jpaRepository.existsByUserId(userId)
     }
 
+    override fun existsByUserIdAndCurrency(userId: String, currency: Currency): Boolean {
+        return jpaRepository.existsByUserIdAndCurrency(userId, currency)
+    }
+
     override fun delete(wallet: Wallet) {
         jpaRepository.deleteById(wallet.id.value)
     }
@@ -62,4 +66,3 @@ class WalletRepositoryAdapter(
         )
     }
 }
-
