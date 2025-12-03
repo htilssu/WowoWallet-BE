@@ -1,0 +1,104 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - 'releases/**'
+      - release
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    environment: Production
+    runs-on: ubuntu-latest
+    name: Testing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4.3.0
+        with:
+          cache: "gradle"
+          java-version: '22'
+          distribution: 'corretto'
+      - name: run test
+        run: |
+          chmod +x gradlew
+          ./gradlew test
+
+  build:
+    environment: Production
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    name: Build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          cache: "gradle"
+          java-version: '22'
+          distribution: 'corretto'
+
+      - name: Build with Gradle Wrapper
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --exclude-task test
+
+
+  docker-image:
+    environment: Production
+    needs: test
+    runs-on: ubuntu-latest
+    name: Docker Image
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          push: true
+          tags: ${{vars.DOCKER_IMAGE}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: deploy
+    environment: Production
+    needs: [ docker-image ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Container
+        run: |
+          echo "${{secrets.SSH_PRIVATE_KEY_DEPLOY}}" >> ${{github.workspace}}/id_rsa
+          chmod 600 ${{github.workspace}}/id_rsa
+          cat ${{github.workspace}}/id_rsa
+          ssh -o StrictHostKeyChecking=no -i ${{github.workspace}}/id_rsa ${{secrets.REMOTE_USERNAME_DEPLOY}}@${{secrets.REMOTE_HOST_DEPLOY}} << EOF
+              sudo echo "${{secrets.ENV}}" > /env/.env.ewallet &&
+              sudo docker pull ${{vars.DOCKER_IMAGE}} &&
+              sudo docker rm -f ewallet || true &&
+              sudo docker run --log-opt max-size=10m --log-opt max-file=3 --restart always --env-file /env/.env.ewallet --name ewallet -d -p 8080:8080 ${{vars.DOCKER_IMAGE}}:latest &&
+              sudo docker image prune -f
+          EOF
