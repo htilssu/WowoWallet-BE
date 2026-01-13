@@ -9,6 +9,7 @@ import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
@@ -16,7 +17,7 @@ import java.math.BigDecimal
  * Use Case: Credit (add money to) wallet
  */
 @Service
-@Transactional
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 class CreditWalletUseCase(
     private val walletRepository: WalletRepository,
     private val eventPublisher: DomainEventPublisher

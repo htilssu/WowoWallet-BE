@@ -8,6 +8,7 @@ import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
@@ -16,7 +17,7 @@ import java.math.BigDecimal
  * Orchestrates the transfer operation using domain service
  */
 @Service
-@Transactional
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 class TransferMoneyUseCase(
     private val transactionRepository: TransactionRepository,
     private val transferDomainService: TransferDomainService,
