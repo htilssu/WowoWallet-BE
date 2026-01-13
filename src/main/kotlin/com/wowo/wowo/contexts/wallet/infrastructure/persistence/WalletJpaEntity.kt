@@ -1,8 +1,10 @@
 package com.wowo.wowo.contexts.wallet.infrastructure.persistence
 
 import com.wowo.wowo.shared.valueobject.Currency
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import jakarta.persistence.*
 import java.math.BigDecimal
+
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,9 +18,14 @@ class WalletJpaEntity(
     var id: UUID = UUID.randomUUID(),
 
     @Column(nullable = false)
-    var userId: String,
+    var ownerId: String,
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    var ownerType: OwnerType,
 
     @Column(nullable = false, precision = 19, scale = 2)
+
     var balance: BigDecimal,
 
     @Column(nullable = false, length = 3)

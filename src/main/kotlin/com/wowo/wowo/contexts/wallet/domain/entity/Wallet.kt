@@ -5,7 +5,9 @@ import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
 import com.wowo.wowo.contexts.wallet.domain.valueobject.Balance
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import com.wowo.wowo.contexts.wallet.domain.event.WalletCreatedEvent
+
 import com.wowo.wowo.contexts.wallet.domain.event.WalletCreditedEvent
 import com.wowo.wowo.contexts.wallet.domain.event.WalletDebitedEvent
 import com.wowo.wowo.shared.exception.InsufficientBalanceException
@@ -17,7 +19,8 @@ import java.time.LocalDateTime
  */
 class Wallet(
     override val id: WalletId,
-    val userId: String,
+    val ownerId: String,
+    val ownerType: OwnerType,
     private var balance: Balance,
     val currency: Currency,
     var isActive: Boolean = true,
@@ -32,7 +35,7 @@ class Wallet(
         balance = balance.add(amount)
         updatedAt = LocalDateTime.now()
 
-        addDomainEvent(WalletCreditedEvent(id.toString(), userId, amount.amount, currency))
+        addDomainEvent(WalletCreditedEvent(id.toString(), ownerId, ownerType, amount.amount, currency))
     }
 
     fun debit(amount: Money) {
@@ -48,8 +51,9 @@ class Wallet(
         balance = balance.subtract(amount)
         updatedAt = LocalDateTime.now()
 
-        addDomainEvent(WalletDebitedEvent(id.toString(), userId, amount.amount, currency))
+        addDomainEvent(WalletDebitedEvent(id.toString(), ownerId, ownerType, amount.amount, currency))
     }
+
 
     fun freeze() {
         isActive = false
@@ -78,16 +82,18 @@ class Wallet(
     }
 
     companion object {
-        fun create(userId: String, currency: Currency): Wallet {
+        fun create(ownerId: String, ownerType: OwnerType, currency: Currency): Wallet {
             val wallet = Wallet(
                 id = WalletId(),
-                userId = userId,
+                ownerId = ownerId,
+                ownerType = ownerType,
                 balance = Balance.zero(currency),
                 currency = currency
             )
-            wallet.addDomainEvent(WalletCreatedEvent(wallet.id.toString(), userId, currency))
+            wallet.addDomainEvent(WalletCreatedEvent(wallet.id.toString(), ownerId, ownerType, currency))
             return wallet
         }
     }
+
 }
 

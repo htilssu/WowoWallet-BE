@@ -1,9 +1,13 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+
 data class CreateWalletCommand(
-    val userId: String,
+    val ownerId: String,
+    val ownerType: OwnerType,
     val currency: String
 )
+
 
 data class CreditWalletCommand(
     val walletId: String,

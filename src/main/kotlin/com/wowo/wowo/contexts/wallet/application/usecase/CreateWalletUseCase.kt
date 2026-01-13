@@ -25,11 +25,12 @@ class CreateWalletUseCase(
     fun execute(command: CreateWalletCommand): WalletDTO {
         val currency = Currency.valueOf(command.currency)
 
-        val wallet = Wallet.create(command.userId, currency)
+        val wallet = Wallet.create(command.ownerId, command.ownerType, currency)
 
-        logger.debug("Creating wallet for user=${command.userId} with currency=${command.currency}")
+        logger.debug("Creating wallet for ownerId=${command.ownerId}, ownerType=${command.ownerType} with currency=${command.currency}")
         val savedWallet = walletRepository.save(wallet)
         logger.debug("Wallet saved with id={}", savedWallet.id)
+
 
         val events = wallet.getDomainEvents()
         logger.debug("Publishing ${events.size} domain events for wallet id=${wallet.id}")

@@ -5,7 +5,9 @@ import com.wowo.wowo.contexts.wallet.application.dto.CreditWalletCommand
 import com.wowo.wowo.contexts.wallet.application.dto.WalletDTO
 import com.wowo.wowo.contexts.wallet.application.usecase.CreateWalletUseCase
 import com.wowo.wowo.contexts.wallet.application.usecase.CreditWalletUseCase
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import org.springframework.http.HttpStatus
+
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -24,7 +26,8 @@ class WalletController(
     @PreAuthorize("isAuthenticated()")
     fun createWallet(@RequestBody request: CreateWalletRequest): ResponseEntity<WalletDTO> {
         val command = CreateWalletCommand(
-            userId = request.userId,
+            ownerId = request.ownerId,
+            ownerType = request.ownerType,
             currency = request.currency
         )
 
@@ -33,6 +36,7 @@ class WalletController(
     }
 
     @PostMapping("/{walletId}/credit")
+
     @PreAuthorize("isAuthenticated()")
     fun creditWallet(
         @PathVariable walletId: String,
@@ -50,11 +54,13 @@ class WalletController(
 }
 
 data class CreateWalletRequest(
-    val userId: String,
+    val ownerId: String,
+    val ownerType: OwnerType,
     val currency: String
 )
 
 data class CreditWalletRequest(
+
     val amount: String,
     val currency: String
 )

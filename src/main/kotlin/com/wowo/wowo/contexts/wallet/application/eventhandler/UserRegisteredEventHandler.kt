@@ -4,8 +4,10 @@ import com.wowo.wowo.contexts.user.domain.event.UserRegisteredEvent
 import com.wowo.wowo.contexts.wallet.application.dto.CreateWalletCommand
 import com.wowo.wowo.contexts.wallet.application.usecase.CreateWalletUseCase
 import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import com.wowo.wowo.shared.valueobject.Currency
 import org.slf4j.LoggerFactory
+
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.transaction.PlatformTransactionManager
@@ -47,17 +49,19 @@ class UserRegisteredEventHandler(
             }
 
             // Idempotency check: if a wallet with the same currency already exists for the user, skip creation
-            if (walletRepository.existsByUserIdAndCurrency(event.aggregateId, currencyEnum)) {
+            if (walletRepository.existsByOwnerIdAndOwnerTypeAndCurrency(event.aggregateId, OwnerType.USER, currencyEnum)) {
                 logger.info("User ${event.aggregateId} already has a wallet with currency $currencyEnum, skipping creation")
                 return
             }
 
             val command = CreateWalletCommand(
-                userId = event.aggregateId,
+                ownerId = event.aggregateId,
+                ownerType = OwnerType.USER,
                 currency = currencyEnum.name
             )
 
             // Execute wallet creation in a new transaction so saveAndFlush has an active transaction
+
             val txTemplate = TransactionTemplate(transactionManager)
             txTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
 

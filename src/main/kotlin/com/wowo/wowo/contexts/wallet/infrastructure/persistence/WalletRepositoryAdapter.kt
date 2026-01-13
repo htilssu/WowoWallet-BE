@@ -4,9 +4,11 @@ import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
 import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
 import com.wowo.wowo.contexts.wallet.domain.valueobject.Balance
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.slf4j.LoggerFactory
+
 import org.springframework.stereotype.Component
 
 /**
@@ -21,7 +23,7 @@ class WalletRepositoryAdapter(
 
     override fun save(wallet: Wallet): Wallet {
         val jpaEntity = toJpaEntity(wallet)
-        logger.debug("Saving WalletJpaEntity to DB for userId={}, currency={}", wallet.userId, wallet.currency)
+        logger.debug("Saving WalletJpaEntity to DB for ownerId={}, ownerType={}, currency={}", wallet.ownerId, wallet.ownerType, wallet.currency)
         val savedEntity = jpaRepository.saveAndFlush(jpaEntity)
         logger.debug("Saved WalletJpaEntity.id={}", savedEntity.id)
         return toDomainEntity(savedEntity)
@@ -31,16 +33,16 @@ class WalletRepositoryAdapter(
         return jpaRepository.findById(id.value).map { toDomainEntity(it) }.orElse(null)
     }
 
-    override fun findByUserId(userId: String): List<Wallet> {
-        return jpaRepository.findByUserId(userId).map { toDomainEntity(it) }
+    override fun findByOwnerIdAndOwnerType(ownerId: String, ownerType: OwnerType): List<Wallet> {
+        return jpaRepository.findByOwnerIdAndOwnerType(ownerId, ownerType).map { toDomainEntity(it) }
     }
 
-    override fun existsByUserId(userId: String): Boolean {
-        return jpaRepository.existsByUserId(userId)
+    override fun existsByOwnerIdAndOwnerType(ownerId: String, ownerType: OwnerType): Boolean {
+        return jpaRepository.existsByOwnerIdAndOwnerType(ownerId, ownerType)
     }
 
-    override fun existsByUserIdAndCurrency(userId: String, currency: Currency): Boolean {
-        return jpaRepository.existsByUserIdAndCurrency(userId, currency)
+    override fun existsByOwnerIdAndOwnerTypeAndCurrency(ownerId: String, ownerType: OwnerType, currency: Currency): Boolean {
+        return jpaRepository.existsByOwnerIdAndOwnerTypeAndCurrency(ownerId, ownerType, currency)
     }
 
     override fun delete(wallet: Wallet) {
@@ -50,7 +52,8 @@ class WalletRepositoryAdapter(
     private fun toJpaEntity(wallet: Wallet): WalletJpaEntity {
         return WalletJpaEntity(
             id = wallet.id.value,
-            userId = wallet.userId,
+            ownerId = wallet.ownerId,
+            ownerType = wallet.ownerType,
             balance = wallet.getBalance().money.amount,
             currency = wallet.currency,
             isActive = wallet.isActive,
@@ -62,7 +65,8 @@ class WalletRepositoryAdapter(
     private fun toDomainEntity(jpaEntity: WalletJpaEntity): Wallet {
         return Wallet(
             id = WalletId(jpaEntity.id),
-            userId = jpaEntity.userId,
+            ownerId = jpaEntity.ownerId,
+            ownerType = jpaEntity.ownerType,
             balance = Balance(Money(jpaEntity.balance, jpaEntity.currency)),
             currency = jpaEntity.currency,
             isActive = jpaEntity.isActive,
@@ -70,4 +74,5 @@ class WalletRepositoryAdapter(
             updatedAt = jpaEntity.updatedAt
         )
     }
+
 }

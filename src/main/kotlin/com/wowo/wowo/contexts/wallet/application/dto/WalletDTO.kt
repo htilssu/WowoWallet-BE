@@ -1,6 +1,7 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
 import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
+import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -9,7 +10,8 @@ import java.time.LocalDateTime
  */
 data class WalletDTO(
     val id: String,
-    val userId: String,
+    val ownerId: String,
+    val ownerType: OwnerType,
     val balance: BigDecimal,
     val currency: String,
     val isActive: Boolean,
@@ -20,7 +22,8 @@ data class WalletDTO(
         fun fromDomain(wallet: Wallet): WalletDTO {
             return WalletDTO(
                 id = wallet.id.toString(),
-                userId = wallet.userId,
+                ownerId = wallet.ownerId,
+                ownerType = wallet.ownerType,
                 balance = wallet.getBalance().money.amount,
                 currency = wallet.currency.name,
                 isActive = wallet.isActive,
@@ -30,4 +33,5 @@ data class WalletDTO(
         }
     }
 }
+
 
