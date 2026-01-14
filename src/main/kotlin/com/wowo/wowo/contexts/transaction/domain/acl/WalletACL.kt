@@ -29,5 +29,10 @@ interface WalletACL {
      * Check if wallet has sufficient balance
      */
     fun hasSufficientBalance(walletId: String, amount: Money): Boolean
+
+    /**
+     * Get the owner ID of a wallet
+     */
+    fun getWalletOwner(walletId: String): String?
 }
 

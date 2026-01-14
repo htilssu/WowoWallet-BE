@@ -88,28 +88,49 @@ class AuthorizationAspect {
         val userRoles = getUserRoles(authentication)
 
         // Check if user is Admin or Super Admin
-        val isAdmin = userRoles.any { 
-            it == Role.ADMIN.value || it == Role.SUPER_ADMIN.value 
+        val isAdmin = userRoles.any {
+            it == Role.ADMIN.value || it == Role.SUPER_ADMIN.value
         }
-        
+
         if (isAdmin) {
             return // Admin is allowed to access
         }
 
         // Get owner ID from parameter
         val ownerId = extractOwnerId(joinPoint, requireOwnerOrAdmin.ownerIdParam)
-        
+
         if (currentUserId != ownerId) {
             throw AccessDeniedException("You can only access your own resources")
         }
     }
 
     /**
+     * Check owner or admin permission for @RequireOwnerOrAdmin annotation
+     */
+    @Before("@annotation(requireOwner)")
+    fun checkOwner(joinPoint: JoinPoint, requireOwner: RequireOwner) {
+        val authentication = getAuthentication()
+        if (!isAuthenticated(authentication)) {
+            throw UnauthorizedException()
+        }
+
+        val currentUserId = getCurrentUserId(authentication)
+        val userRoles = getUserRoles(authentication)
+
+        // Get owner ID from parameter
+        val ownerId = extractOwnerId(joinPoint, requireOwner.ownerIdParam)
+
+        if (currentUserId != ownerId) {
+            throw AccessDeniedException("You can only access your own resources")
+        }
+    }
+
+
+    /**
      * Check class-level @RequireRole annotation
      */
     @Before("@within(requireRole)")
-    fun checkClassLevelRole(joinPoint: JoinPoint, requireRole: RequireRole) {
-        // Skip if method has @Public annotation
+    fun checkClassLevelRole(joinPoint: JoinPoint, requireRole: RequireRole) { // Skip if method has @Public annotation
         if (hasPublicAnnotation(joinPoint)) {
             return
         }
@@ -120,8 +141,10 @@ class AuthorizationAspect {
      * Check class-level @RequireAuthenticated annotation
      */
     @Before("@within(requireAuthenticated)")
-    fun checkClassLevelAuthenticated(joinPoint: JoinPoint, requireAuthenticated: RequireAuthenticated) {
-        // Skip if method has @Public annotation
+    fun checkClassLevelAuthenticated(
+        joinPoint: JoinPoint,
+        requireAuthenticated: RequireAuthenticated
+    ) { // Skip if method has @Public annotation
         if (hasPublicAnnotation(joinPoint)) {
             return
         }
@@ -133,23 +156,17 @@ class AuthorizationAspect {
     }
 
     private fun isAuthenticated(authentication: Authentication?): Boolean {
-        return authentication != null && 
-               authentication.isAuthenticated && 
-               authentication.principal != "anonymousUser"
+        return authentication != null && authentication.isAuthenticated && authentication.principal != "anonymousUser"
     }
 
     private fun getUserRoles(authentication: Authentication?): Set<String> {
-        return authentication?.authorities
-            ?.map { it.authority }
-            ?.filter { it.startsWith("ROLE_") }
-            ?.toSet() ?: emptySet()
+        return authentication?.authorities?.map { it.authority }?.filter { it.startsWith("ROLE_") }?.toSet()
+            ?: emptySet()
     }
 
     private fun getUserPermissions(authentication: Authentication?): Set<String> {
-        return authentication?.authorities
-            ?.map { it.authority }
-            ?.filter { !it.startsWith("ROLE_") }
-            ?.toSet() ?: emptySet()
+        return authentication?.authorities?.map { it.authority }?.filter { !it.startsWith("ROLE_") }?.toSet()
+            ?: emptySet()
     }
 
     private fun getCurrentUserId(authentication: Authentication?): String? {
@@ -170,21 +187,21 @@ class AuthorizationAspect {
         // Handle basic SpEL expression
         val expression = paramExpression.removePrefix("#")
         val parts = expression.split(".")
-        
+
         val rootParamName = parts[0]
         val paramIndex = parameterNames.indexOf(rootParamName)
-        
+
         if (paramIndex < 0) return null
-        
+
         var value: Any? = args[paramIndex]
-        
+
         // Navigate through nested properties
         for (i in 1 until parts.size) {
             if (value == null) break
             val propertyName = parts[i]
             value = getPropertyValue(value, propertyName)
         }
-        
+
         return value?.toString()
     }
 

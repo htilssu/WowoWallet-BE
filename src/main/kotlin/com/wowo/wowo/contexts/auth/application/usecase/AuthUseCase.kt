@@ -5,6 +5,7 @@ import com.wowo.wowo.contexts.auth.application.dto.LoginResponse
 import com.wowo.wowo.contexts.auth.application.dto.RefreshTokenRequest
 import com.wowo.wowo.contexts.auth.application.dto.RefreshTokenResponse
 import com.wowo.wowo.contexts.user.domain.repository.UserRepository
+import com.wowo.wowo.contexts.user.domain.repository.RoleRepository
 import com.wowo.wowo.infrastructure.security.jwt.JwtTokenProvider
 import com.wowo.wowo.shared.valueobject.Email
 import org.springframework.beans.factory.annotation.Value
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service
 @Service
 class AuthUseCase(
     private val userRepository: UserRepository,
+    private val roleRepository: RoleRepository,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
     @param:Value("\${jwt.expiration-ms:86400000}") private val jwtExpirationMs: Long
@@ -33,8 +35,7 @@ class AuthUseCase(
             throw AuthenticationException("Invalid email or password")
         }
 
-        // TODO: Get user roles from authorization repository
-        val roles = emptySet<String>()
+        val roles = roleRepository.findAllByUserId(user.id).map { it.name.value }.toSet()
 
         val accessToken = jwtTokenProvider.generateAccessToken(
             userId = user.id.toString(),
@@ -73,8 +74,7 @@ class AuthUseCase(
             throw AuthenticationException("Account is deactivated")
         }
 
-        // TODO: Get user roles from authorization repository
-        val roles = emptySet<String>()
+        val roles = roleRepository.findAllByUserId(user.id).map { it.name.value }.toSet()
 
         val accessToken = jwtTokenProvider.generateAccessToken(
             userId = user.id.toString(),
