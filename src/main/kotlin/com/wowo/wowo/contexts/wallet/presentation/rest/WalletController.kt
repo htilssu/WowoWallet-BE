@@ -1,4 +1,4 @@
-package com.wowo.wowo.presentation.rest
+package com.wowo.wowo.contexts.wallet.presentation.rest
 
 import com.wowo.wowo.contexts.wallet.application.dto.CreateWalletCommand
 import com.wowo.wowo.contexts.wallet.application.dto.CreditWalletCommand

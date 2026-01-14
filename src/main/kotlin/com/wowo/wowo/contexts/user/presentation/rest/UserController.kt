@@ -1,10 +1,9 @@
-package com.wowo.wowo.presentation.rest
+package com.wowo.wowo.contexts.user.presentation.rest
 
 import com.wowo.wowo.contexts.user.application.dto.RegisterUserCommand
 import com.wowo.wowo.contexts.user.application.dto.UserDTO
 import com.wowo.wowo.contexts.user.application.usecase.GetUserUseCase
 import com.wowo.wowo.contexts.user.application.usecase.RegisterUserUseCase
-import com.wowo.wowo.shared.infrastructure.security.annotations.RequireAuthenticated
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
