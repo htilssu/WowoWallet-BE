@@ -1,7 +1,9 @@
 package com.wowo.wowo.shared.presentation.rest
 
 import com.wowo.wowo.shared.exception.*
+import com.wowo.wowo.contexts.auth.application.usecase.AuthenticationException
 import org.springframework.http.HttpStatus
+
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -57,7 +59,19 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
     }
 
+    @ExceptionHandler(AuthenticationException::class)
+    fun handleAuthenticationException(ex: AuthenticationException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(
+            timestamp = LocalDateTime.now(),
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = "Authentication Failed",
+            message = ex.message ?: "Authentication failed"
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
+    }
+
     @ExceptionHandler(DomainException::class)
+
     fun handleDomainException(ex: DomainException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
             timestamp = LocalDateTime.now(),

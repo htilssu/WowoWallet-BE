@@ -1,16 +1,13 @@
-package com.wowo.wowo.presentation.rest
+package com.wowo.wowo.contexts.transaction.presentation.rest
 
-import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
+import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.usecase.TransferMoneyUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
-/**
- * REST Controller for Transaction operations
- */
 @RestController
 @RequestMapping("/transactions")
 class TransactionController(
@@ -40,4 +37,3 @@ data class TransferMoneyRequest(
     val currency: String,
     val description: String?
 )
-

@@ -1,8 +1,11 @@
 package com.wowo.wowo.infrastructure.configuration
 
+import com.wowo.wowo.infrastructure.security.jwt.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -10,34 +13,31 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-/**
- * Spring Security Configuration
- * - Public endpoints: /users/register, /health
- * - Protected endpoints: all others (require authentication)
- * - Method-level security enabled with @PreAuthorize
- * - Custom authorization annotations: @RequireRole, @RequirePermission, @RequireAdmin, etc.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @EnableAspectJAutoProxy
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf { it.disable() } // Disable CSRF for REST API
+            .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/users/register").permitAll()
-                    .requestMatchers("/actuator/*").permitAll()// Public registration endpoint
-                    .anyRequest().authenticated() // All other endpoints require authentication
+                    .requestMatchers("/actuator/**").permitAll()
+                    .anyRequest().authenticated()
             }
             .sessionManagement { session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session for REST API
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .httpBasic { } // Enable HTTP Basic authentication (can be replaced with JWT later)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
@@ -46,5 +46,9 @@ class SecurityConfig {
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-}
 
+    @Bean
+    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
+        return authenticationConfiguration.authenticationManager
+    }
+}

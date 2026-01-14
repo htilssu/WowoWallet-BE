@@ -2,6 +2,7 @@ package com.wowo.wowo.contexts.transaction.infrastructure.persistence
 
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -10,10 +11,11 @@ import java.util.*
  * Spring Data JPA Repository for Transaction
  */
 @Repository
-interface TransactionJpaRepository : JpaRepository<TransactionJpaEntity, UUID> {
+interface TransactionJpaRepository : JpaRepository<TransactionJpaEntity, UUID>, JpaSpecificationExecutor<TransactionJpaEntity> {
     @Query("SELECT t FROM TransactionJpaEntity t WHERE t.fromWalletId = :walletId OR t.toWalletId = :walletId")
     fun findByWalletId(walletId: String): List<TransactionJpaEntity>
 
     fun findByStatus(status: TransactionStatus): List<TransactionJpaEntity>
 }
+
 
