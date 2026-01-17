@@ -4,6 +4,8 @@ import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.service.TransferDomainService
+import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
+import com.wowo.wowo.contexts.transaction.domain.acl.UserACL
 import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
@@ -21,7 +23,9 @@ import java.math.BigDecimal
 class TransferMoneyUseCase(
     private val transactionRepository: TransactionRepository,
     private val transferDomainService: TransferDomainService,
-    private val eventPublisher: DomainEventPublisher
+    private val eventPublisher: DomainEventPublisher,
+    private val walletACL: WalletACL,
+    private val userACL: UserACL
 ) {
     fun execute(command: TransferMoneyCommand): TransactionDTO {
         // Parse command
@@ -42,6 +46,16 @@ class TransferMoneyUseCase(
         eventPublisher.publish(savedTransaction.getDomainEvents())
         savedTransaction.clearDomainEvents()
 
-        return TransactionDTO.fromDomain(savedTransaction)
+        val toWalletName = savedTransaction.toWalletId?.let { 
+            val ownerId = walletACL.getWalletOwner(it)
+            ownerId?.let { id -> userACL.getUserName(id) }
+        }
+
+        val fromWalletName = savedTransaction.fromWalletId?.let {
+            val ownerId = walletACL.getWalletOwner(it)
+            ownerId?.let { id -> userACL.getUserName(id) }
+        }
+
+        return TransactionDTO.fromDomain(savedTransaction, fromWalletName, toWalletName)
     }
 }

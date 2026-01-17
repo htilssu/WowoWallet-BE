@@ -5,6 +5,8 @@ import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.service.TransferDomainService
+import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
+import com.wowo.wowo.contexts.transaction.domain.acl.UserACL
 import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.exception.InsufficientBalanceException
@@ -20,25 +22,34 @@ import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
 import org.junit.jupiter.api.Assertions.*
 
-@ExtendWith(MockitoExtension::class)
 class TransferMoneyUseCaseTest {
 
-    @Mock
     lateinit var transactionRepository: TransactionRepository
-
-    @Mock
     lateinit var transferDomainService: TransferDomainService
-
-    @Mock
     lateinit var eventPublisher: DomainEventPublisher
+    lateinit var walletACL: WalletACL
+    lateinit var userACL: UserACL
 
-    @InjectMocks
     lateinit var transferMoneyUseCase: TransferMoneyUseCase
 
     lateinit var sampleTransaction: Transaction
 
     @BeforeEach
     fun setUp() {
+        transactionRepository = Mockito.mock(TransactionRepository::class.java)
+        transferDomainService = Mockito.mock(TransferDomainService::class.java)
+        eventPublisher = Mockito.mock(DomainEventPublisher::class.java)
+        walletACL = Mockito.mock(WalletACL::class.java)
+        userACL = Mockito.mock(UserACL::class.java)
+
+        transferMoneyUseCase = TransferMoneyUseCase(
+            transactionRepository,
+            transferDomainService,
+            eventPublisher,
+            walletACL,
+            userACL
+        )
+
         sampleTransaction = Transaction.create(
             fromWalletId = "wallet-1",
             toWalletId = "wallet-2",
@@ -50,15 +61,23 @@ class TransferMoneyUseCaseTest {
 
     @Test
     fun `should transfer money successfully`() {
+        val money = Money(BigDecimal("100.00"), Currency.VND)
+        
         // Given
         Mockito.`when`(transferDomainService.executeTransfer(
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.any(Money::class.java),
-            org.mockito.ArgumentMatchers.nullable(String::class.java)
+            org.mockito.ArgumentMatchers.eq("wallet-1"),
+            org.mockito.ArgumentMatchers.eq("wallet-2"),
+            org.mockito.ArgumentMatchers.eq(money),
+            org.mockito.ArgumentMatchers.any()
         )).thenReturn(sampleTransaction)
         Mockito.`when`(transactionRepository.save(org.mockito.ArgumentMatchers.any(Transaction::class.java)))
             .thenReturn(sampleTransaction)
+
+        Mockito.`when`(walletACL.getWalletOwner(org.mockito.ArgumentMatchers.eq("wallet-1"))).thenReturn("user-1")
+        Mockito.`when`(userACL.getUserName(org.mockito.ArgumentMatchers.eq("user-1"))).thenReturn("Jane Doe")
+
+        Mockito.`when`(walletACL.getWalletOwner(org.mockito.ArgumentMatchers.eq("wallet-2"))).thenReturn("user-2")
+        Mockito.`when`(userACL.getUserName(org.mockito.ArgumentMatchers.eq("user-2"))).thenReturn("John Doe")
 
         val command = TransferMoneyCommand(
             fromWalletId = "wallet-1",
@@ -74,23 +93,27 @@ class TransferMoneyUseCaseTest {
         // Then
         assertNotNull(result)
         assertEquals(sampleTransaction.id.toString(), result.id)
+        assertEquals("Jane Doe", result.fromWalletName)
+        assertEquals("John Doe", result.toWalletName)
         Mockito.verify(transferDomainService).executeTransfer(
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.any(Money::class.java),
-            org.mockito.ArgumentMatchers.nullable(String::class.java)
+            org.mockito.ArgumentMatchers.eq("wallet-1"),
+            org.mockito.ArgumentMatchers.eq("wallet-2"),
+            org.mockito.ArgumentMatchers.eq(money),
+            org.mockito.ArgumentMatchers.any()
         )
         Mockito.verify(transactionRepository).save(org.mockito.ArgumentMatchers.any(Transaction::class.java))
     }
 
     @Test
     fun `should throw when source wallet not found`() {
+        val money = Money(BigDecimal("100.00"), Currency.VND)
+
         // Given
         Mockito.`when`(transferDomainService.executeTransfer(
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.any(Money::class.java),
-            org.mockito.ArgumentMatchers.nullable(String::class.java)
+            org.mockito.ArgumentMatchers.eq("wallet-1"),
+            org.mockito.ArgumentMatchers.eq("wallet-2"),
+            org.mockito.ArgumentMatchers.eq(money),
+            org.mockito.ArgumentMatchers.any()
         )).thenThrow(EntityNotFoundException("Source wallet not found"))
 
         val command = TransferMoneyCommand("wallet-1", "wallet-2", "100.00", "VND", "x")
@@ -103,12 +126,14 @@ class TransferMoneyUseCaseTest {
 
     @Test
     fun `should throw when destination wallet not found`() {
+        val money = Money(BigDecimal("100.00"), Currency.VND)
+
         // Given
         Mockito.`when`(transferDomainService.executeTransfer(
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.any(Money::class.java),
-            org.mockito.ArgumentMatchers.nullable(String::class.java)
+            org.mockito.ArgumentMatchers.eq("wallet-1"),
+            org.mockito.ArgumentMatchers.eq("wallet-2"),
+            org.mockito.ArgumentMatchers.eq(money),
+            org.mockito.ArgumentMatchers.any()
         )).thenThrow(EntityNotFoundException("Destination wallet not found"))
 
         val command = TransferMoneyCommand("wallet-1", "wallet-2", "100.00", "VND", "x")
@@ -121,12 +146,14 @@ class TransferMoneyUseCaseTest {
 
     @Test
     fun `should throw when insufficient balance`() {
+        val money = Money(BigDecimal("100.00"), Currency.VND)
+
         // Given
         Mockito.`when`(transferDomainService.executeTransfer(
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.anyString(),
-            org.mockito.ArgumentMatchers.any(Money::class.java),
-            org.mockito.ArgumentMatchers.nullable(String::class.java)
+            org.mockito.ArgumentMatchers.eq("wallet-1"),
+            org.mockito.ArgumentMatchers.eq("wallet-2"),
+            org.mockito.ArgumentMatchers.eq(money),
+            org.mockito.ArgumentMatchers.any()
         )).thenThrow(InsufficientBalanceException("Insufficient balance"))
 
         val command = TransferMoneyCommand("wallet-1", "wallet-2", "100.00", "VND", "x")

@@ -8,34 +8,29 @@ import java.util.*
  * JPA Entity for User
  */
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users", indexes = [Index(name = "idx_users_username", columnList = "username"), Index(
+        name = "idx_users_email", columnList = "email"
+    )]
+)
 class UserJpaEntity(
-    @Id
-    var id: UUID = UUID.randomUUID(),
+    @Id var id: UUID = UUID.randomUUID(),
 
-    @Column(nullable = false, unique = true, length = 50)
-    var username: String,
+    @Column(nullable = false, unique = true, length = 50) var username: String,
 
-    @Column(nullable = false)
-    var password: String,
+    @Column(nullable = false) var password: String,
 
-    @Column(nullable = false, unique = true)
-    var email: String,
+    @Column(nullable = false, unique = true) var email: String,
 
-    @Column
-    var phoneNumber: String? = null,
+    @Column var phoneNumber: String? = null,
 
-    @Column(nullable = false)
-    var isVerified: Boolean = false,
+    @Column(nullable = false) var isVerified: Boolean = false,
 
-    @Column(nullable = false)
-    var isActive: Boolean = true,
+    @Column(nullable = false) var isActive: Boolean = true,
 
-    @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    @Column(nullable = false, updatable = false) var createdAt: LocalDateTime = LocalDateTime.now(),
 
-    @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now()
+    @Column(nullable = false) var updatedAt: LocalDateTime = LocalDateTime.now()
 )
 
 

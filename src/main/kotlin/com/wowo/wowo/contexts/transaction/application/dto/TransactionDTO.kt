@@ -9,8 +9,8 @@ import java.time.LocalDateTime
  */
 data class TransactionDTO(
     val id: String,
-    val fromWalletId: String?,
-    val toWalletId: String?,
+    val fromWalletName: String?,
+    val toWalletName: String?,
     val amount: BigDecimal,
     val currency: String,
     val type: String,
@@ -21,11 +21,11 @@ data class TransactionDTO(
     val updatedAt: LocalDateTime
 ) {
     companion object {
-        fun fromDomain(transaction: Transaction): TransactionDTO {
+        fun fromDomain(transaction: Transaction, fromWalletName: String?, toWalletName: String?): TransactionDTO {
             return TransactionDTO(
                 id = transaction.id.toString(),
-                fromWalletId = transaction.fromWalletId,
-                toWalletId = transaction.toWalletId,
+                fromWalletName = fromWalletName,
+                toWalletName = toWalletName,
                 amount = transaction.amount.amount,
                 currency = transaction.amount.currency.name,
                 type = transaction.type.name,

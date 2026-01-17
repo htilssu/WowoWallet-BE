@@ -21,16 +21,6 @@ import org.springframework.stereotype.Component
 @Order(1)
 class AuthorizationAspect {
 
-    /**
-     * Check authentication for @RequireAuthenticated annotation
-     */
-    @Before("@annotation(requireAuthenticated)")
-    fun checkAuthenticated(joinPoint: JoinPoint, requireAuthenticated: RequireAuthenticated) {
-        val authentication = getAuthentication()
-        if (!isAuthenticated(authentication)) {
-            throw UnauthorizedException()
-        }
-    }
 
     /**
      * Check role for @RequireRole annotation
@@ -135,20 +125,6 @@ class AuthorizationAspect {
             return
         }
         checkRole(joinPoint, requireRole)
-    }
-
-    /**
-     * Check class-level @RequireAuthenticated annotation
-     */
-    @Before("@within(requireAuthenticated)")
-    fun checkClassLevelAuthenticated(
-        joinPoint: JoinPoint,
-        requireAuthenticated: RequireAuthenticated
-    ) { // Skip if method has @Public annotation
-        if (hasPublicAnnotation(joinPoint)) {
-            return
-        }
-        checkAuthenticated(joinPoint, requireAuthenticated)
     }
 
     private fun getAuthentication(): Authentication? {

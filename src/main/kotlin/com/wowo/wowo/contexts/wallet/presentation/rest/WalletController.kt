@@ -1,15 +1,12 @@
 package com.wowo.wowo.contexts.wallet.presentation.rest
 
-import com.wowo.wowo.contexts.wallet.application.dto.CreateWalletCommand
-import com.wowo.wowo.contexts.wallet.application.dto.CreditWalletCommand
-import com.wowo.wowo.contexts.wallet.application.dto.WalletDTO
-import com.wowo.wowo.contexts.wallet.application.usecase.CreateWalletUseCase
-import com.wowo.wowo.contexts.wallet.application.usecase.CreditWalletUseCase
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
-import org.springframework.http.HttpStatus
-
-import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
+import com.wowo.wowo.contexts.wallet.application.dto.*
+import com.wowo.wowo.contexts.wallet.application.usecase.*
+import com.wowo.wowo.contexts.wallet.domain.valueobject.*
+import io.swagger.v3.oas.annotations.media.*
+import io.swagger.v3.oas.annotations.responses.*
+import org.springframework.http.*
+import org.springframework.security.access.prepost.*
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -18,17 +15,19 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/wallets")
 class WalletController(
-    private val createWalletUseCase: CreateWalletUseCase,
-    private val creditWalletUseCase: CreditWalletUseCase
+    private val createWalletUseCase: CreateWalletUseCase, private val creditWalletUseCase: CreditWalletUseCase
 ) {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
+    @ApiResponse(
+        responseCode = "201", description = "Wallet created successfully", content = [Content(
+            mediaType = "application/json", schema = Schema(implementation = WalletDTO::class)
+        )]
+    )
     fun createWallet(@RequestBody request: CreateWalletRequest): ResponseEntity<WalletDTO> {
         val command = CreateWalletCommand(
-            ownerId = request.ownerId,
-            ownerType = request.ownerType,
-            currency = request.currency
+            ownerId = request.ownerId, ownerType = request.ownerType, currency = request.currency
         )
 
         val walletDTO = createWalletUseCase.execute(command)
@@ -36,16 +35,12 @@ class WalletController(
     }
 
     @PostMapping("/{walletId}/credit")
-
     @PreAuthorize("isAuthenticated()")
     fun creditWallet(
-        @PathVariable walletId: String,
-        @RequestBody request: CreditWalletRequest
+        @PathVariable walletId: String, @RequestBody request: CreditWalletRequest
     ): ResponseEntity<WalletDTO> {
         val command = CreditWalletCommand(
-            walletId = walletId,
-            amount = request.amount,
-            currency = request.currency
+            walletId = walletId, amount = request.amount, currency = request.currency
         )
 
         val walletDTO = creditWalletUseCase.execute(command)
@@ -54,14 +49,11 @@ class WalletController(
 }
 
 data class CreateWalletRequest(
-    val ownerId: String,
-    val ownerType: OwnerType,
-    val currency: String
+    val ownerId: String, val ownerType: OwnerType, val currency: String
 )
 
 data class CreditWalletRequest(
 
-    val amount: String,
-    val currency: String
+    val amount: String, val currency: String
 )
 
