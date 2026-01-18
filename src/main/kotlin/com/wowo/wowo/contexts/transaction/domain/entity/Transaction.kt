@@ -8,6 +8,7 @@ import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
 import com.wowo.wowo.contexts.transaction.domain.event.TransactionCompletedEvent
 import com.wowo.wowo.contexts.transaction.domain.event.TransactionFailedEvent
 import com.wowo.wowo.shared.exception.InvalidOperationException
+import com.wowo.wowo.shared.valueobject.Currency
 import java.time.LocalDateTime
 
 /**
@@ -40,11 +41,7 @@ class Transaction(
 
         addDomainEvent(
             TransactionCompletedEvent(
-                id.toString(),
-                fromWalletId,
-                toWalletId,
-                amount.amount,
-                amount.currency
+                id.toString(), fromWalletId, toWalletId, amount.amount, amount.currency
             )
         )
     }
@@ -76,9 +73,11 @@ class Transaction(
             TransactionType.CREDIT -> {
                 require(toWalletId != null) { "Credit transaction must have a destination wallet" }
             }
+
             TransactionType.DEBIT -> {
                 require(fromWalletId != null) { "Debit transaction must have a source wallet" }
             }
+
             TransactionType.TRANSFER -> {
                 require(fromWalletId != null && toWalletId != null) {
                     "Transfer transaction must have both source and destination wallets"
@@ -87,6 +86,7 @@ class Transaction(
                     "Cannot transfer to the same wallet"
                 }
             }
+
             else -> {}
         }
     }

@@ -16,24 +16,12 @@ class WalletACLAdapter(
     private val walletRepository: WalletRepository
 ) : WalletACL {
 
+    override fun getWallet(walletId: String): Any? {
+        return walletRepository.findById(WalletId.fromString(walletId))
+    }
+
     override fun validateWalletExists(walletId: String): Boolean {
-        return walletRepository.findById(WalletId.fromString(walletId)) != null
-    }
-
-    override fun debitWallet(walletId: String, amount: Money) {
-        val wallet = walletRepository.findById(WalletId.fromString(walletId))
-            ?: throw EntityNotFoundException("Wallet not found: $walletId")
-
-        wallet.debit(amount)
-        walletRepository.save(wallet)
-    }
-
-    override fun creditWallet(walletId: String, amount: Money) {
-        val wallet = walletRepository.findById(WalletId.fromString(walletId))
-            ?: throw EntityNotFoundException("Wallet not found: $walletId")
-
-        wallet.credit(amount)
-        walletRepository.save(wallet)
+        return getWallet(walletId) != null
     }
 
     override fun hasSufficientBalance(walletId: String, amount: Money): Boolean {
@@ -46,6 +34,22 @@ class WalletACLAdapter(
     override fun getWalletOwner(walletId: String): String? {
         val wallet = walletRepository.findById(WalletId.fromString(walletId))
         return wallet?.ownerId
+    }
+
+    override fun transfer(
+        fromWalletId: String, toWalletId: String, amount: Money
+    ) {
+        val fromWallet = walletRepository.findById(WalletId.fromString(fromWalletId))
+            ?: throw EntityNotFoundException("Source wallet not found: $fromWalletId")
+
+        val toWallet = walletRepository.findById(WalletId.fromString(toWalletId))
+            ?: throw EntityNotFoundException("Destination wallet not found: $toWalletId")
+
+        fromWallet.debit(amount)
+        toWallet.credit(amount)
+
+        walletRepository.save(fromWallet)
+        walletRepository.save(toWallet)
     }
 }
 

@@ -8,31 +8,21 @@ import com.wowo.wowo.shared.valueobject.Money
  */
 interface WalletACL {
     /**
+     * Get a wallet by ID
+     * @return wallet entity or null if not found
+     */
+    fun getWallet(walletId: String): Any?
+
+    /**
      * Validate that a wallet exists and can perform operations
      */
     fun validateWalletExists(walletId: String): Boolean
-
-    /**
-     * Perform debit operation on a wallet
-     * @throws EntityNotFoundException if wallet not found
-     * @throws InsufficientBalanceException if balance insufficient
-     */
-    fun debitWallet(walletId: String, amount: Money)
-
-    /**
-     * Perform credit operation on a wallet
-     * @throws EntityNotFoundException if wallet not found
-     */
-    fun creditWallet(walletId: String, amount: Money)
 
     /**
      * Check if wallet has sufficient balance
      */
     fun hasSufficientBalance(walletId: String, amount: Money): Boolean
 
-    /**
-     * Get the owner ID of a wallet
-     */
-    fun getWalletOwner(walletId: String): String?
+    fun transfer(fromWalletId: String, toWalletId: String, amount: Money)
 }
 

@@ -5,6 +5,7 @@ import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.exception.InsufficientBalanceException
+import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 
 /**
@@ -21,21 +22,9 @@ class TransferDomainService(
      * @throws InsufficientBalanceException if source wallet has insufficient balance
      */
     fun executeTransfer(
-        fromWalletId: String,
-        toWalletId: String,
-        amount: Money,
-        description: String?
+        fromWalletId: String, toWalletId: String, amount: Money, description: String?
     ): Transaction {
-        // Validate wallets exist
-        if (!walletACL.validateWalletExists(fromWalletId)) {
-            throw EntityNotFoundException("Source wallet not found: $fromWalletId")
-        }
 
-        if (!walletACL.validateWalletExists(toWalletId)) {
-            throw EntityNotFoundException("Destination wallet not found: $toWalletId")
-        }
-
-        // Create transaction
         val transaction = Transaction.create(
             fromWalletId = fromWalletId,
             toWalletId = toWalletId,
@@ -44,16 +33,13 @@ class TransferDomainService(
             description = description
         )
 
-        try {
-            // Execute the transfer through ACL
-            walletACL.debitWallet(fromWalletId, amount)
-            walletACL.creditWallet(toWalletId, amount)
+        try { // Execute the transfer through ACL
+            walletACL.transfer(fromWalletId, toWalletId, amount)
 
             // Mark transaction as complete
             transaction.complete()
 
-        } catch (e: Exception) {
-            // If any error occurs, mark transaction as failed
+        } catch (e: Exception) { // If any error occurs, mark transaction as failed
             if (e is InsufficientBalanceException) {
                 throw e
             }
@@ -68,9 +54,9 @@ class TransferDomainService(
      * Validate if a transfer can be executed
      */
     fun canExecuteTransfer(fromWalletId: String, toWalletId: String, amount: Money): Boolean {
-        return walletACL.validateWalletExists(fromWalletId) &&
-               walletACL.validateWalletExists(toWalletId) &&
-               walletACL.hasSufficientBalance(fromWalletId, amount)
+        return walletACL.validateWalletExists(fromWalletId) && walletACL.validateWalletExists(toWalletId) && walletACL.hasSufficientBalance(
+            fromWalletId, amount
+        )
     }
 }
 
