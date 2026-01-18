@@ -49,14 +49,5 @@ class TransferDomainService(
 
         return transaction
     }
-
-    /**
-     * Validate if a transfer can be executed
-     */
-    fun canExecuteTransfer(fromWalletId: String, toWalletId: String, amount: Money): Boolean {
-        return walletACL.validateWalletExists(fromWalletId) && walletACL.validateWalletExists(toWalletId) && walletACL.hasSufficientBalance(
-            fromWalletId, amount
-        )
-    }
 }
 

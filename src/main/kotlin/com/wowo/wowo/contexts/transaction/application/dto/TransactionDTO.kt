@@ -21,7 +21,7 @@ data class TransactionDTO(
     val updatedAt: LocalDateTime
 ) {
     companion object {
-        fun fromDomain(transaction: Transaction, fromWalletName: String?, toWalletName: String?): TransactionDTO {
+        fun fromDomain(transaction: Transaction, fromWalletName: String? = null, toWalletName: String? = null): TransactionDTO {
             return TransactionDTO(
                 id = transaction.id.toString(),
                 fromWalletName = fromWalletName,

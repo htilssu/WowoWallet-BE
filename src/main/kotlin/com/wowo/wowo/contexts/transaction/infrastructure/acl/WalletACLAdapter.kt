@@ -31,11 +31,6 @@ class WalletACLAdapter(
         return wallet.getBalance().money.amount >= amount.amount
     }
 
-    override fun getWalletOwner(walletId: String): String? {
-        val wallet = walletRepository.findById(WalletId.fromString(walletId))
-        return wallet?.ownerId
-    }
-
     override fun transfer(
         fromWalletId: String, toWalletId: String, amount: Money
     ) {

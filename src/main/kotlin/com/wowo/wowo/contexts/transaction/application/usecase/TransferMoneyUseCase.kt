@@ -46,16 +46,8 @@ class TransferMoneyUseCase(
         eventPublisher.publish(savedTransaction.getDomainEvents())
         savedTransaction.clearDomainEvents()
 
-        val toWalletName = savedTransaction.toWalletId?.let { 
-            val ownerId = walletACL.getWalletOwner(it)
-            ownerId?.let { id -> userACL.getUserName(id) }
-        }
 
-        val fromWalletName = savedTransaction.fromWalletId?.let {
-            val ownerId = walletACL.getWalletOwner(it)
-            ownerId?.let { id -> userACL.getUserName(id) }
-        }
 
-        return TransactionDTO.fromDomain(savedTransaction, fromWalletName, toWalletName)
+        return TransactionDTO.fromDomain(savedTransaction)
     }
 }
