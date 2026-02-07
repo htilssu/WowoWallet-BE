@@ -1,10 +1,10 @@
 package com.wowo.wowo.contexts.transaction.application.usecase
 
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
+import com.wowo.wowo.contexts.transaction.application.enricher.TransactionOwnerEnricher
+import com.wowo.wowo.contexts.transaction.application.mapper.TransactionMapper
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionSearchCriteria
-import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
-import com.wowo.wowo.contexts.transaction.domain.acl.UserACL
 import com.wowo.wowo.shared.domain.PagedResult
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,27 +12,22 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class GetTransactionHistoryUseCase(
     private val transactionRepository: TransactionRepository,
-    private val walletACL: WalletACL,
-    private val userACL: UserACL
+    private val transactionMapper: TransactionMapper,
+    private val transactionOwnerEnricher: TransactionOwnerEnricher
 ) {
     @Transactional(readOnly = true)
     fun execute(criteria: TransactionSearchCriteria): PagedResult<TransactionDTO> {
         val pagedTransactions = transactionRepository.search(criteria)
-        
+
+        val dtos = pagedTransactions.items.map { transaction ->
+            transactionMapper.toDTO(transaction)
+        }
+
+        // Enrich with owner names (sender and receiver)
+        val enrichedDtos = transactionOwnerEnricher.enrichWithLookup(dtos)
+
         return PagedResult(
-            items = pagedTransactions.items.map { transaction ->
-                val toWalletName = transaction.toWalletId?.let { 
-                    val ownerId = walletACL.getWalletOwner(it)
-                    ownerId?.let { id -> userACL.getUserName(id) }
-                }
-
-                val fromWalletName = transaction.fromWalletId?.let {
-                    val ownerId = walletACL.getWalletOwner(it)
-                    ownerId?.let { id -> userACL.getUserName(id) }
-                }
-
-                TransactionDTO.fromDomain(transaction, fromWalletName, toWalletName)
-            },
+            items = enrichedDtos,
             totalItems = pagedTransactions.totalItems,
             totalPages = pagedTransactions.totalPages,
             currentPage = pagedTransactions.currentPage,
@@ -40,3 +35,4 @@ class GetTransactionHistoryUseCase(
         )
     }
 }
+

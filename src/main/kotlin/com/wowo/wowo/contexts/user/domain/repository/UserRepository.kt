@@ -12,6 +12,7 @@ import java.util.*
 interface UserRepository {
     fun save(user: User): User
     fun findById(id: UserId): User?
+    fun findByIds(ids: List<UserId>): List<User>
     fun findByUsername(username: Username): User?
     fun findByEmail(email: Email): User?
     fun existsByUsername(username: Username): Boolean

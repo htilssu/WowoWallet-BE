@@ -2,6 +2,7 @@ package com.wowo.wowo.contexts.transaction.application.usecase
 
 import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
+import com.wowo.wowo.contexts.transaction.application.mapper.TransactionMapper
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.service.TransferDomainService
 import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
@@ -24,11 +25,9 @@ class TransferMoneyUseCase(
     private val transactionRepository: TransactionRepository,
     private val transferDomainService: TransferDomainService,
     private val eventPublisher: DomainEventPublisher,
-    private val walletACL: WalletACL,
-    private val userACL: UserACL
+    private val transactionMapper: TransactionMapper
 ) {
-    fun execute(command: TransferMoneyCommand): TransactionDTO {
-        // Parse command
+    fun execute(command: TransferMoneyCommand): TransactionDTO { // Parse command
         val amount = Money(BigDecimal(command.amount), Currency.valueOf(command.currency))
 
         // Execute transfer through domain service
@@ -48,6 +47,6 @@ class TransferMoneyUseCase(
 
 
 
-        return TransactionDTO.fromDomain(savedTransaction)
+        return transactionMapper.toDTO(savedTransaction)
     }
 }

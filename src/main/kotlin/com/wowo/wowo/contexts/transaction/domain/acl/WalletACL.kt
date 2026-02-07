@@ -1,5 +1,6 @@
 package com.wowo.wowo.contexts.transaction.domain.acl
 
+import com.wowo.wowo.shared.enrichment.OwnerInfo
 import com.wowo.wowo.shared.valueobject.Money
 
 /**
@@ -14,14 +15,19 @@ interface WalletACL {
     fun getWallet(walletId: String): Any?
 
     /**
-     * Validate that a wallet exists and can perform operations
+     * Get owner IDs for multiple wallets
+     * @return Map of walletId -> ownerId (ownerId is null if wallet not found)
      */
-    fun validateWalletExists(walletId: String): Boolean
-
+    fun getWalletOwners(walletIds: Set<String>): Map<String, String?>
+    
     /**
-     * Check if wallet has sufficient balance
+     * Get owner information (ID + type) for multiple wallets.
+     * This is used for enrichment to resolve owner names based on type.
+     * 
+     * @param walletIds Set of wallet IDs to look up
+     * @return Map of walletId -> OwnerInfo (null if wallet not found)
      */
-    fun hasSufficientBalance(walletId: String, amount: Money): Boolean
+    fun getWalletOwnerInfos(walletIds: Set<String>): Map<String, OwnerInfo?>
 
     fun transfer(fromWalletId: String, toWalletId: String, amount: Money)
 }

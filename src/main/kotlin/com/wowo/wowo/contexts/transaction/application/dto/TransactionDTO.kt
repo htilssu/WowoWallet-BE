@@ -1,16 +1,31 @@
 package com.wowo.wowo.contexts.transaction.application.dto
 
-import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
+import com.wowo.wowo.shared.domain.OwnerType
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
- * Data Transfer Object for Transaction
+ * Data Transfer Object for Transaction.
+ * 
+ * Supports enrichment for both sender and receiver owner names,
+ * with support for different owner types (USER, GROUP, FUND_GROUP).
  */
 data class TransactionDTO(
     val id: String,
-    val fromWalletName: String?,
-    val toWalletName: String?,
+    
+    // Sender (from) wallet information
+    val fromWalletId: String?,
+    val fromOwnerId: String?,
+    val fromOwnerType: OwnerType?,
+    val fromOwnerName: String?,    // Enriched field
+    
+    // Receiver (to) wallet information  
+    val toWalletId: String?,
+    val toOwnerId: String?,
+    val toOwnerType: OwnerType?,
+    val toOwnerName: String?,      // Enriched field
+    
+    // Transaction details
     val amount: BigDecimal,
     val currency: String,
     val type: String,
@@ -21,21 +36,40 @@ data class TransactionDTO(
     val updatedAt: LocalDateTime
 ) {
     companion object {
-        fun fromDomain(transaction: Transaction, fromWalletName: String? = null, toWalletName: String? = null): TransactionDTO {
-            return TransactionDTO(
-                id = transaction.id.toString(),
-                fromWalletName = fromWalletName,
-                toWalletName = toWalletName,
-                amount = transaction.amount.amount,
-                currency = transaction.amount.currency.name,
-                type = transaction.type.name,
-                status = transaction.getStatus().name,
-                description = transaction.description,
-                reference = transaction.reference,
-                createdAt = transaction.createdAt,
-                updatedAt = transaction.updatedAt
-            )
-        }
+        /**
+         * Create a DTO without enrichment (for initial mapping).
+         */
+        fun unenriched(
+            id: String,
+            fromWalletId: String?,
+            toWalletId: String?,
+            amount: BigDecimal,
+            currency: String,
+            type: String,
+            status: String,
+            description: String?,
+            reference: String?,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime
+        ) = TransactionDTO(
+            id = id,
+            fromWalletId = fromWalletId,
+            fromOwnerId = null,
+            fromOwnerType = null,
+            fromOwnerName = null,
+            toWalletId = toWalletId,
+            toOwnerId = null,
+            toOwnerType = null,
+            toOwnerName = null,
+            amount = amount,
+            currency = currency,
+            type = type,
+            status = status,
+            description = description,
+            reference = reference,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
     }
 }
 

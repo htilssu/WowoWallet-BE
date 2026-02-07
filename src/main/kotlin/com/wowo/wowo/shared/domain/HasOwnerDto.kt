@@ -1,8 +1,7 @@
 package com.wowo.wowo.shared.domain
 
-import com.wowo.wowo.shared.domain.OwnerType
-
-interface HasOwner<IdType> {
+interface HasOwnerDto<IdType> {
     val ownerId: IdType
     val ownerType: OwnerType
+    val ownerName: String?
 }

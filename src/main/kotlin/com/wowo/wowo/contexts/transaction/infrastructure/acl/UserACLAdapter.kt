@@ -13,4 +13,11 @@ class UserACLAdapter(
         val user = userRepository.findById(UserId.fromString(userId))
         return user?.username?.value
     }
+
+    override fun getUserNames(userIds: Set<String>): Map<String, String?> {
+        return userIds.associateWith { userId ->
+            userRepository.findById(UserId.fromString(userId))?.username?.value
+        }
+    }
 }
+

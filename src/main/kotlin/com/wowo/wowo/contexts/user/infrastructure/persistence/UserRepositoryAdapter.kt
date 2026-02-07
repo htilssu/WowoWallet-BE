@@ -26,6 +26,12 @@ class UserRepositoryAdapter(
     override fun findById(id: UserId): User? {
         return jpaRepository.findById(id.value).map { toDomainEntity(it) }.orElse(null)
     }
+    
+    override fun findByIds(ids: List<UserId>): List<User> {
+        if (ids.isEmpty()) return emptyList()
+        return jpaRepository.findByIdIn(ids.map { it.value })
+            .map { toDomainEntity(it) }
+    }
 
     override fun findByUsername(username: Username): User? {
         return jpaRepository.findByUsername(username.value)?.let { toDomainEntity(it) }

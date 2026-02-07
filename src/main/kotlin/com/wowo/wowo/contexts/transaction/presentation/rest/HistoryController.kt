@@ -1,5 +1,6 @@
 package com.wowo.wowo.contexts.transaction.presentation.rest
 
+import com.sun.beans.introspect.PropertyInfo
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
 import com.wowo.wowo.contexts.transaction.application.usecase.GetTransactionHistoryUseCase
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionSearchCriteria
@@ -9,6 +10,7 @@ import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
 import com.wowo.wowo.shared.infrastructure.security.SecurityUtils
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.infrastructure.security.annotations.RequireAuthenticated
+import com.wowo.wowo.shared.presentation.rest.PaginationDto
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import java.util.Optional
+import javax.validation.constraints.Max
 
 @RestController
 @RequestMapping("/history")
@@ -34,19 +38,23 @@ class HistoryController(
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startDate: LocalDateTime?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endDate: LocalDateTime?,
         @RequestParam(required = false) type: TransactionType?,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
+        @RequestParam(required = false) paging: PaginationDto
     ): ResponseEntity<PagedResult<TransactionDTO>> {
         val currentUserId = securityUtils.getCurrentUserId() ?: throw AccessDeniedException("User not authenticated")
 
-        val ownerId = walletACL.getWalletOwner(walletId) ?: throw EntityNotFoundException("Wallet not found")
+//        val ownerId = walletACL.getWalletOwner(walletId) ?: throw EntityNotFoundException("Wallet not found")
 
-        if (currentUserId != ownerId) {
-            throw AccessDeniedException("Access denied: You don't own this wallet")
-        }
+//        if (currentUserId != ownerId) {
+//            throw AccessDeniedException("Access denied: You don't own this wallet")
+//        }
 
         val criteria = TransactionSearchCriteria(
-            walletId = walletId, startDate = startDate, endDate = endDate, type = type, page = page, size = size
+            walletId = walletId,
+            startDate = startDate,
+            endDate = endDate,
+            type = type,
+            page = paging.page,
+            size = paging.size
         )
 
         val result = getTransactionHistoryUseCase.execute(criteria)
