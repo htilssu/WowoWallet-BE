@@ -33,7 +33,16 @@ data class TransactionDTO(
     val description: String?,
     val reference: String?,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
+    val normalizedDescription: String? = null,
+    val transactionCategory: String? = null,
+    val merchantName: String? = null,
+    val merchantCategory: String? = null,
+    val geoCountry: String? = null,
+    val geoCity: String? = null,
+    val riskScore: Int? = null,
+    val riskLevel: String? = null,
+    val tags: List<String> = emptyList()
 ) {
     companion object {
         /**
@@ -68,7 +77,16 @@ data class TransactionDTO(
             description = description,
             reference = reference,
             createdAt = createdAt,
-            updatedAt = updatedAt
+            updatedAt = updatedAt,
+            normalizedDescription = null,
+            transactionCategory = null,
+            merchantName = null,
+            merchantCategory = null,
+            geoCountry = null,
+            geoCity = null,
+            riskScore = null,
+            riskLevel = null,
+            tags = emptyList()
         )
     }
 }

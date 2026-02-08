@@ -3,7 +3,7 @@ package com.wowo.wowo.contexts.wallet.domain.repository
 import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
 import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 
 /**
  * Repository interface for Wallet aggregate (Domain layer)

@@ -1,6 +1,6 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 
 data class CreateWalletCommand(
     val ownerId: String,

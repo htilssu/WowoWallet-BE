@@ -1,21 +1,21 @@
 package com.wowo.wowo.contexts.transaction.application.usecase
 
-import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
-import com.wowo.wowo.contexts.transaction.application.enricher.TransactionOwnerEnricher
-import com.wowo.wowo.contexts.transaction.application.mapper.TransactionMapper
-import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
-import com.wowo.wowo.contexts.transaction.domain.repository.TransactionSearchCriteria
-import com.wowo.wowo.shared.domain.PagedResult
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import com.wowo.wowo.contexts.transaction.application.dto.*
+import com.wowo.wowo.contexts.transaction.application.enricher.*
+import com.wowo.wowo.contexts.transaction.application.mapper.*
+import com.wowo.wowo.contexts.transaction.domain.repository.*
+import com.wowo.wowo.shared.domain.*
+import org.springframework.stereotype.*
+
 
 @Service
 class GetTransactionHistoryUseCase(
     private val transactionRepository: TransactionRepository,
     private val transactionMapper: TransactionMapper,
-    private val transactionOwnerEnricher: TransactionOwnerEnricher
+    private val transactionOwnerEnricher: TransactionOwnerEnricher,
+    private val transactionEnrichmentService: TransactionEnrichmentService,
+    private val transactionEnricher: TransactionEnricher
 ) {
-    @Transactional(readOnly = true)
     fun execute(criteria: TransactionSearchCriteria): PagedResult<TransactionDTO> {
         val pagedTransactions = transactionRepository.search(criteria)
 
@@ -24,7 +24,9 @@ class GetTransactionHistoryUseCase(
         }
 
         // Enrich with owner names (sender and receiver)
-        val enrichedDtos = transactionOwnerEnricher.enrichWithLookup(dtos)
+        val ownerEnrichedDtos = transactionOwnerEnricher.enrichWithLookup(dtos)
+        val enrichmentContext = transactionEnrichmentService.buildContext(ownerEnrichedDtos)
+        val enrichedDtos = transactionEnricher.enrich(ownerEnrichedDtos, enrichmentContext)
 
         return PagedResult(
             items = enrichedDtos,
@@ -35,4 +37,3 @@ class GetTransactionHistoryUseCase(
         )
     }
 }
-

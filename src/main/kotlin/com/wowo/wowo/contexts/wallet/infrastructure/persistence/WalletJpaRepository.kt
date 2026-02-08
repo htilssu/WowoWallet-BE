@@ -3,7 +3,7 @@ package com.wowo.wowo.contexts.wallet.infrastructure.persistence
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 
 /**
  * Spring Data JPA Repository for Wallet

@@ -2,7 +2,7 @@ package com.wowo.wowo.contexts.wallet.domain.event
 
 import com.wowo.wowo.shared.domain.BaseDomainEvent
 import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 
 class WalletCreatedEvent(
     aggregateId: String,

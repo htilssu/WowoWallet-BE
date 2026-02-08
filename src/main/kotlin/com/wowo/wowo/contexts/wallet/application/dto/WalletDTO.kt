@@ -1,7 +1,7 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
 import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController
     basePackages = [
         "com.wowo.wowo.contexts.user.infrastructure.persistence",
         "com.wowo.wowo.contexts.wallet.infrastructure.persistence",
-        "com.wowo.wowo.contexts.transaction.infrastructure.persistence"
+        "com.wowo.wowo.contexts.transaction.infrastructure.persistence",
+        "com.wowo.wowo.contexts.groupfund.infrastructure.persistence"
     ]
 )
 @ComponentScan(basePackages = ["com.wowo.wowo"])

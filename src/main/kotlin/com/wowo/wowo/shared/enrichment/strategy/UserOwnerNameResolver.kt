@@ -18,7 +18,7 @@ class UserOwnerNameResolver(
     
     override fun resolveNames(ownerIds: Set<String>): Map<String, String?> {
         return userRepository.findByIds(ownerIds.map { UserId.fromString(it) })
-            .associate { it.id.value to it.username.value }
+            .associate { it.id.value.toString() to it.username.value }
             .let { resolved ->
                 // Ensure all requested IDs are in the result (with null for not found)
                 ownerIds.associateWith { resolved[it] }

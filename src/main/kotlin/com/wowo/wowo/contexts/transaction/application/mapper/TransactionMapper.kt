@@ -20,11 +20,11 @@ class TransactionMapper {
      */
     fun toDTO(transaction: Transaction): TransactionDTO {
         return TransactionDTO.unenriched(
-            id = transaction.id.value,
+            id = transaction.id.value.toString(),
             fromWalletId = transaction.fromWalletId,
             toWalletId = transaction.toWalletId,
             amount = transaction.amount.amount,
-            currency = transaction.amount.currency.code,
+            currency = transaction.amount.currency.name,
             type = transaction.type.name,
             status = transaction.getStatus().name,
             description = transaction.description,

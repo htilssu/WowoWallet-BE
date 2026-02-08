@@ -3,7 +3,7 @@ package com.wowo.wowo.contexts.user.integration
 import com.wowo.wowo.contexts.user.application.dto.RegisterUserCommand
 import com.wowo.wowo.contexts.user.application.usecase.RegisterUserUseCase
 import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

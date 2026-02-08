@@ -4,7 +4,7 @@ import com.wowo.wowo.contexts.user.domain.event.UserRegisteredEvent
 import com.wowo.wowo.contexts.wallet.application.dto.CreateWalletCommand
 import com.wowo.wowo.contexts.wallet.application.usecase.CreateWalletUseCase
 import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 import com.wowo.wowo.shared.valueobject.Currency
 import org.slf4j.LoggerFactory
 

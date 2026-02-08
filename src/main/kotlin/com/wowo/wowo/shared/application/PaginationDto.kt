@@ -1,4 +1,4 @@
-package com.wowo.wowo.shared.presentation.rest
+package com.wowo.wowo.shared.application
 
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min

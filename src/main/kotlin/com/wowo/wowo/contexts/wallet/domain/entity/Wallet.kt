@@ -1,18 +1,11 @@
 package com.wowo.wowo.contexts.wallet.domain.entity
 
-import com.wowo.wowo.shared.domain.AggregateRoot
-import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.shared.valueobject.Money
-import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
-import com.wowo.wowo.contexts.wallet.domain.valueobject.Balance
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
-import com.wowo.wowo.contexts.wallet.domain.event.WalletCreatedEvent
-
-import com.wowo.wowo.contexts.wallet.domain.event.WalletCreditedEvent
-import com.wowo.wowo.contexts.wallet.domain.event.WalletDebitedEvent
-import com.wowo.wowo.shared.exception.InsufficientBalanceException
-import com.wowo.wowo.shared.exception.InvalidOperationException
-import java.time.LocalDateTime
+import com.wowo.wowo.contexts.wallet.domain.event.*
+import com.wowo.wowo.contexts.wallet.domain.valueobject.*
+import com.wowo.wowo.shared.domain.*
+import com.wowo.wowo.shared.exception.*
+import com.wowo.wowo.shared.valueobject.*
+import java.time.*
 
 /**
  * Wallet Aggregate Root
@@ -94,6 +87,5 @@ class Wallet(
             return wallet
         }
     }
-
 }
 

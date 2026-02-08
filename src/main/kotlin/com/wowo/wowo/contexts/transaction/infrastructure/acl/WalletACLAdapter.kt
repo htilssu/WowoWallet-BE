@@ -8,7 +8,6 @@ import com.wowo.wowo.shared.enrichment.OwnerInfo
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.valueobject.Money
 import org.springframework.stereotype.Component
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType as WalletOwnerType
 
 /**
  * Implementation of WalletACL using Wallet Repository
@@ -59,10 +58,6 @@ class WalletACLAdapter(
     /**
      * Convert wallet's OwnerType to shared domain OwnerType.
      */
-    private fun WalletOwnerType.toSharedOwnerType(): OwnerType = when (this) {
-        WalletOwnerType.USER -> OwnerType.USER
-        WalletOwnerType.GROUP -> OwnerType.GROUP
-        WalletOwnerType.FUND_GROUP -> OwnerType.FUND_GROUP
-    }
+    private fun OwnerType.toSharedOwnerType(): OwnerType = this
 }
 

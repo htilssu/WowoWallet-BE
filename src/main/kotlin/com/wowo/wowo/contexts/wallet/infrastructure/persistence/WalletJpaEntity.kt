@@ -1,7 +1,7 @@
 package com.wowo.wowo.contexts.wallet.infrastructure.persistence
 
 import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 import jakarta.persistence.*
 import java.math.BigDecimal
 

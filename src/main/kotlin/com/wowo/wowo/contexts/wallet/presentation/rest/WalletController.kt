@@ -2,7 +2,7 @@ package com.wowo.wowo.contexts.wallet.presentation.rest
 
 import com.wowo.wowo.contexts.wallet.application.dto.*
 import com.wowo.wowo.contexts.wallet.application.usecase.*
-import com.wowo.wowo.contexts.wallet.domain.valueobject.*
+import com.wowo.wowo.shared.domain.OwnerType
 import io.swagger.v3.oas.annotations.media.*
 import io.swagger.v3.oas.annotations.responses.*
 import org.springframework.http.*

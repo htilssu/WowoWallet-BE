@@ -4,7 +4,7 @@ import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
 import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
 import com.wowo.wowo.contexts.wallet.domain.valueobject.Balance
 import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
-import com.wowo.wowo.contexts.wallet.domain.valueobject.OwnerType
+import com.wowo.wowo.shared.domain.OwnerType
 import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 import org.slf4j.LoggerFactory

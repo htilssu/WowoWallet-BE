@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 data class TransactionOwnerContext(
     val walletToOwnerInfo: Map<String, OwnerInfo?>,
     val ownerNameContext: OwnerNameContext
-)
+) : com.wowo.wowo.shared.enrichment.EnrichmentContext
 
 /**
  * Enricher for Transaction DTOs.
