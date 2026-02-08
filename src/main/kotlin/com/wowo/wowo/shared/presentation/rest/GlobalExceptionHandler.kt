@@ -15,6 +15,17 @@ import java.time.LocalDateTime
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(
+            timestamp = LocalDateTime.now(),
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = ex.message ?: "Invalid argument"
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
+    }
+
     @ExceptionHandler(EntityNotFoundException::class)
     fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
@@ -95,9 +106,6 @@ class GlobalExceptionHandler {
 }
 
 data class ErrorResponse(
-    val timestamp: LocalDateTime,
-    val status: Int,
-    val error: String,
-    val message: String
+    val timestamp: LocalDateTime, val status: Int, val error: String, val message: String
 )
 
