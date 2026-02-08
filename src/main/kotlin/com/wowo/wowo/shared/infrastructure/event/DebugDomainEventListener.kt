@@ -19,12 +19,16 @@ class DebugDomainEventListener {
 
     @EventListener
     fun onAnyEvent(event: Any) {
-        logger.info("[DebugEventListener] Event published immediately: ${event::class.qualifiedName} -> $event")
+        logger.debug("[DebugEventListener] Event published immediately: {} -> {}", event::class.qualifiedName, event)
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun onAnyEventAfterCommit(event: Any) {
-        logger.info("[DebugEventListener] Transactional AFTER_COMMIT event: ${event::class.qualifiedName} -> $event")
+        logger.debug(
+            "[DebugEventListener] Transactional AFTER_COMMIT event: {} -> {}",
+            event::class.qualifiedName,
+            event
+        )
     }
 }
 
