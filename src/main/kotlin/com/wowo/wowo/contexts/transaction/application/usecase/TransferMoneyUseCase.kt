@@ -2,6 +2,9 @@ package com.wowo.wowo.contexts.transaction.application.usecase
 
 import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
+import com.wowo.wowo.contexts.transaction.application.enricher.TransactionEnricher
+import com.wowo.wowo.contexts.transaction.application.enricher.TransactionEnrichmentService
+import com.wowo.wowo.contexts.transaction.application.enricher.TransactionOwnerEnricher
 import com.wowo.wowo.contexts.transaction.application.mapper.TransactionMapper
 import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
 import com.wowo.wowo.contexts.transaction.domain.service.TransferDomainService
@@ -25,7 +28,10 @@ class TransferMoneyUseCase(
     private val transactionRepository: TransactionRepository,
     private val transferDomainService: TransferDomainService,
     private val eventPublisher: DomainEventPublisher,
-    private val transactionMapper: TransactionMapper
+    private val transactionMapper: TransactionMapper,
+    private val transactionOwnerEnricher: TransactionOwnerEnricher,
+    private val transactionEnrichmentService: TransactionEnrichmentService,
+    private val transactionEnricher: TransactionEnricher
 ) {
     fun execute(command: TransferMoneyCommand): TransactionDTO { // Parse command
         val amount = Money(BigDecimal(command.amount), Currency.valueOf(command.currency))
@@ -47,6 +53,9 @@ class TransferMoneyUseCase(
 
 
 
-        return transactionMapper.toDTO(savedTransaction)
+        val dto = transactionMapper.toDTO(savedTransaction)
+        val ownerEnriched = transactionOwnerEnricher.enrichWithLookup(listOf(dto)).first()
+        val enrichmentContext = transactionEnrichmentService.buildContext(listOf(ownerEnriched))
+        return transactionEnricher.enrich(listOf(ownerEnriched), enrichmentContext).first()
     }
 }

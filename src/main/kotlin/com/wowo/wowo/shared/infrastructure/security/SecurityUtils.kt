@@ -54,28 +54,28 @@ class SecurityUtils {
     fun hasAnyRole(vararg roles: Role): Boolean {
         return getCurrentUser()?.hasAnyRole(*roles) ?: false
     }
-
-    /**
-     * Check if user has a specific permission
-     */
-    fun hasPermission(permission: Permission): Boolean {
-        return getCurrentUser()?.hasPermission(permission) ?: false
-    }
-
-    /**
-     * Check if user has any of the specified permissions
-     */
-    fun hasAnyPermission(vararg permissions: Permission): Boolean {
-        return getCurrentUser()?.hasAnyPermission(*permissions) ?: false
-    }
-
-    /**
-     * Check if user has all specified permissions
-     */
-    fun hasAllPermissions(vararg permissions: Permission): Boolean {
-        return getCurrentUser()?.hasAllPermissions(*permissions) ?: false
-    }
-
+//
+//    /**
+//     * Check if user has a specific permission
+//     */
+//    fun hasPermission(permission: Permission): Boolean {
+//        return getCurrentUser()?.hasPermission(permission) ?: false
+//    }
+//
+//    /**
+//     * Check if user has any of the specified permissions
+//     */
+//    fun hasAnyPermission(vararg permissions: Permission): Boolean {
+//        return getCurrentUser()?.hasAnyPermission(*permissions) ?: false
+//    }
+//
+//    /**
+//     * Check if user has all specified permissions
+//     */
+//    fun hasAllPermissions(vararg permissions: Permission): Boolean {
+//        return getCurrentUser()?.hasAllPermissions(*permissions) ?: false
+//    }
+//
     /**
      * Check if user is an Admin
      */

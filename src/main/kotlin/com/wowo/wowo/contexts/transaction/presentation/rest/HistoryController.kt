@@ -13,10 +13,12 @@ import com.wowo.wowo.shared.infrastructure.security.SecurityUtils
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.infrastructure.security.annotations.RequireAuthenticated
 import com.wowo.wowo.shared.application.PaginationDto
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -38,13 +40,12 @@ class HistoryController(
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startDate: LocalDateTime?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endDate: LocalDateTime?,
         @RequestParam(required = false) type: TransactionType?,
-        @RequestParam(required = false) paging: PaginationDto
+        @ModelAttribute paging: PaginationDto?
     ): ResponseEntity<PagedResult<TransactionDTO>> {
-        val currentUserId = securityUtils.getCurrentUserId()
-            ?: throw AccessDeniedException("User is not authenticated")
+        val currentUserId = securityUtils.getCurrentUserId() ?: throw AccessDeniedException("User is not authenticated")
 
-        val wallet = walletACL.getWallet(walletId) as? Wallet
-            ?: throw EntityNotFoundException("Wallet not found: $walletId")
+        val wallet =
+            walletACL.getWallet(walletId) as? Wallet ?: throw EntityNotFoundException("Wallet not found: $walletId")
 
         val hasAccess = when (wallet.ownerType) {
             OwnerType.USER -> wallet.ownerId == currentUserId
@@ -61,8 +62,8 @@ class HistoryController(
             startDate = startDate,
             endDate = endDate,
             type = type,
-            page = paging.page,
-            size = paging.size
+            page = paging?.page ?: 1,
+            size = paging?.size ?: 20
         )
 
         val result = getTransactionHistoryUseCase.execute(criteria)

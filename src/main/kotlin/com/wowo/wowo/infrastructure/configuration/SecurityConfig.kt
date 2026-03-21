@@ -31,6 +31,7 @@ class SecurityConfig(
                 auth
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/users/register").permitAll()
+                    .requestMatchers("/users/login").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers(
                         "/swagger-ui",

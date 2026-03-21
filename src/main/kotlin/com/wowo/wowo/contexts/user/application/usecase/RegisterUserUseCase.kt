@@ -10,6 +10,7 @@ import com.wowo.wowo.shared.domain.DomainEventPublisher
 import com.wowo.wowo.shared.exception.BusinessRuleViolationException
 import com.wowo.wowo.shared.valueobject.Email
 import com.wowo.wowo.shared.valueobject.PhoneNumber
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,28 +21,26 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class RegisterUserUseCase(
     private val userRepository: UserRepository,
-    private val eventPublisher: DomainEventPublisher
+    private val eventPublisher: DomainEventPublisher,
+    private val passwordEncoder: PasswordEncoder
 ) {
     fun execute(command: RegisterUserCommand): UserDTO {
-        // Business rule: Username must be unique
         val username = Username(command.username)
         if (userRepository.existsByUsername(username)) {
             throw BusinessRuleViolationException("Username already exists: ${command.username}")
         }
 
-        // Business rule: Email must be unique
         val email = Email(command.email)
         if (userRepository.existsByEmail(email)) {
             throw BusinessRuleViolationException("Email already exists: ${command.email}")
         }
 
-        // Create user aggregate
-        val password = Password.fromRaw(command.password)
+        Password.fromRaw(command.password)
+        val password = Password(passwordEncoder.encode(command.password))
         val phoneNumber = command.phoneNumber?.let { PhoneNumber(it) }
 
         val user = User.register(username, password, email, phoneNumber)
 
-        // Persist user
         val savedUser = userRepository.save(user)
 
         // Publish domain events from the original aggregate (user) because savedUser is a new instance created by the adapter

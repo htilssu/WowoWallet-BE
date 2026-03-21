@@ -1,21 +1,17 @@
 package com.wowo.wowo.contexts.transaction.application.enricher
 
-import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
-import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
-import com.wowo.wowo.shared.enrichment.EntityEnricher
-import com.wowo.wowo.shared.enrichment.OwnerInfo
-import com.wowo.wowo.shared.enrichment.OwnerNameContext
-import com.wowo.wowo.shared.enrichment.OwnerNameResolver
-import org.springframework.stereotype.Component
+import com.wowo.wowo.contexts.transaction.application.dto.*
+import com.wowo.wowo.contexts.transaction.domain.acl.*
+import com.wowo.wowo.shared.enrichment.*
+import org.springframework.stereotype.*
 
 /**
  * Context for transaction owner enrichment.
  * Contains both wallet -> owner info mapping and resolved owner names.
  */
 data class TransactionOwnerContext(
-    val walletToOwnerInfo: Map<String, OwnerInfo?>,
-    val ownerNameContext: OwnerNameContext
-) : com.wowo.wowo.shared.enrichment.EnrichmentContext
+    val walletToOwnerInfo: Map<String, OwnerInfo?>, val ownerNameContext: OwnerNameContext
+) : EnrichmentContext
 
 /**
  * Enricher for Transaction DTOs.
@@ -28,10 +24,9 @@ data class TransactionOwnerContext(
  */
 @Component
 class TransactionOwnerEnricher(
-    private val walletACL: WalletACL,
-    private val ownerNameResolver: OwnerNameResolver
+    private val walletACL: WalletACL, private val ownerNameResolver: OwnerNameResolver
 ) : EntityEnricher<TransactionDTO, TransactionOwnerContext> {
-    
+
     /**
      * Enrich transactions with owner information.
      * This is a two-phase enrichment:
@@ -42,52 +37,47 @@ class TransactionOwnerEnricher(
         return entities.map { dto ->
             val fromOwnerInfo = dto.fromWalletId?.let { context.walletToOwnerInfo[it] }
             val toOwnerInfo = dto.toWalletId?.let { context.walletToOwnerInfo[it] }
-            
+
             dto.copy(
                 fromOwnerId = fromOwnerInfo?.ownerId,
                 fromOwnerType = fromOwnerInfo?.ownerType,
                 fromOwnerName = context.ownerNameContext.getOwnerName(
-                    fromOwnerInfo?.ownerId, 
-                    fromOwnerInfo?.ownerType
+                    fromOwnerInfo?.ownerId, fromOwnerInfo?.ownerType
                 ),
                 toOwnerId = toOwnerInfo?.ownerId,
                 toOwnerType = toOwnerInfo?.ownerType,
                 toOwnerName = context.ownerNameContext.getOwnerName(
-                    toOwnerInfo?.ownerId, 
-                    toOwnerInfo?.ownerType
+                    toOwnerInfo?.ownerId, toOwnerInfo?.ownerType
                 )
             )
         }
     }
-    
+
     /**
      * Build enrichment context from a list of transactions.
      * Performs batch lookups for optimal performance.
      */
-    fun buildContext(dtos: List<TransactionDTO>): TransactionOwnerContext {
-        // Step 1: Collect all wallet IDs
+    fun buildContext(dtos: List<TransactionDTO>): TransactionOwnerContext { // Step 1: Collect all wallet IDs
         val walletIds = dtos.flatMap { listOfNotNull(it.fromWalletId, it.toWalletId) }.toSet()
-        
+
         if (walletIds.isEmpty()) {
             return TransactionOwnerContext(
-                walletToOwnerInfo = emptyMap(),
-                ownerNameContext = OwnerNameContext.empty()
+                walletToOwnerInfo = emptyMap(), ownerNameContext = OwnerNameContext.empty()
             )
         }
-        
+
         // Step 2: Fetch owner info from wallets
         val walletToOwnerInfo = walletACL.getWalletOwnerInfos(walletIds)
-        
+
         // Step 3: Collect owner infos and resolve names by type
         val ownerInfos = walletToOwnerInfo.values.filterNotNull()
         val ownerNameContext = ownerNameResolver.resolveNames(ownerInfos)
-        
+
         return TransactionOwnerContext(
-            walletToOwnerInfo = walletToOwnerInfo,
-            ownerNameContext = ownerNameContext
+            walletToOwnerInfo = walletToOwnerInfo, ownerNameContext = ownerNameContext
         )
     }
-    
+
     /**
      * Convenience method: build context and enrich in one call.
      */

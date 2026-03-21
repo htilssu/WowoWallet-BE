@@ -5,18 +5,19 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.security.MessageDigest
 import java.util.*
 import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") private val jwtSecret: String,
-    @Value("\${jwt.expiration-ms:86400000}") private val jwtExpirationMs: Long, // Default 24 hours
-    @Value("\${jwt.refresh-expiration-ms:604800000}") private val refreshExpirationMs: Long // Default 7 days
+    @param:Value("\${jwt.secret}") private val jwtSecret: String,
+    @param:Value("\${jwt.expiration-ms:86400000}") private val jwtExpirationMs: Long, // Default 24 hours
+    @param:Value("\${jwt.refresh-expiration-ms:604800000}") private val refreshExpirationMs: Long // Default 7 days
 ) {
 
     private val key: SecretKey by lazy {
-        Keys.hmacShaKeyFor(jwtSecret.toByteArray())
+        Keys.hmacShaKeyFor(resolveKeyBytes(jwtSecret))
     }
 
     fun generateAccessToken(userId: String, email: String, roles: Set<String> = emptySet()): String {
@@ -91,5 +92,16 @@ class JwtTokenProvider(
             .build()
             .parseSignedClaims(token)
             .payload
+    }
+
+    private fun resolveKeyBytes(secret: String): ByteArray {
+        val decoded = runCatching { Base64.getDecoder().decode(secret) }.getOrNull()
+        val rawBytes = if (decoded != null && decoded.isNotEmpty()) decoded else secret.toByteArray()
+
+        if (rawBytes.size >= 32) {
+            return rawBytes
+        }
+
+        return MessageDigest.getInstance("SHA-256").digest(rawBytes)
     }
 }

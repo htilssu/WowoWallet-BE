@@ -1,5 +1,8 @@
 package com.wowo.wowo.infrastructure.security.jwt
 
+import com.google.common.collect.ImmutableSet
+import com.wowo.wowo.shared.infrastructure.security.CustomUserDetails
+import com.wowo.wowo.shared.infrastructure.security.Role
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -15,38 +18,36 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
+        request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain
     ) {
         try {
             val jwt = getJwtFromRequest(request)
-            
+
             if (jwt != null && jwtTokenProvider.validateToken(jwt) && !jwtTokenProvider.isRefreshToken(jwt)) {
                 val userId = jwtTokenProvider.getUserIdFromToken(jwt)
                 val roles = jwtTokenProvider.getRolesFromToken(jwt)
-                
+
                 val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
-                
-                val authentication = UsernamePasswordAuthenticationToken(
-                    userId,
-                    null,
-                    authorities
-                )
-                
-                // Store additional info
-                authentication.details = JwtAuthenticationDetails(
+                val principal = CustomUserDetails(
                     userId = userId,
                     email = jwtTokenProvider.getEmailFromToken(jwt),
-                    roles = roles
+                    roles = roles.map { Role.valueOf(it) }.toSet(),
+                    username = userId,
                 )
-                
+                val authentication = UsernamePasswordAuthenticationToken(
+                    principal, null, authorities
+                )
+
+                authentication.details = JwtAuthenticationDetails(
+                    userId = userId, email = jwtTokenProvider.getEmailFromToken(jwt), roles = roles
+                )
+
                 SecurityContextHolder.getContext().authentication = authentication
             }
         } catch (ex: Exception) {
             logger.error("Could not set user authentication in security context", ex)
         }
-        
+
         filterChain.doFilter(request, response)
     }
 
@@ -61,7 +62,5 @@ class JwtAuthenticationFilter(
 }
 
 data class JwtAuthenticationDetails(
-    val userId: String,
-    val email: String?,
-    val roles: Set<String>
+    val userId: String, val email: String?, val roles: Set<String>
 )

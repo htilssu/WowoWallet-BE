@@ -7,7 +7,7 @@ package com.wowo.wowo.shared.enrichment
  * @param C The enrichment context type
  */
 interface EntityEnricher<T, C : EnrichmentContext> {
-    
+
     /**
      * Enrich a list of entities using the provided context.
      * 
@@ -16,7 +16,7 @@ interface EntityEnricher<T, C : EnrichmentContext> {
      * @return List of enriched entities
      */
     fun enrich(entities: List<T>, context: C): List<T>
-    
+
     /**
      * Enrich a single entity using the provided context.
      * 
