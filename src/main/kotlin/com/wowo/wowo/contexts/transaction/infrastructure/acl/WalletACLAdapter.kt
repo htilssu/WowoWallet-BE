@@ -1,13 +1,12 @@
 package com.wowo.wowo.contexts.transaction.infrastructure.acl
 
-import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
-import com.wowo.wowo.contexts.wallet.domain.repository.WalletRepository
-import com.wowo.wowo.contexts.wallet.domain.valueobject.WalletId
-import com.wowo.wowo.shared.domain.OwnerType
-import com.wowo.wowo.shared.enrichment.OwnerInfo
-import com.wowo.wowo.shared.exception.EntityNotFoundException
-import com.wowo.wowo.shared.valueobject.Money
-import org.springframework.stereotype.Component
+import com.wowo.wowo.contexts.transaction.domain.acl.*
+import com.wowo.wowo.contexts.wallet.domain.repository.*
+import com.wowo.wowo.contexts.wallet.domain.valueobject.*
+import com.wowo.wowo.shared.domain.*
+import com.wowo.wowo.shared.exception.*
+import com.wowo.wowo.shared.valueobject.*
+import org.springframework.stereotype.*
 
 /**
  * Implementation of WalletACL using Wallet Repository
@@ -25,17 +24,6 @@ class WalletACLAdapter(
     override fun getWalletOwners(walletIds: Set<String>): Map<String, String?> {
         return walletIds.associateWith { walletId ->
             walletRepository.findById(WalletId.fromString(walletId))?.ownerId
-        }
-    }
-    
-    override fun getWalletOwnerInfos(walletIds: Set<String>): Map<String, OwnerInfo?> {
-        return walletIds.associateWith { walletId ->
-            walletRepository.findById(WalletId.fromString(walletId))?.let { wallet ->
-                OwnerInfo.unresolved(
-                    ownerId = wallet.ownerId,
-                    ownerType = wallet.ownerType.toSharedOwnerType()
-                )
-            }
         }
     }
 

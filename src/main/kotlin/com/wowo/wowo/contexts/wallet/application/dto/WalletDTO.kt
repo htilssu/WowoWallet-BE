@@ -1,6 +1,7 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
 import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
+import com.wowo.wowo.shared.domain.HasOwner
 import com.wowo.wowo.shared.domain.OwnerType
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -12,15 +13,15 @@ import java.time.LocalDateTime
  */
 data class WalletDTO(
     val id: String,
-    val ownerId: String,
-    val ownerType: OwnerType,
-    val ownerName: String?,    // Enriched field
     val balance: BigDecimal,
     val currency: String,
     val isActive: Boolean,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
-) {
+    val updatedAt: LocalDateTime,
+    override val ownerId: String,
+    override val ownerType: OwnerType,
+    override val ownerName: String?
+) : HasOwner<String> {
     companion object {
         fun fromDomain(wallet: Wallet): WalletDTO {
             return WalletDTO(

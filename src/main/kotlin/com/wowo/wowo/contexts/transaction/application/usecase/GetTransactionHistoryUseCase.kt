@@ -5,6 +5,7 @@ import com.wowo.wowo.contexts.transaction.application.enricher.*
 import com.wowo.wowo.contexts.transaction.application.mapper.*
 import com.wowo.wowo.contexts.transaction.domain.repository.*
 import com.wowo.wowo.shared.domain.*
+import com.wowo.wowo.shared.enrichment.Enricher
 import org.springframework.stereotype.*
 
 
@@ -12,9 +13,7 @@ import org.springframework.stereotype.*
 class GetTransactionHistoryUseCase(
     private val transactionRepository: TransactionRepository,
     private val transactionMapper: TransactionMapper,
-    private val transactionOwnerEnricher: TransactionOwnerEnricher,
-    private val transactionEnrichmentService: TransactionEnrichmentService,
-    private val transactionEnricher: TransactionEnricher
+    private val enricher: Enricher
 ) {
     fun execute(criteria: TransactionSearchCriteria): PagedResult<TransactionDTO> {
         val pagedTransactions = transactionRepository.search(criteria)
@@ -23,13 +22,10 @@ class GetTransactionHistoryUseCase(
             transactionMapper.toDTO(transaction)
         }
 
-        // Enrich with owner names (sender and receiver)
-        val ownerEnrichedDtos = transactionOwnerEnricher.enrichWithLookup(dtos)
-        val enrichmentContext = transactionEnrichmentService.buildContext(ownerEnrichedDtos)
-        val enrichedDtos = transactionEnricher.enrich(ownerEnrichedDtos, enrichmentContext)
+
 
         return PagedResult(
-            items = enrichedDtos,
+            items = listOf(),
             totalItems = pagedTransactions.totalItems,
             totalPages = pagedTransactions.totalPages,
             currentPage = pagedTransactions.currentPage,

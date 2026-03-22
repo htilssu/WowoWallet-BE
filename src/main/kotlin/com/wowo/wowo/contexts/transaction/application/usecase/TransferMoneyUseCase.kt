@@ -1,22 +1,14 @@
 package com.wowo.wowo.contexts.transaction.application.usecase
 
-import com.wowo.wowo.contexts.transaction.application.dto.TransferMoneyCommand
-import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
-import com.wowo.wowo.contexts.transaction.application.enricher.TransactionEnricher
-import com.wowo.wowo.contexts.transaction.application.enricher.TransactionEnrichmentService
-import com.wowo.wowo.contexts.transaction.application.enricher.TransactionOwnerEnricher
-import com.wowo.wowo.contexts.transaction.application.mapper.TransactionMapper
-import com.wowo.wowo.contexts.transaction.domain.repository.TransactionRepository
-import com.wowo.wowo.contexts.transaction.domain.service.TransferDomainService
-import com.wowo.wowo.contexts.transaction.domain.acl.WalletACL
-import com.wowo.wowo.contexts.transaction.domain.acl.UserACL
-import com.wowo.wowo.shared.domain.DomainEventPublisher
-import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.shared.valueobject.Money
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Isolation
-import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
+import com.wowo.wowo.contexts.transaction.application.dto.*
+import com.wowo.wowo.contexts.transaction.application.mapper.*
+import com.wowo.wowo.contexts.transaction.domain.repository.*
+import com.wowo.wowo.contexts.transaction.domain.service.*
+import com.wowo.wowo.shared.domain.*
+import com.wowo.wowo.shared.valueobject.*
+import org.springframework.stereotype.*
+import org.springframework.transaction.annotation.*
+import java.math.*
 
 /**
  * Use Case: Transfer money between wallets
@@ -29,9 +21,6 @@ class TransferMoneyUseCase(
     private val transferDomainService: TransferDomainService,
     private val eventPublisher: DomainEventPublisher,
     private val transactionMapper: TransactionMapper,
-    private val transactionOwnerEnricher: TransactionOwnerEnricher,
-    private val transactionEnrichmentService: TransactionEnrichmentService,
-    private val transactionEnricher: TransactionEnricher
 ) {
     fun execute(command: TransferMoneyCommand): TransactionDTO { // Parse command
         val amount = Money(BigDecimal(command.amount), Currency.valueOf(command.currency))
@@ -52,10 +41,8 @@ class TransferMoneyUseCase(
         savedTransaction.clearDomainEvents()
 
 
-
         val dto = transactionMapper.toDTO(savedTransaction)
-        val ownerEnriched = transactionOwnerEnricher.enrichWithLookup(listOf(dto)).first()
-        val enrichmentContext = transactionEnrichmentService.buildContext(listOf(ownerEnriched))
-        return transactionEnricher.enrich(listOf(ownerEnriched), enrichmentContext).first()
+
+        return dto
     }
 }

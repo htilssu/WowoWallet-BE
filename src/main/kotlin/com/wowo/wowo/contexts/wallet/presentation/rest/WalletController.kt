@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/wallets")
 class WalletController(
-    private val createWalletUseCase: CreateWalletUseCase, private val creditWalletUseCase: CreditWalletUseCase
+    private val createWalletUseCase: CreateWalletUseCase,
+    private val creditWalletUseCase: CreditWalletUseCase,
+    private val getWalletDetailUseCase: GetWalletDetailUseCase
 ) {
 
     @PostMapping
@@ -45,6 +47,14 @@ class WalletController(
 
         val walletDTO = creditWalletUseCase.execute(command)
         return ResponseEntity.ok(walletDTO)
+    }
+
+    @GetMapping("/{walletId}")
+    @PreAuthorize("isAuthenticated()")
+    fun getWallet(@PathVariable walletId: String): ResponseEntity<WalletDTO> {
+        getWalletDetailUseCase.execute(walletId).let { walletDTO ->
+            return ResponseEntity.ok(walletDTO)
+        }
     }
 }
 
