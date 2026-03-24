@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
+import java.time.Instant
 
 @RestController
 @RequestMapping("/history")
@@ -37,8 +37,8 @@ class HistoryController(
     @RequireAuthenticated
     fun getTransactionHistory(
         @RequestParam walletId: String,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startDate: LocalDateTime?,
-        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endDate: LocalDateTime?,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startDate: Instant?,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endDate: Instant?,
         @RequestParam(required = false) type: TransactionType?,
         @ModelAttribute paging: PaginationDto?
     ): ResponseEntity<PagedResult<TransactionDTO>> {

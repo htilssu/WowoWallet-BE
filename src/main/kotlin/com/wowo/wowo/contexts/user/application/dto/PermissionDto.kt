@@ -1,5 +1,6 @@
 package com.wowo.wowo.contexts.user.application.dto
 
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -11,7 +12,7 @@ data class PermissionDto(
     val description: String?,
     val resource: String,
     val action: String,
-    val createdAt: LocalDateTime
+    val createdAt: Instant
 )
 
 /**

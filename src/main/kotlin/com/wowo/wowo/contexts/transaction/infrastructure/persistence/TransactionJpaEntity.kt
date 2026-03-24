@@ -4,7 +4,7 @@ import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import jakarta.persistence.*
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 /**
@@ -43,9 +43,9 @@ class TransactionJpaEntity(
     var reference: String? = null,
 
     @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: Instant = Instant.now(),
 
     @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now()
+    var updatedAt: Instant = Instant.now()
 )
 

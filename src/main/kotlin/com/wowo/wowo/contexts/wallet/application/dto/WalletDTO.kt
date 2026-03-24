@@ -15,8 +15,8 @@ data class WalletDTO(
     val balance: BigDecimal,
     val currency: String,
     val isActive: Boolean,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: Instant,
+    val updatedAt: Instant,
     override var ownerId: String,
     override var ownerType: OwnerType,
     override var ownerName: String?

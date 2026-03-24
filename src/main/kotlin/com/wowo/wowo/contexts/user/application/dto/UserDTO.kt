@@ -1,6 +1,7 @@
 package com.wowo.wowo.contexts.user.application.dto
 
 import com.wowo.wowo.contexts.user.domain.entity.User
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -13,8 +14,8 @@ data class UserDTO(
     val phoneNumber: String?,
     val isVerified: Boolean,
     val isActive: Boolean,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val createdAt: Instant,
+    val updatedAt: Instant
 ) {
     companion object {
         fun fromDomain(user: User): UserDTO {

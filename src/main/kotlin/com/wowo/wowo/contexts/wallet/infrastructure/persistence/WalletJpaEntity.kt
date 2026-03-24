@@ -4,6 +4,7 @@ import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.domain.OwnerType
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.time.Instant
 
 import java.time.LocalDateTime
 import java.util.*
@@ -30,8 +31,8 @@ class WalletJpaEntity(
 
     @Column(nullable = false) var isActive: Boolean = true,
 
-    @Column(nullable = false, updatable = false) var createdAt: LocalDateTime = LocalDateTime.now(),
+    @Column(nullable = false, updatable = false) var createdAt: Instant = Instant.now(),
 
-    @Column(nullable = false) var updatedAt: LocalDateTime = LocalDateTime.now()
+    @Column(nullable = false) var updatedAt: Instant = Instant.now()
 )
 

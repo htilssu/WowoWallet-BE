@@ -1,15 +1,11 @@
 package com.wowo.wowo.contexts.transaction.domain.entity
 
-import com.wowo.wowo.shared.domain.AggregateRoot
-import com.wowo.wowo.shared.valueobject.Money
-import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionId
-import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
-import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
-import com.wowo.wowo.contexts.transaction.domain.event.TransactionCompletedEvent
-import com.wowo.wowo.contexts.transaction.domain.event.TransactionFailedEvent
-import com.wowo.wowo.shared.exception.InvalidOperationException
-import com.wowo.wowo.shared.valueobject.Currency
-import java.time.LocalDateTime
+import com.wowo.wowo.contexts.transaction.domain.event.*
+import com.wowo.wowo.contexts.transaction.domain.valueobject.*
+import com.wowo.wowo.shared.domain.*
+import com.wowo.wowo.shared.exception.*
+import com.wowo.wowo.shared.valueobject.*
+import java.time.*
 
 /**
  * Transaction Aggregate Root
@@ -23,8 +19,8 @@ class Transaction(
     private var status: TransactionStatus = TransactionStatus.PENDING,
     val description: String?,
     val reference: String?,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime = LocalDateTime.now()
+    override val createdAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now()
 ) : AggregateRoot<TransactionId>() {
 
     init {
@@ -37,7 +33,7 @@ class Transaction(
         }
 
         status = TransactionStatus.COMPLETED
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
 
         addDomainEvent(
             TransactionCompletedEvent(
@@ -52,7 +48,7 @@ class Transaction(
         }
 
         status = TransactionStatus.FAILED
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
 
         addDomainEvent(TransactionFailedEvent(id.toString(), reason))
     }
@@ -63,7 +59,7 @@ class Transaction(
         }
 
         status = TransactionStatus.CANCELLED
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
     }
 
     fun getStatus(): TransactionStatus = status

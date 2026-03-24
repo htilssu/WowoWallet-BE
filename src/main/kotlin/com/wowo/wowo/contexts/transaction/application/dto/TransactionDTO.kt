@@ -2,7 +2,7 @@ package com.wowo.wowo.contexts.transaction.application.dto
 
 import com.wowo.wowo.shared.domain.OwnerType
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.Instant
 
 /**
  * Data Transfer Object for Transaction.
@@ -32,8 +32,8 @@ data class TransactionDTO(
     val status: String,
     val description: String?,
     val reference: String?,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: Instant,
+    val updatedAt: Instant,
     val normalizedDescription: String? = null,
     val transactionCategory: String? = null,
     val merchantName: String? = null,
@@ -58,8 +58,8 @@ data class TransactionDTO(
             status: String,
             description: String?,
             reference: String?,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
+            createdAt: Instant,
+            updatedAt: Instant
         ) = TransactionDTO(
             id = id,
             fromWalletId = fromWalletId,

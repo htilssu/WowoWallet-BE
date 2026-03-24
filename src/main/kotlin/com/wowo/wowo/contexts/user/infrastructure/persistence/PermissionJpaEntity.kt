@@ -1,6 +1,7 @@
 package com.wowo.wowo.contexts.user.infrastructure.persistence
 
 import jakarta.persistence.*
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
@@ -26,10 +27,10 @@ class PermissionJpaEntity(
     var action: String,
 
     @Column(nullable = false, updatable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: Instant = Instant.now(),
 
     @Column(nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now(),
+    var updatedAt: Instant = Instant.now(),
 
     @ManyToMany(mappedBy = "permissions")
     var roles: MutableSet<RoleJpaEntity> = mutableSetOf()

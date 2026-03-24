@@ -3,6 +3,7 @@ package com.wowo.wowo.contexts.user.domain.entity
 import com.wowo.wowo.shared.domain.Entity
 import com.wowo.wowo.contexts.user.domain.valueobject.PermissionId
 import com.wowo.wowo.contexts.user.domain.valueobject.PermissionName
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -13,8 +14,8 @@ class Permission private constructor(
     override val id: PermissionId,
     val name: PermissionName,
     val description: String? = null,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime = LocalDateTime.now()
+    override val createdAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now()
 ) : Entity<PermissionId>() {
 
     val resource: String
@@ -25,7 +26,7 @@ class Permission private constructor(
 
     fun updateDescription(newDescription: String?) {
         // Domain logic can be added here
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     companion object {
@@ -47,8 +48,8 @@ class Permission private constructor(
             id: PermissionId,
             name: PermissionName,
             description: String?,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
+            createdAt: Instant,
+            updatedAt: Instant
         ): Permission {
             return Permission(
                 id = id,

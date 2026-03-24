@@ -4,6 +4,7 @@ import com.wowo.wowo.shared.domain.Entity
 import com.wowo.wowo.contexts.user.domain.valueobject.RoleId
 import com.wowo.wowo.contexts.user.domain.valueobject.RoleName
 import com.wowo.wowo.contexts.user.domain.valueobject.PermissionId
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -15,8 +16,8 @@ class Role private constructor(
     val name: RoleName,
     val description: String? = null,
     initialPermissions: Set<PermissionId> = emptySet(),
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime = LocalDateTime.now()
+    override val createdAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now()
 ) : Entity<RoleId>() {
 
     private val _permissions: MutableSet<PermissionId> = initialPermissions.toMutableSet()
@@ -26,12 +27,12 @@ class Role private constructor(
 
     fun addPermission(permissionId: PermissionId) {
         _permissions.add(permissionId)
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun removePermission(permissionId: PermissionId) {
         _permissions.remove(permissionId)
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun hasPermission(permissionId: PermissionId): Boolean {
@@ -40,7 +41,7 @@ class Role private constructor(
 
     fun clearPermissions() {
         _permissions.clear()
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     companion object {
@@ -65,8 +66,8 @@ class Role private constructor(
             name: RoleName,
             description: String?,
             permissions: Set<PermissionId>,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
+            createdAt: Instant,
+            updatedAt: Instant
         ): Role {
             return Role(
                 id = id,

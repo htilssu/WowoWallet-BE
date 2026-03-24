@@ -17,8 +17,8 @@ class Wallet(
     private var balance: Balance,
     val currency: Currency,
     var isActive: Boolean = true,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime = LocalDateTime.now()
+    override val createdAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now()
 ) : AggregateRoot<WalletId>() {
 
     fun credit(amount: Money) {
@@ -26,7 +26,7 @@ class Wallet(
         validateCurrency(amount.currency)
 
         balance = balance.add(amount)
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
 
         addDomainEvent(WalletCreditedEvent(id.toString(), ownerId, ownerType, amount.amount, currency))
     }
@@ -42,7 +42,7 @@ class Wallet(
         }
 
         balance = balance.subtract(amount)
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
 
         addDomainEvent(WalletDebitedEvent(id.toString(), ownerId, ownerType, amount.amount, currency))
     }
@@ -50,12 +50,12 @@ class Wallet(
 
     fun freeze() {
         isActive = false
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
     }
 
     fun unfreeze() {
         isActive = true
-        updatedAt = LocalDateTime.now()
+        updatedAt = Instant.now()
     }
 
     fun getBalance(): Balance = balance

@@ -7,6 +7,7 @@ import com.wowo.wowo.contexts.user.domain.valueobject.UserId
 import com.wowo.wowo.contexts.user.domain.valueobject.Username
 import com.wowo.wowo.contexts.user.domain.valueobject.Password
 import com.wowo.wowo.contexts.user.domain.event.UserRegisteredEvent
+import java.time.Instant
 import java.time.LocalDateTime
 
 /**
@@ -20,35 +21,35 @@ class User(
     val phoneNumber: PhoneNumber?,
     var isVerified: Boolean = false,
     var isActive: Boolean = true,
-    override val createdAt: LocalDateTime = LocalDateTime.now(),
-    override var updatedAt: LocalDateTime = LocalDateTime.now()
+    override val createdAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now()
 ) : AggregateRoot<UserId>() {
 
     private var profile: UserProfile? = null
 
     fun updatePassword(newPassword: Password) {
         this.password = newPassword
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun verify() {
         this.isVerified = true
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun deactivate() {
         this.isActive = false
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun activate() {
         this.isActive = true
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun updateProfile(profile: UserProfile) {
         this.profile = profile
-        this.updatedAt = LocalDateTime.now()
+        this.updatedAt = Instant.now()
     }
 
     fun getPassword(): Password = password
