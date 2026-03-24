@@ -1,10 +1,9 @@
 package com.wowo.wowo.contexts.wallet.application.dto
 
-import com.wowo.wowo.contexts.wallet.domain.entity.Wallet
-import com.wowo.wowo.shared.domain.HasOwner
-import com.wowo.wowo.shared.domain.OwnerType
-import java.math.BigDecimal
-import java.time.LocalDateTime
+import com.wowo.wowo.contexts.wallet.domain.entity.*
+import com.wowo.wowo.shared.domain.*
+import java.math.*
+import java.time.*
 
 /**
  * Data Transfer Object for Wallet.
@@ -18,10 +17,10 @@ data class WalletDTO(
     val isActive: Boolean,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-    override val ownerId: String,
-    override val ownerType: OwnerType,
-    override val ownerName: String?
-) : HasOwner<String> {
+    override var ownerId: String,
+    override var ownerType: OwnerType,
+    override var ownerName: String?
+) : IHasOwner<String> {
     companion object {
         fun fromDomain(wallet: Wallet): WalletDTO {
             return WalletDTO(
