@@ -12,8 +12,8 @@ import java.time.*
  */
 class Transaction(
     override val id: TransactionId,
-    val fromWalletId: String?,
-    val toWalletId: String?,
+    val sourceWalletId: String?,
+    val targetWalletId: String?,
     val amount: Money,
     val type: TransactionType,
     private var status: TransactionStatus = TransactionStatus.PENDING,
@@ -37,7 +37,7 @@ class Transaction(
 
         addDomainEvent(
             TransactionCompletedEvent(
-                id.toString(), fromWalletId, toWalletId, amount.amount, amount.currency
+                id.toString(), sourceWalletId, targetWalletId, amount.amount, amount.currency
             )
         )
     }
@@ -67,18 +67,18 @@ class Transaction(
     private fun validateTransaction() {
         when (type) {
             TransactionType.CREDIT -> {
-                require(toWalletId != null) { "Credit transaction must have a destination wallet" }
+                require(targetWalletId != null) { "Credit transaction must have a destination wallet" }
             }
 
             TransactionType.DEBIT -> {
-                require(fromWalletId != null) { "Debit transaction must have a source wallet" }
+                require(sourceWalletId != null) { "Debit transaction must have a source wallet" }
             }
 
             TransactionType.TRANSFER -> {
-                require(fromWalletId != null && toWalletId != null) {
+                require(sourceWalletId != null && targetWalletId != null) {
                     "Transfer transaction must have both source and destination wallets"
                 }
-                require(fromWalletId != toWalletId) {
+                require(sourceWalletId != targetWalletId) {
                     "Cannot transfer to the same wallet"
                 }
             }
@@ -89,8 +89,8 @@ class Transaction(
 
     companion object {
         fun create(
-            fromWalletId: String?,
-            toWalletId: String?,
+            sourceWalletId: String?,
+            targetWalletId: String?,
             amount: Money,
             type: TransactionType,
             description: String? = null,
@@ -98,8 +98,8 @@ class Transaction(
         ): Transaction {
             return Transaction(
                 id = TransactionId(),
-                fromWalletId = fromWalletId,
-                toWalletId = toWalletId,
+                sourceWalletId = sourceWalletId,
+                targetWalletId = targetWalletId,
                 amount = amount,
                 type = type,
                 description = description,

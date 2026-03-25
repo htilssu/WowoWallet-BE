@@ -7,8 +7,6 @@ import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionId
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionStatus
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import com.wowo.wowo.shared.domain.PagedResult
-import com.wowo.wowo.shared.valueobject.Currency
-import com.wowo.wowo.shared.valueobject.Money
 import jakarta.persistence.criteria.Predicate
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -21,25 +19,26 @@ import org.springframework.stereotype.Component
  */
 @Component
 class TransactionRepositoryAdapter(
-    private val jpaRepository: TransactionJpaRepository
+    private val jpaRepository: TransactionJpaRepository,
+    private val persistenceMapper: TransactionPersistenceMapper
 ) : TransactionRepository {
 
     override fun save(transaction: Transaction): Transaction {
-        val jpaEntity = toJpaEntity(transaction)
+        val jpaEntity = persistenceMapper.toJpaEntity(transaction)
         val savedEntity = jpaRepository.save(jpaEntity)
-        return toDomainEntity(savedEntity)
+        return persistenceMapper.toDomainEntity(savedEntity)
     }
 
     override fun findById(id: TransactionId): Transaction? {
-        return jpaRepository.findById(id.value).map { toDomainEntity(it) }.orElse(null)
+        return jpaRepository.findById(id.value).map { persistenceMapper.toDomainEntity(it) }.orElse(null)
     }
 
     override fun findByWalletId(walletId: String): List<Transaction> {
-        return jpaRepository.findByWalletId(walletId).map { toDomainEntity(it) }
+        return jpaRepository.findByWalletId(walletId).map { persistenceMapper.toDomainEntity(it) }
     }
 
     override fun findByStatus(status: TransactionStatus): List<Transaction> {
-        return jpaRepository.findByStatus(status).map { toDomainEntity(it) }
+        return jpaRepository.findByStatus(status).map { persistenceMapper.toDomainEntity(it) }
     }
 
     override fun search(criteria: TransactionSearchCriteria): PagedResult<Transaction> {
@@ -50,9 +49,9 @@ class TransactionRepositoryAdapter(
             
             // Wallet ID (either from or to)
             // Use explicit generic types to avoid ambiguity
-            val fromWallet = cb.equal(root.get<String>("fromWalletId"), criteria.walletId)
-            val toWallet = cb.equal(root.get<String>("toWalletId"), criteria.walletId)
-            predicates.add(cb.or(fromWallet, toWallet))
+            val sourceWallet = cb.equal(root.get<String>("sourceWalletId"), criteria.walletId)
+            val targetWallet = cb.equal(root.get<String>("targetWalletId"), criteria.walletId)
+            predicates.add(cb.or(sourceWallet, targetWallet))
             
             // Date Range
             criteria.startDate?.let {
@@ -73,7 +72,7 @@ class TransactionRepositoryAdapter(
         val pagedEntities = jpaRepository.findAll(spec, pageable)
         
         return PagedResult(
-            items = pagedEntities.content.map { toDomainEntity(it) },
+            items = pagedEntities.content.map { persistenceMapper.toDomainEntity(it) },
             totalItems = pagedEntities.totalElements,
             totalPages = pagedEntities.totalPages,
             currentPage = pagedEntities.number,
@@ -84,38 +83,6 @@ class TransactionRepositoryAdapter(
     override fun delete(transaction: Transaction) {
 
         jpaRepository.deleteById(transaction.id.value)
-    }
-
-    private fun toJpaEntity(transaction: Transaction): TransactionJpaEntity {
-        return TransactionJpaEntity(
-            id = transaction.id.value,
-            fromWalletId = transaction.fromWalletId,
-            toWalletId = transaction.toWalletId,
-            amount = transaction.amount.amount,
-            currency = transaction.amount.currency.name,
-            type = transaction.type,
-            status = transaction.getStatus(),
-            description = transaction.description,
-            reference = transaction.reference,
-            createdAt = transaction.createdAt,
-            updatedAt = transaction.updatedAt
-        )
-    }
-
-    private fun toDomainEntity(jpaEntity: TransactionJpaEntity): Transaction {
-        val currency = Currency.valueOf(jpaEntity.currency)
-        return Transaction(
-            id = TransactionId(jpaEntity.id),
-            fromWalletId = jpaEntity.fromWalletId,
-            toWalletId = jpaEntity.toWalletId,
-            amount = Money(jpaEntity.amount, currency),
-            type = jpaEntity.type,
-            status = jpaEntity.status,
-            description = jpaEntity.description,
-            reference = jpaEntity.reference,
-            createdAt = jpaEntity.createdAt,
-            updatedAt = jpaEntity.updatedAt
-        )
     }
 }
 

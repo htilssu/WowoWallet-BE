@@ -17,10 +17,10 @@ class TransactionJpaEntity(
     var id: UUID = UUID.randomUUID(),
 
     @Column
-    var fromWalletId: String? = null,
+    var sourceWalletId: String? = null,
 
     @Column
-    var toWalletId: String? = null,
+    var targetWalletId: String? = null,
 
     @Column(nullable = false, precision = 19, scale = 2)
     var amount: BigDecimal,

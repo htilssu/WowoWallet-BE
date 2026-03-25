@@ -5,7 +5,6 @@ import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
 import com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType
 import com.wowo.wowo.shared.exception.EntityNotFoundException
 import com.wowo.wowo.shared.exception.InsufficientBalanceException
-import com.wowo.wowo.shared.valueobject.Currency
 import com.wowo.wowo.shared.valueobject.Money
 
 /**
@@ -26,8 +25,8 @@ class TransferDomainService(
     ): Transaction {
 
         val transaction = Transaction.create(
-            fromWalletId = fromWalletId,
-            toWalletId = toWalletId,
+            sourceWalletId = fromWalletId,
+            targetWalletId = toWalletId,
             amount = amount,
             type = TransactionType.TRANSFER,
             description = description

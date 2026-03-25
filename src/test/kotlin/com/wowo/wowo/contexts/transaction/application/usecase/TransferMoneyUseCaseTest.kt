@@ -44,8 +44,8 @@ class TransferMoneyUseCaseTest {
         )
 
         sampleTransaction = Transaction.create(
-            fromWalletId = "wallet-1",
-            toWalletId = "wallet-2",
+            sourceWalletId = "wallet-1",
+            targetWalletId = "wallet-2",
             amount = Money(BigDecimal("100.00"), Currency.VND),
             type = com.wowo.wowo.contexts.transaction.domain.valueobject.TransactionType.TRANSFER,
             description = "Test"
@@ -57,8 +57,8 @@ class TransferMoneyUseCaseTest {
         val money = Money(BigDecimal("100.00"), Currency.VND)
         val mappedDto = TransactionDTO.unenriched(
             id = sampleTransaction.id.value.toString(),
-            fromWalletId = "wallet-1",
-            toWalletId = "wallet-2",
+            sourceWalletId = "wallet-1",
+            targetWalletId = "wallet-2",
             amount = BigDecimal("100.00"),
             currency = "VND",
             type = sampleTransaction.type.name,
@@ -89,8 +89,8 @@ class TransferMoneyUseCaseTest {
         // Then
         assertNotNull(result)
         assertEquals(sampleTransaction.id.toString(), result.id)
-        assertEquals("wallet-1", result.fromWalletId)
-        assertEquals("wallet-2", result.toWalletId)
+        assertEquals("wallet-1", result.sourceWalletId)
+        assertEquals("wallet-2", result.targetWalletId)
         Mockito.verify(transferDomainService).executeTransfer("wallet-1", "wallet-2", money, "Test transfer")
         Mockito.verify(transactionRepository).save(sampleTransaction)
         Mockito.verify(transactionMapper).toDTO(sampleTransaction)

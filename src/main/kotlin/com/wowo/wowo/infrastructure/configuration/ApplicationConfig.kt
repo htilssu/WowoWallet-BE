@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @EnableTransactionManagement
 @EnableJpaRepositories(
     basePackages = [
-        "com.wowo.wowo.contexts.user.infrastructure.persistence",
-        "com.wowo.wowo.contexts.wallet.infrastructure.persistence",
-        "com.wowo.wowo.contexts.transaction.infrastructure.persistence",
-        "com.wowo.wowo.contexts.groupfund.infrastructure.persistence"
+        "com.wowo.wowo.contexts.**",
     ]
 )
 @ComponentScan(basePackages = ["com.wowo.wowo"])

@@ -14,16 +14,16 @@ data class TransactionDTO(
     val id: String,
     
     // Sender (from) wallet information
-    val fromWalletId: String?,
-    val fromOwnerId: String?,
-    val fromOwnerType: OwnerType?,
-    val fromOwnerName: String?,    // Enriched field
+    val sourceWalletId: String?,
+    var sourceOwnerId: String?,
+    var sourceOwnerType: OwnerType?,
+    val sourceOwnerName: String?,    // Enriched field
     
     // Receiver (to) wallet information  
-    val toWalletId: String?,
-    val toOwnerId: String?,
-    val toOwnerType: OwnerType?,
-    val toOwnerName: String?,      // Enriched field
+    val targetWalletId: String?,
+    var targetOwnerId: String?,
+    var targetOwnerType: OwnerType?,
+    val targetOwnerName: String?,      // Enriched field
     
     // Transaction details
     val amount: BigDecimal,
@@ -50,8 +50,8 @@ data class TransactionDTO(
          */
         fun unenriched(
             id: String,
-            fromWalletId: String?,
-            toWalletId: String?,
+            sourceWalletId: String?,
+            targetWalletId: String?,
             amount: BigDecimal,
             currency: String,
             type: String,
@@ -62,14 +62,14 @@ data class TransactionDTO(
             updatedAt: Instant
         ) = TransactionDTO(
             id = id,
-            fromWalletId = fromWalletId,
-            fromOwnerId = null,
-            fromOwnerType = null,
-            fromOwnerName = null,
-            toWalletId = toWalletId,
-            toOwnerId = null,
-            toOwnerType = null,
-            toOwnerName = null,
+            sourceWalletId = sourceWalletId,
+            sourceOwnerId = null,
+            sourceOwnerType = null,
+            sourceOwnerName = null,
+            targetWalletId = targetWalletId,
+            targetOwnerId = null,
+            targetOwnerType = null,
+            targetOwnerName = null,
             amount = amount,
             currency = currency,
             type = type,

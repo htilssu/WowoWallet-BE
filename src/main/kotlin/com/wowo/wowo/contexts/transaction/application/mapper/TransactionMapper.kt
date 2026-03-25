@@ -2,42 +2,49 @@ package com.wowo.wowo.contexts.transaction.application.mapper
 
 import com.wowo.wowo.contexts.transaction.application.dto.TransactionDTO
 import com.wowo.wowo.contexts.transaction.domain.entity.Transaction
-import org.springframework.stereotype.Component
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 
 /**
  * Mapper for converting Transaction domain entity to DTO.
- * 
+ *
  * Creates unenriched DTOs - enrichment is handled separately
  * by TransactionOwnerEnricher.
  */
-@Component
-class TransactionMapper {
-    
+@Mapper(componentModel = "spring")
+interface TransactionMapper {
     /**
      * Convert Transaction entity to DTO.
-     * The owner fields (fromOwnerId, fromOwnerType, fromOwnerName, etc.)
+     * The owner fields (sourceOwnerId, sourceOwnerType, sourceOwnerName, etc.)
      * will be null and should be enriched separately.
      */
-    fun toDTO(transaction: Transaction): TransactionDTO {
-        return TransactionDTO.unenriched(
-            id = transaction.id.value.toString(),
-            fromWalletId = transaction.fromWalletId,
-            toWalletId = transaction.toWalletId,
-            amount = transaction.amount.amount,
-            currency = transaction.amount.currency.name,
-            type = transaction.type.name,
-            status = transaction.getStatus().name,
-            description = transaction.description,
-            reference = transaction.reference,
-            createdAt = transaction.createdAt,
-            updatedAt = transaction.updatedAt
-        )
-    }
-    
-    /**
-     * Convert a list of Transaction entities to DTOs.
-     */
-    fun toDTOs(transactions: List<Transaction>): List<TransactionDTO> {
-        return transactions.map { toDTO(it) }
-    }
+    @Mapping(target = "id", source = "id.value")
+    @Mapping(target = "sourceWalletId", source = "sourceWalletId")
+    @Mapping(target = "sourceOwnerId", ignore = true)
+    @Mapping(target = "sourceOwnerType", ignore = true)
+    @Mapping(target = "sourceOwnerName", ignore = true)
+    @Mapping(target = "targetWalletId", source = "targetWalletId")
+    @Mapping(target = "targetOwnerId", ignore = true)
+    @Mapping(target = "targetOwnerType", ignore = true)
+    @Mapping(target = "targetOwnerName", ignore = true)
+    @Mapping(target = "amount", source = "amount.amount")
+    @Mapping(target = "currency", source = "amount.currency")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "status", expression = "java(transaction.getStatus().name())")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "reference", source = "reference")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "normalizedDescription", ignore = true)
+    @Mapping(target = "transactionCategory", ignore = true)
+    @Mapping(target = "merchantName", ignore = true)
+    @Mapping(target = "merchantCategory", ignore = true)
+    @Mapping(target = "geoCountry", ignore = true)
+    @Mapping(target = "geoCity", ignore = true)
+    @Mapping(target = "riskScore", ignore = true)
+    @Mapping(target = "riskLevel", ignore = true)
+    @Mapping(target = "tags", expression = "java(java.util.Collections.emptyList())")
+    fun toDTO(transaction: Transaction): TransactionDTO
+
+    fun toDTOs(transactions: List<Transaction>): List<TransactionDTO>
 }

@@ -54,17 +54,17 @@ CREATE TABLE roles
 
 CREATE TABLE transactions
 (
-    id             UUID           NOT NULL,
-    from_wallet_id VARCHAR(255),
-    to_wallet_id   VARCHAR(255),
-    amount         DECIMAL(19, 2) NOT NULL,
-    currency       VARCHAR(3)     NOT NULL,
-    type           VARCHAR(20)    NOT NULL,
-    status         VARCHAR(20)    NOT NULL,
-    description    VARCHAR(500),
-    reference      VARCHAR(255),
-    created_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    id               UUID           NOT NULL,
+    source_wallet_id VARCHAR(255),
+    target_wallet_id VARCHAR(255),
+    amount           DECIMAL(19, 2) NOT NULL,
+    currency         VARCHAR(3)     NOT NULL,
+    type             VARCHAR(20)    NOT NULL,
+    status           VARCHAR(20)    NOT NULL,
+    description      VARCHAR(500),
+    reference        VARCHAR(255),
+    created_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at       TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT pk_transactions PRIMARY KEY (id)
 );
 

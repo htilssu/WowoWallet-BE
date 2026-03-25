@@ -12,7 +12,7 @@ import java.util.*
  */
 @Repository
 interface TransactionJpaRepository : JpaRepository<TransactionJpaEntity, UUID>, JpaSpecificationExecutor<TransactionJpaEntity> {
-    @Query("SELECT t FROM TransactionJpaEntity t WHERE t.fromWalletId = :walletId OR t.toWalletId = :walletId")
+    @Query("SELECT t FROM TransactionJpaEntity t WHERE t.sourceWalletId = :walletId OR t.targetWalletId = :walletId")
     fun findByWalletId(walletId: String): List<TransactionJpaEntity>
 
     fun findByStatus(status: TransactionStatus): List<TransactionJpaEntity>

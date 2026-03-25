@@ -1,7 +1,6 @@
 package com.wowo.wowo.contexts.transaction.application.usecase
 
 import com.wowo.wowo.contexts.transaction.application.dto.*
-import com.wowo.wowo.contexts.transaction.application.enricher.*
 import com.wowo.wowo.contexts.transaction.application.mapper.*
 import com.wowo.wowo.contexts.transaction.domain.repository.*
 import com.wowo.wowo.shared.domain.*
