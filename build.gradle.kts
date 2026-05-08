@@ -82,6 +82,9 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    //LOGGING
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1")
 }
 
 dependencyManagement {

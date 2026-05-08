@@ -26,6 +26,7 @@ data class TransactionDTO(
     val completedAt: Instant? = null,
 
     // -- 5. Enrichment (optional) --
+    
     val description: String?,
     val category: String? = null,
     val merchant: MerchantDTO? = null,

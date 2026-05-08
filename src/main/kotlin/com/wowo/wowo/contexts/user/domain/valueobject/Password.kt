@@ -13,7 +13,8 @@ data class Password(val hashedValue: String) : ValueObject {
     companion object {
         fun fromRaw(rawPassword: String): Password {
             require(rawPassword.length >= 8) { "Password must be at least 8 characters" }
-            require(rawPassword.any { it.isUpperCase() }) { "Password must contain at least one uppercase letter" }
+            require(rawPassword.length <= 64) { "Password must be at most 64 characters" }
+            require(rawPassword.any { it.isUpperCase() }) { "Password must contain at least one uppercase, lowercase, digit letter" }
             require(rawPassword.any { it.isLowerCase() }) { "Password must contain at least one lowercase letter" }
             require(rawPassword.any { it.isDigit() }) { "Password must contain at least one digit" }
 
